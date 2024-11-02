@@ -1,0 +1,16 @@
+export interface ICargo {
+    id?: number
+    nombre?: string
+    nombre_url?: string
+    user_crea?: string
+    user_actualiza?: string
+    user_elimina?: string
+    estado?: boolean
+}
+
+export interface CargoResponse {
+    result: boolean,
+    message?: string
+    data?: ICargo | ICargo[]
+    error?: string
+}

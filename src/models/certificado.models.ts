@@ -1,0 +1,101 @@
+import { Model, DataTypes } from 'sequelize'
+import sequelize from '../config/db'
+import Alumno from './alumno.models'
+import Evento from './evento.models'
+
+class Certificado extends Model {
+    public id?: number
+    public id_alumno?: number
+    public id_evento?: number
+    public codigo?: string
+    public codigoQR?: string
+    public ruta?: string
+    public fileName?: string
+    public fecha_registro?: Date
+    public fecha_descarga?: Date
+    public fecha_envio?: Date
+    public user_crea?: string
+    public user_actualiza?: string
+    public user_elimina?: string
+    public estado?: boolean
+}
+
+Certificado.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    id_alumno: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Alumno,
+            key: 'id'
+        }
+    },
+    id_evento: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Evento,
+            key: 'id'
+        }
+    },
+    codigo: {
+        type: DataTypes.STRING(12),
+        allowNull: true
+    },
+    codigoQR: {
+        type: DataTypes.STRING(350),
+        allowNull: true
+    },
+    ruta: {
+        type: DataTypes.STRING(350),
+        allowNull: true
+    },
+    fileName: {
+        type: DataTypes.STRING(300),
+        allowNull: false
+    },
+    fecha_registro: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    fecha_descarga: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    fecha_envio: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    user_crea: {
+        type: DataTypes.STRING(10),
+        allowNull: true
+    },
+    user_actualiza: {
+        type: DataTypes.STRING(10),
+        allowNull: true
+    },
+    user_elimina: {
+        type: DataTypes.STRING(10),
+        allowNull: true
+    },
+    estado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    }
+}, {
+    sequelize,
+    modelName: 'Certificado',
+    timestamps: true,
+    freezeTableName: true
+})
+
+Certificado.belongsTo(Alumno, {foreignKey: 'id_alumno'})
+
+Certificado.belongsTo(Evento, {foreignKey: 'id_evento'})
+
+export default Certificado
