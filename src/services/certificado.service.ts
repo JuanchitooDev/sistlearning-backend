@@ -403,7 +403,8 @@ class CertificadoService {
             });
 
             // Generar código QR
-            const qrCodeDataUrl = await QRCode.toDataURL(`Alumno: ${nombreCompleto}`)
+            const dataUrl = `https://sistlearning-web.onrender.com/certificado/${codigo}`
+            const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
             const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
             const qrCodeDimensions = qrCodeImage.scale(0.8)
             newPage.drawImage(qrCodeImage, {
@@ -509,7 +510,7 @@ class CertificadoService {
                 fs.mkdirSync(outputDirQRCode, { recursive: true })
             }
 
-            await QRCode.toFile(qrOutputPath, `Alumno: ${nombreCompleto}`)
+            await QRCode.toFile(qrOutputPath, `${dataUrl}`)
 
             data.ruta = outputPath
             data.fileName = fileName
