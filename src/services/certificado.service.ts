@@ -126,7 +126,11 @@ class CertificadoService {
                 return { result: false, error: alumnoResponse.error }
             }
             const alumno = alumnoResponse.data as IAlumno
-            const nombreCompleto = `${alumno.nombres} ${alumno.apellido_paterno} ${alumno.apellido_materno}`
+            // const nombreCompleto = `${alumno.nombres} ${alumno.apellido_paterno} ${alumno.apellido_materno}`
+            // const nombreCertificado = HString.capitalizeNames(nombreCompleto)
+            const nombreCompleto = `${alumno.nombre_certificado}`
+            console.log('nombreCompleto', nombreCompleto)
+            // console.log('nombreCertificado', nombreCertificado)
 
             // Obteniendo el evento
             const eventoResponse = await EventoService.getEventoById(id_evento as number)
@@ -394,9 +398,9 @@ class CertificadoService {
             // Dibujar nuevo rectángulo para el código QR
             newPage.drawRectangle({
                 x: startQRX,
-                y: startQRY - 175,
+                y: startQRY - 195,
                 width: cellWidthQR,
-                height: (cellHeightQR * 6),
+                height: (cellHeightQR * 7),
                 borderColor: rgb(0, 0, 0),
                 borderWidth: 1,
                 color: rgb(1, 1, 1),
@@ -408,8 +412,8 @@ class CertificadoService {
             const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
             const qrCodeDimensions = qrCodeImage.scale(0.8)
             newPage.drawImage(qrCodeImage, {
-                x: startQRX + 80,
-                y: startQRY - 175,
+                x: startQRX + 60,
+                y: startQRY - 190,
                 width: qrCodeDimensions.width,
                 height: qrCodeDimensions.height
             })
@@ -548,6 +552,16 @@ class CertificadoService {
             if (!certificado) {
                 return { result: false, error: 'Certificado no encontrado' };
             }
+
+            // Eliminar el archivo del sistema de archivos
+            const outputPath = certificado.ruta as string
+            if (fs.existsSync(outputPath)) {
+                console.log('existe archivo', outputPath)
+                fs.unlinkSync(outputPath)
+            } else {
+                console.log('no existe archivo')
+            }
+
             await certificado.destroy();
             return { result: true, data: { id } };
         } catch (error) {

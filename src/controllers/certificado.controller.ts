@@ -60,6 +60,28 @@ class CertificadoController {
             res.status(400).json({ message: response.error })
         }
     }
+
+    async updateCertificado(req: Request, res: Response) {
+        const { id } = req.params;
+        const response = await CertificadoService.updateCertificado(+id, req.body);
+        if (response.result) {
+            res.status(200).json(response);
+        } else {
+            res.status(400).json(response);
+            // res.status(400).json({ message: response.error || 'Acto médico no encontrado' });
+        }
+    }
+
+    async deleteCertificado(req: Request, res: Response) {
+        const { id } = req.params;
+        const response = await CertificadoService.deleteCertificado(+id);
+        if (response.result) {
+            res.status(200).json(response);
+        } else {
+            res.status(404).json(response);
+            // res.status(404).json({ message: response.error || 'Acto médico no encontrado' });
+        }
+    }
 }
 
 export default new CertificadoController()

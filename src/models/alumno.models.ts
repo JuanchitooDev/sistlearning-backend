@@ -13,6 +13,7 @@ class Alumno extends Model {
     public apellido_paterno?: string
     public apellido_materno?: string
     public nombres?: string
+    public nombre_certificado?: string
     public telefono?: string
     public direccion?: string
     public email?: string
@@ -71,6 +72,10 @@ Alumno.init({
     },
     nombres: {
         type: DataTypes.STRING(30),
+        allowNull: false
+    },
+    nombre_certificado: {
+        type: DataTypes.STRING(70),
         allowNull: false
     },
     telefono: {

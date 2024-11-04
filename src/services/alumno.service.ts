@@ -3,6 +3,7 @@ import { IAlumno, AlumnoResponse } from '../interfaces/alumnoInterface'
 import TipoDocumento from '../models/tipoDocumento.models';
 import Pais from '../models/pais.models';
 import Departamento from '../models/departamento.models';
+import HString from '../helpers/HString'
 
 class AlumnoService {
     async getAlumnos(): Promise<AlumnoResponse> {
@@ -54,6 +55,9 @@ class AlumnoService {
 
     async createAlumno(data: IAlumno): Promise<AlumnoResponse> {
         try {
+            const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
+            const nombreCertificado = HString.capitalizeNames(nombreCompleto)
+            data.nombre_certificado = nombreCertificado
             const newAlumno = await Alumno.create(data as any)
             return { result: true, data: newAlumno }
         } catch (error) {
@@ -65,6 +69,9 @@ class AlumnoService {
 
     async updateAlumno(id: number, data: IAlumno): Promise<AlumnoResponse> {
         try {
+            const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
+            const nombreCertificado = HString.capitalizeNames(nombreCompleto)
+            data.nombre_certificado = nombreCertificado
             const alumno = await Alumno.findByPk(id)
             if (!alumno) {
                 return { result: false, error: 'Alumno no encontrado' }
