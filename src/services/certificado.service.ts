@@ -13,6 +13,8 @@ import fs from 'fs';
 import path from 'path';
 import fontkit from 'fontkit';
 import QRCode from 'qrcode'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 
 class CertificadoService {
     async getCertificados(): Promise<CertificadoResponse> {
@@ -112,6 +114,7 @@ class CertificadoService {
     async createCertificado(data: ICertificado): Promise<CertificadoResponse> {
         try {
             const { id_alumno, id_evento } = data
+            const lugar = 'Lambayeque'
 
             // Definiendo rutas de template del certificado, fuentes y logo
             const pathTemplate = path.resolve(__dirname, '../../public/pdf/template.pdf')
@@ -120,19 +123,15 @@ class CertificadoService {
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_small.png')
 
-            // Obteniendo el alumno
+            // Obteniendo dato del alumno
             const alumnoResponse = await AlumnoService.getAlumnoById(id_alumno as number)
             if (!alumnoResponse.result) {
                 return { result: false, error: alumnoResponse.error }
             }
             const alumno = alumnoResponse.data as IAlumno
-            // const nombreCompleto = `${alumno.nombres} ${alumno.apellido_paterno} ${alumno.apellido_materno}`
-            // const nombreCertificado = HString.capitalizeNames(nombreCompleto)
-            const nombreCompleto = `${alumno.nombre_certificado}`
-            console.log('nombreCompleto', nombreCompleto)
-            // console.log('nombreCertificado', nombreCertificado)
-
-            // Obteniendo el evento
+            const nombreCompleto = `${alumno.nombre_capitalized}`
+            
+            // Obteniendo datos del evento
             const eventoResponse = await EventoService.getEventoById(id_evento as number)
             if (!eventoResponse.result) {
                 return { result: false, error: eventoResponse.error }
@@ -150,6 +149,14 @@ class CertificadoService {
             const sanitizedAlumno = HString.sanitizeFileName(nombreCompleto)
             const fileName = `certificado_${sanitizedAlumno}.pdf`
             const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
+
+            // Definiendo la fecha de emisión
+            const fechaEnvio = data.fecha_envio as Date
+            // console.log('fechaEnvio', fechaEnvio)
+            // console.log('typeof fechaEnvio', typeof fechaEnvio)
+            const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
+            const lugarFechaEmision = `${lugar}, ${fechaEmision}`
+            // console.log('fechaEmision', fechaEmision, 'lugarFechaEmision', lugarFechaEmision)
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
@@ -179,8 +186,8 @@ class CertificadoService {
             const pagina = pdfDoc.getPage(0);
 
             // Configurar el texto (posición y estilo)
-            const fontSizeForAlumno = 62;
-            let x = 290; // posición X
+            const fontSizeForAlumno = 60;
+            let x = 280; // posición X
             let y = 260; // posición Y
 
             // Añadir el nombre del alumno
@@ -193,9 +200,9 @@ class CertificadoService {
             });
 
             const fontSizeForEvento = 16
-            const fontSizeForFecha = 14
+            const fontSizeForFecha = 12
 
-            x = x + 73
+            x = x + 60
             y = y - 54
 
             // Añadir el título del evento
@@ -207,11 +214,24 @@ class CertificadoService {
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
 
-            x = x + 74
+            x = x + 91
             y = y - 36
 
             // Añadir la fecha del evento
             pagina.drawText(fechaEvento, {
+                x,
+                y,
+                size: fontSizeForFecha,
+                font: customFontBalooMedium,
+                color: rgb(4 / 255, 45 / 255, 71 / 255)
+            });
+
+            x = x + 162
+            // y2 = 50
+            y = y - 50
+
+            // Añadir la fecha del evento
+            pagina.drawText(lugarFechaEmision, {
                 x,
                 y,
                 size: fontSizeForFecha,
@@ -406,8 +426,23 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
+            const testEnv = process.env.NODE_ENV
+
+            console.log('testEnv', testEnv)
+
+            // Determinar el entorno de ejecución
+            // const isLocal = process.env.NODE_ENV === 'development'
+            const isLocal = process.env.NODE_ENV === 'local'
+
+            console.log('isLocal', isLocal)
+
+            // Determinar la URL base según el entorno
+            const baseUrl = isLocal ? 'http://localhost:8081' : 'https://sistlearning-web.onrender.com'
+
             // Generar código QR
-            const dataUrl = `https://sistlearning-web.onrender.com/certificado/${codigo}`
+            const dataUrl = `${baseUrl}/certificado/${codigo}`
+            console.log('dataUrl', dataUrl)
+
             const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
             const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
             const qrCodeDimensions = qrCodeImage.scale(0.8)
@@ -417,88 +452,6 @@ class CertificadoService {
                 width: qrCodeDimensions.width,
                 height: qrCodeDimensions.height
             })
-
-            // -------------------------
-
-            // // Cargar y añadir el logo
-            // const logoBytes = fs.readFileSync(pathLogo)
-            // const logoImage = await pdfDoc.embedPng(logoBytes)
-            // const logoDimensions = logoImage.scale(1.0)
-            // newPage.drawImage(logoImage, {
-            //     x: 20,
-            //     y: newPage.getHeight() - logoDimensions.height - 20,
-            //     width: logoDimensions.width,
-            //     height: logoDimensions.height
-            // })
-
-            // // Generar código QR
-            // const qrCodeDataUrl = await QRCode.toDataURL(`Alumno: ${nombreCompleto}`)
-            // const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
-            // const qrCodeDimensions = qrCodeImage.scale(0.8)
-            // newPage.drawImage(qrCodeImage, {
-            //     x: newPage.getWidth() - qrCodeDimensions.width - 20,
-            //     y: newPage.getHeight() - qrCodeDimensions.height - 20,
-            //     width: qrCodeDimensions.width,
-            //     height: qrCodeDimensions.height
-            // })
-
-            // // Añadir una tabla simple con el temario
-            // const temario = [
-            //     { tema: 'TAXONOMÍA Y ORIGEN DE ARÁNDANOS' },
-            //     { tema: 'COMPOSICIÓN NUTRICIONAL DEL ARÁNDANO' },
-            //     { tema: 'MANEJO AGRONÓMICO' },
-            //     { tema: 'FERTILIZACIÓN Y MANEJO DE ABONOS DE ARÁNDANOS' }
-            // ]
-
-            // const startX = 20
-            // const startY = 250
-            // const cellWidth = 370
-            // const cellHeight = 20
-
-            // // Dibujar celda para el título
-            // newPage.drawRectangle({
-            //     x: startX,
-            //     y: startY,
-            //     width: cellWidth,
-            //     height: cellHeight,
-            //     borderColor: rgb(0, 0, 0),
-            //     borderWidth: 1,
-            //     color: rgb(1, 1, 1),
-            // });
-
-            // // Dibujar el título en la celda
-            // newPage.drawText('Temario', {
-            //     x: startX + 5,
-            //     y: startY + 5,
-            //     size: 12,
-            //     color: rgb(0, 0, 0),
-            // });
-
-            // // Ajustar la posición para los ítems del temario
-            // const itemsStartY = startY - (cellHeight + 5);
-
-            // temario.forEach((item, index) => {
-            //     const currentY = itemsStartY - index * (cellHeight + 5)
-
-            //     // Dibujar las celdas
-            //     newPage.drawRectangle({
-            //         x: startX,
-            //         y: currentY,
-            //         width: cellWidth,
-            //         height: cellHeight,
-            //         borderColor: rgb(0, 0, 0),
-            //         borderWidth: 1,
-            //         color: rgb(1, 1, 1)
-            //     })
-
-            //     // Dibujar el texto en las celdas
-            //     newPage.drawText(`${index + 1}. ${item.tema}`, {
-            //         x: startX + 5,
-            //         y: currentY + 5,
-            //         size: 12,
-            //         color: rgb(0, 0, 0)
-            //     })
-            // })
 
             // Guardar el PDF modificado
             const pdfBytes = await pdfDoc.save();
@@ -556,10 +509,8 @@ class CertificadoService {
             // Eliminar el archivo del sistema de archivos
             const outputPath = certificado.ruta as string
             if (fs.existsSync(outputPath)) {
-                console.log('existe archivo', outputPath)
+                // console.log('existe archivo', outputPath)
                 fs.unlinkSync(outputPath)
-            } else {
-                console.log('no existe archivo')
             }
 
             await certificado.destroy();

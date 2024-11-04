@@ -13,6 +13,20 @@ class CertificadoController {
         }
     }
 
+    async getCertificadoById(req: Request, res: Response) {
+        const response = await CertificadoService.getCertificadoById(+req.params.id)
+        if (response.result) {
+            if (response.data) {
+                res.status(200).json(response)
+            } else {
+                res.status(404).json({ message: 'Certificado no encontrado' });
+            }
+        } else {
+            res.status(500).json(response)
+            // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
+        }
+    }
+
     async getCertificadoByCodigo(req: Request, res: Response) {
         const response = await CertificadoService.getCertificadoByCodigo(req.params.codigo)
         if (response.result) {

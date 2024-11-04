@@ -56,8 +56,8 @@ class AlumnoService {
     async createAlumno(data: IAlumno): Promise<AlumnoResponse> {
         try {
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
-            const nombreCertificado = HString.capitalizeNames(nombreCompleto)
-            data.nombre_certificado = nombreCertificado
+            const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
+            data.nombre_capitalized = nombreCapitalized
             const newAlumno = await Alumno.create(data as any)
             return { result: true, data: newAlumno }
         } catch (error) {
@@ -70,8 +70,8 @@ class AlumnoService {
     async updateAlumno(id: number, data: IAlumno): Promise<AlumnoResponse> {
         try {
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
-            const nombreCertificado = HString.capitalizeNames(nombreCompleto)
-            data.nombre_certificado = nombreCertificado
+            const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
+            data.nombre_capitalized = nombreCapitalized
             const alumno = await Alumno.findByPk(id)
             if (!alumno) {
                 return { result: false, error: 'Alumno no encontrado' }

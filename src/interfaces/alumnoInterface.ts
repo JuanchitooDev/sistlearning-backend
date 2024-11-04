@@ -9,7 +9,7 @@ export interface IAlumno {
     apellido_paterno?: string
     apellido_materno?: string
     nombres?: string
-    nombre_certificado?: string
+    nombre_capitalized?: string
     telefono?: string
     direccion?: string
     email?: string

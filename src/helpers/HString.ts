@@ -46,19 +46,10 @@ export default class HString {
     }
 
     static capitalizeNames(nombre: string): string {
-        // return nombre
-        //     .toLowerCase() // Convierte toda la cadena a minúsculas
-        //     .split('') // Divide la cadena en palabras
-        //     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        //     .join(' ')
         const nombreMinusculas = nombre.toLowerCase()
-        console.log('nombreMinusculas', nombreMinusculas)
         const partsNombre = nombreMinusculas.split(' ')
-        console.log('partsNombre', partsNombre)
         const partsMayusculas = partsNombre.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        console.log('nombreMayusculas', partsMayusculas)
         const nombreCapitalized = partsMayusculas.join(' ')
-        console.log('nombreCapitalized', nombreCapitalized)
         return nombreCapitalized
     }
 }

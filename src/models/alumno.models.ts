@@ -13,7 +13,7 @@ class Alumno extends Model {
     public apellido_paterno?: string
     public apellido_materno?: string
     public nombres?: string
-    public nombre_certificado?: string
+    public nombre_capitalized?: string
     public telefono?: string
     public direccion?: string
     public email?: string
@@ -74,9 +74,9 @@ Alumno.init({
         type: DataTypes.STRING(30),
         allowNull: false
     },
-    nombre_certificado: {
+    nombre_capitalized: {
         type: DataTypes.STRING(70),
-        allowNull: false
+        allowNull: true
     },
     telefono: {
         type: DataTypes.STRING(15),
