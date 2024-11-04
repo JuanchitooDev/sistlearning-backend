@@ -33,4 +33,15 @@ export default class HString {
         }
         return resultado
     }
+
+    static validateField(field: any): string {
+        return field !== null && field !== undefined && field != '' ? field : ''
+    }
+
+    static validateUbigeo(ubigeo: any): string {
+        if (Array.isArray(ubigeo)) {
+            return ubigeo.join(",")
+        }
+        return ''
+    }
 }

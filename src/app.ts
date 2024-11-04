@@ -15,6 +15,8 @@ import matriculaRoutes from './routes/matricula.routes'
 import programacionRoutes from './routes/programacion.routes'
 import authRoutes from './routes/auth.routes'
 import cargoRoutes from './routes/cargo.routes'
+import documentoRoutes from './routes/documento.routes'
+import personaRoutes from './routes/persona.routes'
 
 const app = express()
 app.use(express.json())
@@ -34,5 +36,7 @@ app.use('/api/matricula', matriculaRoutes)
 app.use('/api/programacion', programacionRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/cargo', cargoRoutes)
+app.use('/api/documento', documentoRoutes)
+app.use('/api/persona', personaRoutes)
 
 export default app;

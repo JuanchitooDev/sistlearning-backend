@@ -1,7 +1,14 @@
 import { Sequelize } from 'sequelize'
 import dotenv from 'dotenv'
 
-dotenv.config()
+// Determina el ambiente
+const env = process.env.NODE_ENV || 'local'
+
+// dotenv.config()
+// Carga el archivo de configuración correspondiente
+dotenv.config({ path: `.env.${env}` })
+
+const isTest = env === 'test'
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,
@@ -9,13 +16,13 @@ const sequelize = new Sequelize(
     process.env.DB_PASS!,
     {
         host: process.env.DB_HOST!,
-        dialect: 'postgres',
-        dialectOptions: {
+        dialect: isTest ? 'postgres' : 'mysql',
+        dialectOptions: isTest ? {
             ssl: {
                 require: true,
                 rejectUnauthorized: false
             }
-        }
+        } : {}
     }
 )
 
