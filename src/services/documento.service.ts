@@ -14,6 +14,7 @@ class DocumentoService {
 
             // Verificando si existe una persona
             const dataPersona = await personaService.getPersonaByIdTipoDocAndNumDoc(idTipoDocumento, numeroDocumento)
+            console.log('dataPersona', dataPersona)
 
             const getTipoDocumento = await tipoDocumentoService.getTipoById(idTipoDocumento);
             const dataTipoDocumento = getTipoDocumento.data as ITipoDocumento
@@ -29,6 +30,10 @@ class DocumentoService {
                 // Determina el ambiente
                 const env = process.env.NODE_ENV || 'local'
 
+                console.log('env', env)
+
+                console.log('urlApiDoc', urlApiDoc)
+
                 dotenv.config({ path: `.env.${env}` })
 
                 const token = process.env.TOKEN_API_DOCS
@@ -38,6 +43,8 @@ class DocumentoService {
                         'Authorization': `Bearer ${token}`
                     }
                 })
+
+                console.log('response urlApiDoc', response)
 
                 // Comprobando si la respuesta es exitosa
                 if (response.data.success) {
