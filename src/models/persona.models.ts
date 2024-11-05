@@ -73,11 +73,11 @@ Persona.init({
         allowNull: true
     },
     direccion: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(50),
         allowNull: true
     },
     direccion_completa: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(120),
         allowNull: true
     },
     ubigeo_reniec: {
@@ -102,7 +102,7 @@ Persona.init({
         allowNull: true
     },
     foto: {
-        type: DataTypes.STRING(150),
+        type: DataTypes.STRING(200),
         allowNull: true
     },
     sexo: {
