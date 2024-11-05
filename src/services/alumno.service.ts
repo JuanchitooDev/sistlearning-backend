@@ -4,6 +4,8 @@ import TipoDocumento from '../models/tipoDocumento.models';
 import Pais from '../models/pais.models';
 import Departamento from '../models/departamento.models';
 import HString from '../helpers/HString'
+import { format, parseISO } from 'date-fns'
+import { es } from 'date-fns/locale'
 
 class AlumnoService {
     async getAlumnos(): Promise<AlumnoResponse> {
@@ -55,8 +57,15 @@ class AlumnoService {
 
     async createAlumno(data: IAlumno): Promise<AlumnoResponse> {
         try {
+            const fechaNacimiento = data.fecha_nacimiento ? new Date(data.fecha_nacimiento) : new Date()
+            fechaNacimiento.setMinutes(fechaNacimiento.getMinutes() - fechaNacimiento.getTimezoneOffset())
+
+            console.log('fechaNacimiento', fechaNacimiento)
+
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
             const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
+
+            data.fecha_nacimiento = fechaNacimiento
             data.nombre_capitalized = nombreCapitalized
             const newAlumno = await Alumno.create(data as any)
             return { result: true, data: newAlumno }
