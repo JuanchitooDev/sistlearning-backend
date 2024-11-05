@@ -44,7 +44,7 @@ class DocumentoService {
                     }
                 })
 
-                console.log('response urlApiDoc', response)
+                // console.log('response urlApiDoc', response)
 
                 // Comprobando si la respuesta es exitosa
                 if (response.data.success) {
@@ -72,6 +72,8 @@ class DocumentoService {
                         origen: 'API',
                         estado: true
                     }
+
+                    console.log('IPersona', persona)
 
                     const createPersona = await personaService.createPersona(persona)
 

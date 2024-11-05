@@ -36,7 +36,8 @@ class PersonaController {
                 res.status(404).json({ message: 'Persona no encontrada' });
             }
         } else {
-            res.status(500).json(response)
+            res.status(404).json({ result: response.result, message: response.error })
+            // res.status(500).json(response)
             // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
         }
     }
