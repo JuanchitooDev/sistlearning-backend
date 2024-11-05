@@ -7,6 +7,8 @@ class DocumentoController {
         const idTipoDocNumber = Number(idtipodoc)
         const response = await DocumentoService.getDocumentoInfo(idTipoDocNumber, numdoc)
 
+        console.log('response getDocumentoInfo', response)
+
         if (response.result) {
             res.status(200).json(response)
         } else {
