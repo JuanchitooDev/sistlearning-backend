@@ -152,12 +152,9 @@ class CertificadoService {
 
             // Definiendo la fecha de emisión
             const fechaEnvio = data.fecha_envio as Date
-            // console.log('fechaEnvio', fechaEnvio)
-            // console.log('typeof fechaEnvio', typeof fechaEnvio)
             const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
             const lugarFechaEmision = `${lugar}, ${fechaEmision}`
-            // console.log('fechaEmision', fechaEmision, 'lugarFechaEmision', lugarFechaEmision)
-
+            
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
             if (!fs.existsSync(outputDir)) {
@@ -428,21 +425,15 @@ class CertificadoService {
 
             const testEnv = process.env.NODE_ENV
 
-            console.log('testEnv', testEnv)
-
             // Determinar el entorno de ejecución
             // const isLocal = process.env.NODE_ENV === 'development'
             const isLocal = process.env.NODE_ENV === 'local'
-
-            console.log('isLocal', isLocal)
 
             // Determinar la URL base según el entorno
             const baseUrl = isLocal ? 'http://localhost:8081' : 'https://sistlearning-web.onrender.com'
 
             // Generar código QR
             const dataUrl = `${baseUrl}/certificado/${codigo}`
-            console.log('dataUrl', dataUrl)
-
             const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
             const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
             const qrCodeDimensions = qrCodeImage.scale(0.8)
@@ -509,7 +500,6 @@ class CertificadoService {
             // Eliminar el archivo del sistema de archivos
             const outputPath = certificado.ruta as string
             if (fs.existsSync(outputPath)) {
-                // console.log('existe archivo', outputPath)
                 fs.unlinkSync(outputPath)
             }
 
