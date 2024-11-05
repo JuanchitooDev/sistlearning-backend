@@ -58,7 +58,7 @@ class PersonaService {
             })
             console.log('persona in getPersonaByIdTipoDocAndNumDoc', persona)
             if (!persona) {
-                return { result: false, error: 'Persona no encontrada' }
+                return { result: false, message: 'Persona no encontrada' }
             }
             return { result: true, data: persona }
         } catch (error) {
