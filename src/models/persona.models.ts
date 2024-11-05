@@ -18,7 +18,7 @@ class Persona extends Model {
     public ubigeo_reniec?: string
     public ubigeo_sunat?: string
     public ubigeo?: string
-    public fecha_nacimiento?: Date
+    public fecha_nacimiento?: string
     public estado_civil?: string
     public foto?: string
     public sexo?: string
@@ -93,8 +93,9 @@ Persona.init({
         allowNull: true
     },
     fecha_nacimiento: {
-        type: DataTypes.DATE,
-        allowNull: true
+        type: DataTypes.STRING(12),
+        allowNull: false,
+        defaultValue: ''
     },
     estado_civil: {
         type: DataTypes.STRING(20),
