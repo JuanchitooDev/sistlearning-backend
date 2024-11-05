@@ -49,6 +49,15 @@ class DocumentoService {
                 // Comprobando si la respuesta es exitosa
                 if (response.data.success) {
                     const data = response.data.data
+
+                    // let setFechaNacimiento = null
+                    // if (data.fecha_nacimiento !== '') {
+                    //     const fecha = new Date(data.fecha_nacimiento)
+                    //     if (isNaN(fecha.getTime())) {
+                    //         return { result: false, error: 'Fecha de nacimiento inválida' }
+                    //     }
+                    //     setFechaNacimiento = fecha.toISOString()
+                    // }
                     
                     const persona: IPersona = {
                         id_tipodocumento: idTipoDocumento,
@@ -65,7 +74,7 @@ class DocumentoService {
                         ubigeo_reniec: HString.validateField(data.ubigeo_reniec),
                         ubigeo_sunat: HString.validateField(data.ubigeo_sunat),
                         ubigeo: HString.validateUbigeo(data.ubigeo),
-                        fecha_nacimiento: data.fecha_nacimiento,
+                        fecha_nacimiento: new Date(data.fecha_nacimiento),
                         estado_civil: HString.validateField(data.estado_civil),
                         foto: HString.validateField(data.foto),
                         sexo: HString.validateField(data.sexo),
