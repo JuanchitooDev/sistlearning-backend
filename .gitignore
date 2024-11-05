@@ -4,5 +4,6 @@ public/certificados
 public/qrcodes
 
 # local env files
+.env.*
 .env.local
 .env.*.local
