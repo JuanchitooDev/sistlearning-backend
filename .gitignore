@@ -2,6 +2,7 @@
 node_modules
 public/certificados
 public/qrcodes
+dist
 
 # local env files
 .env.*
