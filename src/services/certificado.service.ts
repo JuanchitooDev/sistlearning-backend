@@ -539,7 +539,7 @@ class CertificadoService {
         // Carga el archivo de configuración correspondiente
         dotenv.config({ path: `.env.${env}` })
 
-        const baseUrl = process.env.CORS_ALLOWED_ORIGIN
+        const baseUrl = process.env.BASE_URL
 
         // Generar código QR
         const dataUrl = `${baseUrl}/certificado/${codigo}`

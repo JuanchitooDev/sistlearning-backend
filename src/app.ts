@@ -20,7 +20,7 @@ import personaRoutes from './routes/persona.routes'
 
 const app = express()
 
-const allowedOrigin = process.env.CORS_ALLOWED_ORIGIN || '*'
+const allowedOrigin = process.env.BASE_URL || '*'
 app.use(cors({
     origin: allowedOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
