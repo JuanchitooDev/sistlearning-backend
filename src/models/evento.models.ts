@@ -43,15 +43,15 @@ Evento.init({
         }
     },
     titulo: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(70),
         allowNull: false
     },
     titulo_url: {
-        type: DataTypes.STRING(80),
+        type: DataTypes.STRING(90),
         allowNull: false
     },
     descripcion: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(70),
         allowNull: true
     },
     temario: {

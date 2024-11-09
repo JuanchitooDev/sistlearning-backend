@@ -14,6 +14,7 @@ export interface IAlumno {
     direccion?: string
     email?: string
     fecha_nacimiento?: Date
+    fecha_nacimiento_str?: string
     sexo?: string
     nombre_pais?: string
     nombre_departamento?: string

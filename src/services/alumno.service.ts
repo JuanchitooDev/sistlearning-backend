@@ -4,8 +4,7 @@ import TipoDocumento from '../models/tipoDocumento.models';
 import Pais from '../models/pais.models';
 import Departamento from '../models/departamento.models';
 import HString from '../helpers/HString'
-import { format, parseISO } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { toZonedTime } from 'date-fns-tz'
 
 class AlumnoService {
     async getAlumnos(): Promise<AlumnoResponse> {
@@ -57,10 +56,11 @@ class AlumnoService {
 
     async createAlumno(data: IAlumno): Promise<AlumnoResponse> {
         try {
-            const fechaNacimiento = data.fecha_nacimiento ? new Date(data.fecha_nacimiento) : new Date()
-            fechaNacimiento.setMinutes(fechaNacimiento.getMinutes() - fechaNacimiento.getTimezoneOffset())
-
-            console.log('fechaNacimiento', fechaNacimiento)
+            data.apellido_paterno = data.apellido_paterno?.trim()
+            data.apellido_materno = data.apellido_materno?.trim()
+            data.nombres = data.nombres?.trim()
+            
+            const fechaNacimiento = toZonedTime(data.fecha_nacimiento_str as string, 'America/Lima')
 
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
             const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
@@ -78,9 +78,13 @@ class AlumnoService {
 
     async updateAlumno(id: number, data: IAlumno): Promise<AlumnoResponse> {
         try {
+            const fechaNacimiento = toZonedTime(data.fecha_nacimiento_str as string, 'America/Lima')
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
             const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
+
+            data.fecha_nacimiento = fechaNacimiento
             data.nombre_capitalized = nombreCapitalized
+
             const alumno = await Alumno.findByPk(id)
             if (!alumno) {
                 return { result: false, error: 'Alumno no encontrado' }

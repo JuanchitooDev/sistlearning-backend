@@ -5,6 +5,7 @@ export interface ICertificado {
     id?: number
     id_alumno?: number
     id_evento?: number
+    nombre_alumno_impresion?: string
     codigo?: string
     codigoQR?: string
     ruta?: string

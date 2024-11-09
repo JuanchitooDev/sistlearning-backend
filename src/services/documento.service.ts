@@ -27,7 +27,7 @@ class DocumentoService {
                 }
 
                 // Determina el ambiente
-                const env = process.env.NODE_ENV || 'local'
+                const env = process.env.NODE_ENV || 'development'
 
                 dotenv.config({ path: `.env.${env}` })
 

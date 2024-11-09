@@ -7,6 +7,7 @@ class Certificado extends Model {
     public id?: number
     public id_alumno?: number
     public id_evento?: number
+    public nombre_alumno_impresion?: string
     public codigo?: string
     public codigoQR?: string
     public ruta?: string
@@ -41,6 +42,10 @@ Certificado.init({
             model: Evento,
             key: 'id'
         }
+    },
+    nombre_alumno_impresion: {
+        type: DataTypes.STRING(100),
+        allowNull: true
     },
     codigo: {
         type: DataTypes.STRING(12),

@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env NODE_ENV=local nodemon src/server.ts",
-    "build": "tsc",
-    "start": "npm run build && node dist/server.js"
+    "dev": "cross-env NODE_ENV=development nodemon src/server.ts",
+    "build": "cross-env NODE_ENV=production npx tsc",
+    "start": "cross-env NODE_ENV=production && node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
+    "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "fontkit": "^2.0.4",

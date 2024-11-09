@@ -18,6 +18,7 @@ class Alumno extends Model {
     public direccion?: string
     public email?: string
     public fecha_nacimiento?: Date
+    public fecha_nacimiento_str?: string
     public sexo?: string
     public nombre_pais?: string
     public nombre_departamento?: string
@@ -93,6 +94,10 @@ Alumno.init({
     fecha_nacimiento: {
         type: DataTypes.DATE,
         allowNull: false
+    },
+    fecha_nacimiento_str: {
+        type: DataTypes.STRING(12),
+        allowNull: true
     },
     sexo: {
         type: DataTypes.CHAR(1),

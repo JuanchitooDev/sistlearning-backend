@@ -35,7 +35,7 @@ export default class HString {
     }
 
     static validateField(field: any): string {
-        return field !== null && field !== undefined && field != '' ? field : ''
+        return field !== null && field !== undefined && field != '' ? (field as string).trim() : ''
     }
 
     static validateUbigeo(ubigeo: any): string {
