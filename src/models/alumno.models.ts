@@ -23,8 +23,8 @@ class Alumno extends Model {
     public nombre_pais?: string
     public nombre_departamento?: string
     public user_crea?: string
-    public user_elimina?: string
     public user_actualiza?: string
+    public user_elimina?: string
     public sistema?: boolean
     public estado?: boolean
 }

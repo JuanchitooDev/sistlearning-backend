@@ -44,6 +44,4 @@ TipoContenido.init({
     freezeTableName: true
 })
 
-import Contenido from './contenido.models'
-
 export default TipoContenido

@@ -10,8 +10,8 @@ class Usuario extends Model {
     public token?: string
     public fecha_sesion?: string
     public user_crea?: string
-    public user_elimina?: string
     public user_actualiza?: string
+    public user_elimina?: string
     public estado?: boolean
 }
 
@@ -49,11 +49,11 @@ Usuario.init({
         type: DataTypes.STRING(10),
         allowNull: true
     },
-    user_elimina: {
+    user_actualiza: {
         type: DataTypes.STRING(10),
         allowNull: true
     },
-    user_actualiza: {
+    user_elimina: {
         type: DataTypes.STRING(10),
         allowNull: true
     },

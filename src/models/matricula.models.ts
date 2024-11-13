@@ -11,7 +11,7 @@ class Matricula extends Model {
     public igv?: number
     public total?: number
     public moneda?: 'PEN' | 'USD'
-    public fecha_pago?: Date
+    public fecha_pago?: string
     public forma_pago?: 'CONTADO' | 'CREDITO'
     public tipo_pago?: 'EFECTIVO' | 'TARJETA' | 'DEPOSITO'
     public nro_voucher?: string
@@ -65,7 +65,7 @@ Matricula.init({
         allowNull: false
     },
     fecha_pago: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: false
     },
     forma_pago: {

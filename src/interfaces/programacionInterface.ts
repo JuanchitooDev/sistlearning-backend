@@ -7,11 +7,11 @@ export interface IProgramacion {
     id_evento?: number
     descripcion?: string
     enlace?: string
-    fecha_inicio?: Date
-    fecha_final?: Date
+    fecha_inicio?: string
+    fecha_final?: string
+    fecha_reprograma?: string
+    fecha_cancela?: string
     fecha_registro?: Date
-    fecha_reprograma?: Date
-    fecha_cancela?: Date
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string

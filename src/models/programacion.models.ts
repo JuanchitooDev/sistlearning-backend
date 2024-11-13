@@ -9,11 +9,11 @@ class Programacion extends Model {
     public id_evento?: number
     public descripcion?: string
     public enlace?: string
-    public fecha_inicio?: Date
-    public fecha_final?: Date
+    public fecha_inicio?: string
+    public fecha_final?: string
+    public fecha_reprograma?: string
+    public fecha_cancela?: string
     public fecha_registro?: Date
-    public fecha_reprograma?: Date
-    public fecha_cancela?: Date
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -51,22 +51,22 @@ Programacion.init({
         allowNull: true
     },
     fecha_inicio: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: false
     },
     fecha_final: {
-        type: DataTypes.DATE,
-        allowNull: true
-    },
-    fecha_registro: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     fecha_reprograma: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     fecha_cancela: {
+        type: DataTypes.STRING(12),
+        allowNull: true
+    },
+    fecha_registro: {
         type: DataTypes.DATE,
         allowNull: true
     },
@@ -94,14 +94,8 @@ Programacion.init({
     freezeTableName: true
 })
 
-Programacion.belongsTo(Trabajador, {
-    foreignKey: 'id_trabajador',
-    as: 'personal'
-})
+Programacion.belongsTo(Trabajador, { foreignKey: 'id_trabajador' })
 
-Programacion.belongsTo(Evento, {
-    foreignKey: 'id_evento',
-    as: 'evento'
-})
+Programacion.belongsTo(Evento, { foreignKey: 'id_evento' })
 
 export default Programacion

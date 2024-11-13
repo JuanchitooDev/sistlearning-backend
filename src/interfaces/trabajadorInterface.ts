@@ -15,7 +15,7 @@ export interface ITrabajador {
     direccion?: string
     email?: string
     linkedin?: string
-    fecha_nacimiento?: Date
+    fecha_nacimiento?: string
     biografia?: string
     sexo?: string
     firma?: string

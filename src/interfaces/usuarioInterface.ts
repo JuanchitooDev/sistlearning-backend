@@ -8,8 +8,8 @@ export interface IUsuario {
     token?: string
     fecha_sesion?: Date
     user_crea?: string
-    user_elimina?: string
     user_actualiza?: string
+    user_elimina?: string
     estado?: boolean
     trabajador?: ITrabajador
 }

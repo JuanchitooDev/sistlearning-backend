@@ -9,7 +9,7 @@ export interface IMatricula {
     igv?: number
     total?: number
     moneda?: string
-    fecha_pago?: Date
+    fecha_pago?: string
     forma_pago?: string
     tipo_pago?: string
     nro_voucher?: string

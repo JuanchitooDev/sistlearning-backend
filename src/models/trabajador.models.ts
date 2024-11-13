@@ -17,7 +17,7 @@ class Trabajador extends Model {
     public direccion?: string
     public email?: string
     public linkedin?: string
-    public fecha_nacimiento?: Date
+    public fecha_nacimiento?: string
     public biografia?: string
     public sexo?: string
     public firma?: string
@@ -92,11 +92,11 @@ Trabajador.init({
         allowNull: true
     },
     fecha_nacimiento: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: false
     },
     biografia: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(100),
         allowNull: true
     },
     sexo: {
@@ -142,8 +142,8 @@ Trabajador.init({
 
 Trabajador.belongsTo(Perfil, { foreignKey: 'id_perfil' })
 
-Trabajador.belongsTo(TipoDocumento, { foreignKey: 'id_tipodocumento' })
-
 Trabajador.belongsTo(Cargo, { foreignKey: 'id_cargo' })
+
+Trabajador.belongsTo(TipoDocumento, { foreignKey: 'id_tipodocumento' })
 
 export default Trabajador
