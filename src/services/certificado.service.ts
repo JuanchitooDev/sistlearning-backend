@@ -22,6 +22,9 @@ class CertificadoService {
     async getCertificados(): Promise<CertificadoResponse> {
         try {
             const certificados = await Certificado.findAll({
+                attributes: [
+                    'id', 'id_alumno', 'id_evento', 'codigo', 'codigoQR', 'ruta', 'fileName', 'fecha_registro', 'fecha_descarga', 'fecha_envio', 'estado', 'nombre_alumno_impresion'
+                ],
                 include: [
                     {
                         model: Alumno,
@@ -43,6 +46,9 @@ class CertificadoService {
     async getCertificadoById(id: number): Promise<CertificadoResponse> {
         try {
             const certificado = await Certificado.findByPk(id, {
+                attributes: [
+                    'id', 'id_alumno', 'id_evento', 'codigo', 'codigoQR', 'ruta', 'fileName', 'fecha_registro', 'fecha_descarga', 'fecha_envio', 'estado', 'nombre_alumno_impresion'
+                ],
                 include: [
                     {
                         model: Alumno,
@@ -54,7 +60,7 @@ class CertificadoService {
                 ]
             })
             if (!certificado) {
-                return { result: false, error: 'Certificado no encontrado' }
+                return { result: false, message: 'Certificado no encontrado' }
             }
             return { result: true, data: certificado }
         } catch (error) {
@@ -68,6 +74,9 @@ class CertificadoService {
         try {
             const certificado = await Certificado.findOne({
                 where: { codigo },
+                attributes: [
+                    'id', 'id_alumno', 'id_evento', 'codigo', 'codigoQR', 'ruta', 'fileName', 'fecha_registro', 'fecha_descarga', 'fecha_envio', 'estado', 'nombre_alumno_impresion'
+                ],
                 include: [
                     {
                         model: Alumno,
@@ -79,7 +88,7 @@ class CertificadoService {
                 ]
             })
             if (!certificado) {
-                return { result: false, error: 'Certificado no encontrado' }
+                return { result: false, message: 'Certificado no encontrado' }
             }
             return { result: true, data: certificado }
         } catch (error) {
@@ -121,14 +130,24 @@ class CertificadoService {
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
             const alumnoResponse = await AlumnoService.getAlumnoById(id_alumno as number)
+            
             if (!alumnoResponse.result) {
-                return { result: false, error: alumnoResponse.error }
+                if (alumnoResponse.error) {
+                    return { result: false, error: alumnoResponse.error }
+                } else {
+                    return { result: false, message: alumnoResponse.message }
+                }
             }
+
             const alumno = alumnoResponse.data as IAlumno
 
             const eventoResponse = await EventoService.getEventoById(id_evento as number)
             if (!eventoResponse.result) {
-                return { result: false, error: eventoResponse.error }
+                if (eventoResponse.error) {
+                    return { result: false, error: eventoResponse.error }
+                } else {
+                    return { result: false, message: eventoResponse.message }
+                }
             }
 
             const evento = eventoResponse.data as IEvento
@@ -144,7 +163,12 @@ class CertificadoService {
             data.codigo = codigo
 
             const newCertificado = await Certificado.create(data as any)
-            return { result: true, data: newCertificado }
+            if (newCertificado.id) {
+                return { result: true, message: 'Certificado registrado correctamente', data: newCertificado }
+            } else {
+                return { result: false, message: 'Error al registrar el certificado' }
+            }
+            
         } catch (error) {
             // const msg = `Error al crear el certificado: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -159,7 +183,7 @@ class CertificadoService {
             const certificado = await Certificado.findByPk(id)
             
             if (!certificado) {
-                return { result: false, error: 'Certificado no encontrado' }
+                return { result: false, message: 'Certificado no encontrado' }
             }
 
             if (
@@ -170,13 +194,23 @@ class CertificadoService {
             ) {
                 const alumnoResponse = await AlumnoService.getAlumnoById(data.id_alumno as number)
                 if (!alumnoResponse.result) {
-                    return { result: false, error: alumnoResponse.error }
+                    if (alumnoResponse.error) {
+                        return { result: false, error: alumnoResponse.error }
+                    } else {
+                        return { result: false, message: alumnoResponse.message }
+                    }
+                    
                 }
                 const alumno = alumnoResponse.data as IAlumno
 
                 const eventoResponse = await EventoService.getEventoById(data.id_evento as number)
                 if (!eventoResponse.result) {
-                    return { result: false, error: eventoResponse.error }
+                    if (eventoResponse.error) {
+                        return { result: false, error: eventoResponse.error }
+                    } else {
+                        
+                    }
+                    
                 }
 
                 const evento = eventoResponse.data as IEvento

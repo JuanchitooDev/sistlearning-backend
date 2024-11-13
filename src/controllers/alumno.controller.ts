@@ -39,6 +39,7 @@ class AlumnoController {
     async updateAlumno(req: Request, res: Response) {
         const { id } = req.params;
         const response = await AlumnoService.updateAlumno(+id, req.body);
+        console.log('response updateAlumno', response)
         if (response.result) {
             res.status(200).json(response);
         } else {

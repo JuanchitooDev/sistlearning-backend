@@ -10,6 +10,9 @@ class AlumnoService {
     async getAlumnos(): Promise<AlumnoResponse> {
         try {
             const alumnos = await Alumno.findAll({
+                attributes: [
+                    'id', 'id_tipodocumento', 'id_pais', 'id_departamento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'fecha_nacimiento', 'sexo', 'sistema', 'estado', 'nombre_capitalized', 'fecha_nacimiento_str'
+                ],
                 include: [{
                     model: TipoDocumento,
                     attributes: ['id', 'nombre', 'abreviatura']
@@ -32,6 +35,9 @@ class AlumnoService {
     async getAlumnoById(id: number): Promise<AlumnoResponse> {
         try {
             const alumno = await Alumno.findByPk(id, {
+                attributes: [
+                    'id', 'id_tipodocumento', 'id_pais', 'id_departamento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'fecha_nacimiento', 'sexo', 'sistema', 'estado', 'nombre_capitalized', 'fecha_nacimiento_str'
+                ],
                 include: [{
                     model: TipoDocumento,
                     attributes: ['id', 'nombre', 'abreviatura']
@@ -44,7 +50,7 @@ class AlumnoService {
                 }]
             })
             if (!alumno) {
-                return { result: false, error: 'Alumno no encontrado' }
+                return { result: false, message: 'Alumno no encontrado' }
             }
             return { result: true, data: alumno }
         } catch (error) {
@@ -56,19 +62,24 @@ class AlumnoService {
 
     async createAlumno(data: IAlumno): Promise<AlumnoResponse> {
         try {
-            data.apellido_paterno = data.apellido_paterno?.trim()
-            data.apellido_materno = data.apellido_materno?.trim()
-            data.nombres = data.nombres?.trim()
-            
             const fechaNacimiento = toZonedTime(data.fecha_nacimiento_str as string, 'America/Lima')
-
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
             const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
 
+            data.apellido_paterno = data.apellido_paterno?.trim()
+            data.apellido_materno = data.apellido_materno?.trim()
+            data.nombres = data.nombres?.trim()
+
             data.fecha_nacimiento = fechaNacimiento
             data.nombre_capitalized = nombreCapitalized
+
             const newAlumno = await Alumno.create(data as any)
-            return { result: true, data: newAlumno }
+
+            if (newAlumno.id) {
+                return { result: true, message: 'Alumno registrado con éxito', data: newAlumno }
+            } else {
+                return { result: false, message: 'Error al registrar al alumno' }
+            }
         } catch (error) {
             // const msg = `Error al crear el alumno: ${error.message}`
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
@@ -82,15 +93,22 @@ class AlumnoService {
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
             const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
 
+            console.log('data updateAlumno', data)
+            console.log('fechaNacimiento', fechaNacimiento)
+
+            data.apellido_paterno = data.apellido_paterno?.trim()
+            data.apellido_materno = data.apellido_materno?.trim()
+            data.nombres = data.nombres?.trim()
             data.fecha_nacimiento = fechaNacimiento
             data.nombre_capitalized = nombreCapitalized
 
             const alumno = await Alumno.findByPk(id)
             if (!alumno) {
-                return { result: false, error: 'Alumno no encontrado' }
+                return { result: false, message: 'Alumno no encontrado' }
             }
+
             const updatedAlumno = await alumno.update(data)
-            return { result: true, data: updatedAlumno }
+            return { result: true, message: 'Alumno actualizado con éxito', data: updatedAlumno }
         } catch (error) {
             // const msg = `Error al actualizar el alumno: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -102,10 +120,10 @@ class AlumnoService {
         try {
             const alumno = await Alumno.findByPk(id);
             if (!alumno) {
-                return { result: false, error: 'Alumno no encontrado' };
+                return { result: false, message: 'Alumno no encontrado' };
             }
             await alumno.destroy();
-            return { result: true, data: { id } };
+            return { result: true, data: { id }, message: 'Alumno eliminado correctamente' };
         } catch (error) {
             // const msg = `Error al eliminar el alumno: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
