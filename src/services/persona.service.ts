@@ -6,6 +6,9 @@ class PersonaService {
     async getPersonas(): Promise<PersonaResponse> {
         try {
             const personas = await Persona.findAll({
+                attributes: [
+                    'id', 'id_tipodocumento', 'numero', 'nombres', 'apellido_paterno', 'apellido_materno', 'nombre_completo', 'departamento', 'provincia', 'distrito', 'direccion', 'direccion_completa', 'ubigeo_reniec', 'ubigeo_sunat', 'ubigeo', 'fecha_nacimiento', 'estado_civil', 'foto', 'sexo', 'origen', 'estado'
+                ],
                 include: [
                     {
                         model: TipoDocumento,
@@ -24,6 +27,9 @@ class PersonaService {
     async getPersonaById(id: number): Promise<PersonaResponse> {
         try {
             const persona = await Persona.findByPk(id, {
+                attributes: [
+                    'id', 'id_tipodocumento', 'numero', 'nombres', 'apellido_paterno', 'apellido_materno', 'nombre_completo', 'departamento', 'provincia', 'distrito', 'direccion', 'direccion_completa', 'ubigeo_reniec', 'ubigeo_sunat', 'ubigeo', 'fecha_nacimiento', 'estado_civil', 'foto', 'sexo', 'origen', 'estado'
+                ],
                 include: [
                     {
                         model: TipoDocumento,
@@ -32,7 +38,7 @@ class PersonaService {
                 ]
             })
             if (!persona) {
-                return { result: false, error: 'Persona no encontrada' }
+                return { result: false, message: 'Persona no encontrada' }
             }
             return { result: true, data: persona }
         } catch (error) {
@@ -41,7 +47,7 @@ class PersonaService {
             return { result: false, error: msg }
         }
     }
-    
+
     async getPersonaByIdTipoDocAndNumDoc(idTipoDoc: number, numDoc: string): Promise<PersonaResponse> {
         try {
             const persona = await Persona.findOne({
@@ -49,6 +55,9 @@ class PersonaService {
                     id_tipodocumento: idTipoDoc,
                     numero: numDoc
                 },
+                attributes: [
+                    'id', 'id_tipodocumento', 'numero', 'nombres', 'apellido_paterno', 'apellido_materno', 'nombre_completo', 'departamento', 'provincia', 'distrito', 'direccion', 'direccion_completa', 'ubigeo_reniec', 'ubigeo_sunat', 'ubigeo', 'fecha_nacimiento', 'estado_civil', 'foto', 'sexo', 'origen', 'estado'
+                ],
                 include: [
                     {
                         model: TipoDocumento,
@@ -69,7 +78,11 @@ class PersonaService {
     async createPersona(data: IPersona): Promise<PersonaResponse> {
         try {
             const newPersona = await Persona.create(data as any)
-            return { result: true, data: newPersona }
+            if (newPersona.id) {
+                return { result: true, message: 'Persona registrada con éxito', data: newPersona }
+            } else {
+                return { result: false, message: 'Error al registrar la persona' }
+            }
         } catch (error) {
             // const msg = `Error al crear el personal: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -81,10 +94,10 @@ class PersonaService {
         try {
             const persona = await Persona.findByPk(id)
             if (!persona) {
-                return { result: false, error: 'Persona no encontrada' }
+                return { result: false, message: 'Persona no encontrada' }
             }
             const updatedPersona = await persona.update(data)
-            return { result: true, data: updatedPersona }
+            return { result: true, message: 'Persona actualiza con éxito', data: updatedPersona }
         } catch (error) {
             // const msg = `Error al actualizar el personal: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -96,10 +109,10 @@ class PersonaService {
         try {
             const persona = await Persona.findByPk(id);
             if (!persona) {
-                return { result: false, error: 'Persona no encontrada' };
+                return { result: false, message: 'Persona no encontrada' };
             }
             await persona.destroy();
-            return { result: true, data: { id } };
+            return { result: true, data: { id }, message: 'Persona eliminada correctamente' };
         } catch (error) {
             // const msg = `Error al eliminar el personal: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';

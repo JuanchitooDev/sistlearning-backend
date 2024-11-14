@@ -7,6 +7,9 @@ class MatriculaService {
     async getMatriculas(): Promise<MatriculaResponse> {
         try {
             const matriculas = await Matricula.findAll({
+                attributes: [
+                    'id', 'id_alumno', 'id_evento', 'subtotal', 'igv', 'total', 'moneda', 'fecha_pago', 'forma_pago', 'tipo_pago', 'nro_voucher', 'nro_deposito', 'imagen_pago', 'acuenta', 'saldo', 'estado_pago', 'estado'
+                ],
                 include: [
                     {
                         model: Alumno,
@@ -29,6 +32,9 @@ class MatriculaService {
     async getMatriculaById(id: number): Promise<MatriculaResponse> {
         try {
             const matricula = await Matricula.findByPk(id, {
+                attributes: [
+                    'id', 'id_alumno', 'id_evento', 'subtotal', 'igv', 'total', 'moneda', 'fecha_pago', 'forma_pago', 'tipo_pago', 'nro_voucher', 'nro_deposito', 'imagen_pago', 'acuenta', 'saldo', 'estado_pago', 'estado'
+                ],
                 include: [
                     {
                         model: Alumno,
@@ -41,7 +47,7 @@ class MatriculaService {
                 ]
             })
             if (!matricula) {
-                return { result: false, error: 'Matrícula no encontrada' }
+                return { result: false, message: 'Matrícula no encontrada' }
             }
             return { result: true, data: matricula }
         } catch (error) {
@@ -54,7 +60,12 @@ class MatriculaService {
     async createMatricula(data: IMatricula): Promise<MatriculaResponse> {
         try {
             const newMatricula = await Matricula.create(data as any)
-            return { result: true, data: newMatricula }
+            
+            if (newMatricula.id) {
+                return { result: true, message: 'Matrícula registrado con éxito', data: newMatricula }
+            } else {
+                return { result: false, message: 'Error al registrar la matrícula' }
+            }
         } catch (error) {
             // const msg = `Error al crear el evento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -66,10 +77,10 @@ class MatriculaService {
         try {
             const matricula = await Matricula.findByPk(id)
             if (!matricula) {
-                return { result: false, error: 'Matrícula no encontrada' }
+                return { result: false, message: 'Matrícula no encontrada' }
             }
             const updatedMatricula = await matricula.update(data)
-            return { result: true, data: updatedMatricula }
+            return { result: true, message: 'Matrícula actualizada con éxito', data: updatedMatricula }
         } catch (error) {
             // const msg = `Error al actualizar el evento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -81,10 +92,10 @@ class MatriculaService {
         try {
             const matricula = await Matricula.findByPk(id);
             if (!matricula) {
-                return { result: false, error: 'Matrícula no encontrada' };
+                return { result: false, message: 'Matrícula no encontrada' };
             }
             await matricula.destroy();
-            return { result: true, data: { id } };
+            return { result: true, data: { id }, message: 'Matrícula eliminada correctamente' };
         } catch (error) {
             // const msg = `Error al eliminar el evento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';

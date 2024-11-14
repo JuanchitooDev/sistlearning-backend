@@ -16,28 +16,26 @@ class CertificadoController {
     async getCertificadoById(req: Request, res: Response) {
         const response = await CertificadoService.getCertificadoById(+req.params.id)
         if (response.result) {
-            if (response.data) {
-                res.status(200).json(response)
-            } else {
-                res.status(404).json({ message: 'Certificado no encontrado' });
-            }
+            res.status(200).json(response)
         } else {
-            res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
         }
     }
 
     async getCertificadoByCodigo(req: Request, res: Response) {
         const response = await CertificadoService.getCertificadoByCodigo(req.params.codigo)
         if (response.result) {
-            if (response.data) {
-                res.status(200).json(response)
-            } else {
-                res.status(404).json({ message: 'Certificado no encontrado' });
-            }
+            res.status(200).json(response)
         } else {
-            res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
         }
     }
 
@@ -55,7 +53,11 @@ class CertificadoController {
                 }
             })
         } else {
-            res.status(404).send(response.message)
+            if (response.message) {
+                res.status(404).send(response)
+            } else {
+                res.status(500).send(response)
+            }
         }
     }
 
@@ -71,7 +73,11 @@ class CertificadoController {
                 }
             });
         } else {
-            res.status(400).json({ message: response.error })
+            if (response.message) {
+                res.status(400).json(response)
+            } else {
+                res.status(500).json(response)
+            }
         }
     }
 
@@ -79,10 +85,21 @@ class CertificadoController {
         const { id } = req.params;
         const response = await CertificadoService.updateCertificado(+id, req.body);
         if (response.result) {
-            res.status(200).json(response);
+            // res.status(200).json(response);
+            const data = response.data as ICertificado
+            const outputPath = data.ruta as string
+            const fileName = data.fileName as string
+            res.download(outputPath, fileName, (err) => {
+                if (err) {
+                    console.error(err);
+                }
+            });
         } else {
-            res.status(400).json(response);
-            // res.status(400).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(400).json(response)
+            }
         }
     }
 
@@ -92,8 +109,11 @@ class CertificadoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            res.status(404).json(response);
-            // res.status(404).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 }

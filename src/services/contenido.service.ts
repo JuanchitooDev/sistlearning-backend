@@ -8,6 +8,9 @@ class ContenidoService {
     async getContenidos(): Promise<ContenidoResponse> {
         try {
             const contenidos = await Contenido.findAll({
+                attributes: [
+                    'id', 'id_tipocontenido', 'id_evento', 'titulo', 'titulo_url', 'descripcion', 'url', 'es_descargable', 'estado'
+                ],
                 include: [
                     {
                         model: TipoContenido,
@@ -30,6 +33,9 @@ class ContenidoService {
     async getContenidoById(id: number): Promise<ContenidoResponse> {
         try {
             const contenido = await Contenido.findByPk(id, {
+                attributes: [
+                    'id', 'id_tipocontenido', 'id_evento', 'titulo', 'titulo_url', 'descripcion', 'url', 'es_descargable', 'estado'
+                ],
                 include: [
                     {
                         model: TipoContenido,
@@ -42,7 +48,7 @@ class ContenidoService {
                 ]
             })
             if (!contenido) {
-                return { result: false, error: 'Evento no encontrado' }
+                return { result: false, message: 'Evento no encontrado' }
             }
             return { result: true, data: contenido }
         } catch (error) {
@@ -56,7 +62,12 @@ class ContenidoService {
         try {
             data.titulo_url = HString.convertToUrlString(data.titulo as String)
             const newContenido = await Contenido.create(data as any)
-            return { result: true, data: newContenido }
+
+            if (newContenido.id) {
+                return { result: true, message: 'Contenido registrado con éxito', data: newContenido }
+            } else {
+                return { result: false, message: 'Error al registrar el contenido' }
+            }
         } catch (error) {
             // const msg = `Error al crear el evento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -67,12 +78,15 @@ class ContenidoService {
     async updateContenido(id: number, data: IContenido): Promise<ContenidoResponse> {
         try {
             data.titulo_url = HString.convertToUrlString(data.titulo as String)
+
             const contenido = await Contenido.findByPk(id)
+
             if (!contenido) {
-                return { result: false, error: 'Contenido no encontrado' }
+                return { result: false, message: 'Contenido no encontrado' }
             }
+
             const updatedContenido = await contenido.update(data)
-            return { result: true, data: updatedContenido }
+            return { result: true, message: 'Certificado actualizado con éxito', data: updatedContenido }
         } catch (error) {
             // const msg = `Error al actualizar el evento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -84,10 +98,10 @@ class ContenidoService {
         try {
             const contenido = await Contenido.findByPk(id);
             if (!contenido) {
-                return { result: false, error: 'Contenido no encontrado' };
+                return { result: false, message: 'Contenido no encontrado' };
             }
             await contenido.destroy();
-            return { result: true, data: { id } };
+            return { result: true, data: { id }, message: 'Contenido eliminado correctamente' };
         } catch (error) {
             // const msg = `Error al eliminar el evento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';

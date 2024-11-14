@@ -118,7 +118,7 @@ class CertificadoService {
                 return { result: false, message: 'Certificado no encontrado', outputPath: null, fileName: null }
             }
         } else {
-            return { result: false, message: responseCertificado.error, outputPath: null, fileName: null }
+            return { result: false, error: responseCertificado.error, outputPath: null, fileName: null }
         }
     }
 
@@ -208,7 +208,7 @@ class CertificadoService {
                     if (eventoResponse.error) {
                         return { result: false, error: eventoResponse.error }
                     } else {
-                        
+                        return { result: false, message: eventoResponse.message }
                     }
                     
                 }
@@ -232,12 +232,12 @@ class CertificadoService {
 
                 // Actualizamos el registro en la base de datos
                 const updatedCertificado = await certificado.update(data);
-                return { result: true, data: updatedCertificado };
+                return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
             } else {
                 // Si no hay cambios que afecten el archivo, solo actualizamos los datos del certificado
                 data.fecha_envio = fechaEnvio;
                 const updatedCertificado = await certificado.update(data);
-                return { result: true, data: updatedCertificado };
+                return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
             }
         } catch (error) {
             // const msg = `Error al actualizar el certificado: ${error.message}`
@@ -250,7 +250,7 @@ class CertificadoService {
         try {
             const certificado = await Certificado.findByPk(id);
             if (!certificado) {
-                return { result: false, error: 'Certificado no encontrado' };
+                return { result: false, message: 'Certificado no encontrado' };
             }
 
             // Eliminar el archivo del sistema de archivos
@@ -260,7 +260,7 @@ class CertificadoService {
             }
 
             await certificado.destroy();
-            return { result: true, data: { id } };
+            return { result: true, data: { id }, message: 'Certificado eliminado correctamente' };
         } catch (error) {
             // const msg = `Error al eliminar el certificado: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';

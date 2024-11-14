@@ -5,7 +5,11 @@ import HString from '../helpers/HString';
 class TipoDocumentoService {
     async getTipos(): Promise<TipoDocumentoResponse> {
         try {
-            const tipos = await TipoDocumento.findAll()
+            const tipos = await TipoDocumento.findAll({
+                attributes: [
+                    'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                ]
+            })
             return { result: true, data: tipos }
         } catch (error) {
             // const msg = `Error al obtener los tipos de documentos: ${error.message}`
@@ -23,7 +27,10 @@ class TipoDocumentoService {
                         "en_persona": true,
                         "en_empresa": false,
                         "estado": true
-                    }
+                    },
+                    attributes: [
+                        'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                    ]
                 })
             } else {
                 tipos = await TipoDocumento.findAll({
@@ -31,7 +38,10 @@ class TipoDocumentoService {
                         "en_empresa": true,
                         "en_persona": false,
                         "estado": true
-                    }
+                    },
+                    attributes: [
+                        'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                    ]
                 })
             }
             
@@ -45,9 +55,13 @@ class TipoDocumentoService {
 
     async getTipoById(id: number): Promise<TipoDocumentoResponse> {
         try {
-            const tipo = await TipoDocumento.findByPk(id)
+            const tipo = await TipoDocumento.findByPk(id, {
+                attributes: [
+                    'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                ]
+            })
             if (!tipo) {
-                return { result: false, error: 'Tipo de documento no encontrado' }
+                return { result: false, message: 'Tipo de documento no encontrado' }
             }
             return { result: true, data: tipo }
         } catch (error) {
@@ -61,7 +75,11 @@ class TipoDocumentoService {
         try {
             data.nombre_url = HString.convertToUrlString(data.nombre as String)
             const newTipo = await TipoDocumento.create(data as any)
-            return { result: true, data: newTipo }
+            if (newTipo.id) {
+                return { result: true, message: 'Tipo de documento registrado con éxito', data: newTipo }
+            } else {
+                return { result: false, message: 'Error al registrar el tipo de documento' }
+            }
         } catch (error) {
             // const msg = `Error al crear el tipo de documento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -74,10 +92,10 @@ class TipoDocumentoService {
             data.nombre_url = HString.convertToUrlString(data.nombre as String)
             const tipo = await TipoDocumento.findByPk(id)
             if (!tipo) {
-                return { result: false, error: 'Tipo de documento no encontrado' }
+                return { result: false, message: 'Tipo de documento no encontrado' }
             }
             const updatedTipo = await tipo.update(data)
-            return { result: true, data: updatedTipo }
+            return { result: true, message: 'Tipo de documento actualizado con éxito', data: updatedTipo }
         } catch (error) {
             // const msg = `Error al actualizar el tipo de documento: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';
@@ -89,10 +107,10 @@ class TipoDocumentoService {
         try {
             const tipo = await TipoDocumento.findByPk(id);
             if (!tipo) {
-                return { result: false, error: 'Tipo de documento no encontrado' };
+                return { result: false, message: 'Tipo de documento no encontrado' };
             }
             await tipo.destroy();
-            return { result: true, data: { id } };
+            return { result: true, data: { id }, message: 'Tipo de documento eliminado correctamente' };
         } catch (error) {
             // const msg = `Error al eliminar el tipo: ${error.message}`
             const msg = error instanceof Error ? error.message : 'Error desconocido';

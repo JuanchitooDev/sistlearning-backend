@@ -103,6 +103,7 @@ class AlumnoService {
             data.nombre_capitalized = nombreCapitalized
 
             const alumno = await Alumno.findByPk(id)
+            
             if (!alumno) {
                 return { result: false, message: 'Alumno no encontrado' }
             }
