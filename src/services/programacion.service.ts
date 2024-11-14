@@ -23,9 +23,8 @@ class ProgramacionService {
             })
             return { result: true, data: programaciones }
         } catch (error) {
-            // const msg = `Error al obtener los eventos: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -51,9 +50,8 @@ class ProgramacionService {
             }
             return { result: true, data: programacion }
         } catch (error) {
-            // const msg = `Error al obtener el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -67,9 +65,8 @@ class ProgramacionService {
                 return { result: false, message: 'Error al registrar la programación' }
             }
         } catch (error) {
-            // const msg = `Error al crear el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -80,11 +77,10 @@ class ProgramacionService {
                 return { result: false, message: 'Programación no encontrada' }
             }
             const updatedProgramacion = await programacion.update(data)
-            return { result: true, message: 'Programación actualiza con éxito', data: updatedProgramacion }
+            return { result: true, message: 'Programación actualizada con éxito', data: updatedProgramacion }
         } catch (error) {
-            // const msg = `Error al actualizar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -97,9 +93,8 @@ class ProgramacionService {
             await programacion.destroy();
             return { result: true, data: { id }, message: 'Programación eliminada correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

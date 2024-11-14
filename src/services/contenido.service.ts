@@ -24,9 +24,8 @@ class ContenidoService {
             })
             return { result: true, data: contenidos }
         } catch (error) {
-            // const msg = `Error al obtener los eventos: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -52,9 +51,8 @@ class ContenidoService {
             }
             return { result: true, data: contenido }
         } catch (error) {
-            // const msg = `Error al obtener el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -69,9 +67,8 @@ class ContenidoService {
                 return { result: false, message: 'Error al registrar el contenido' }
             }
         } catch (error) {
-            // const msg = `Error al crear el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -88,9 +85,8 @@ class ContenidoService {
             const updatedContenido = await contenido.update(data)
             return { result: true, message: 'Certificado actualizado con éxito', data: updatedContenido }
         } catch (error) {
-            // const msg = `Error al actualizar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -103,9 +99,8 @@ class ContenidoService {
             await contenido.destroy();
             return { result: true, data: { id }, message: 'Contenido eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

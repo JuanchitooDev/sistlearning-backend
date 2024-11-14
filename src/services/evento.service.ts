@@ -17,9 +17,8 @@ class EventoService {
             })
             return { result: true, data: eventos }
         } catch (error) {
-            // const msg = `Error al obtener los eventos: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -39,9 +38,8 @@ class EventoService {
             }
             return { result: true, data: evento }
         } catch (error) {
-            // const msg = `Error al obtener el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -57,9 +55,8 @@ class EventoService {
             }
             
         } catch (error) {
-            // const msg = `Error al crear el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -73,9 +70,8 @@ class EventoService {
             const updatedEvento = await evento.update(data)
             return { result: true, message: 'Evento actualizado con éxito', data: updatedEvento }
         } catch (error) {
-            // const msg = `Error al actualizar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -88,9 +84,8 @@ class EventoService {
             await evento.destroy();
             return { result: true, data: { id }, message: 'Evento eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

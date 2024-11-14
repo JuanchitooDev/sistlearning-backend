@@ -1,6 +1,35 @@
 import { IAlumno } from "./alumnoInterface"
 import { IEvento } from "./eventoInterface"
 
+export enum Moneda {
+    PEN = "Pen",
+    USD = "Usd"
+}
+
+export enum FormaPago {
+    CONTADO = "Contado",
+    CREDITO = "Crédito"
+}
+
+export enum TipoPago {
+    EFECTIVO = "Efectivo",
+    TARJETA = "Tarjeta",
+    DEPOSITO = "Depósito",
+    MIXto = "Mixto"
+}
+
+export enum ModalidadPago {
+    PARCIAL = "Parcial",
+    TOTAL = "Total"
+}
+
+export enum EstadoPago {
+    PENDIENTE = "Pendiente",
+    PAGADA = "Pagada",
+    CONFIRMADA = "Confirmada",
+    ANULADA = "Anulada"
+}
+
 export interface IMatricula {
     id?: number
     id_alumno?: number
@@ -8,10 +37,12 @@ export interface IMatricula {
     subtotal?: number
     igv?: number
     total?: number
-    moneda?: string
+    moneda?: Moneda
     fecha_pago?: string
-    forma_pago?: string
-    tipo_pago?: string
+    forma_pago?: FormaPago
+    tipo_pago?: TipoPago
+    estado_pago?: EstadoPago
+    modalidad_pago?: ModalidadPago
     nro_voucher?: string
     nro_deposito?: string
     imagen_pago?: string
@@ -20,7 +51,6 @@ export interface IMatricula {
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
-    estado_pago?: string
     estado?: boolean
     alumno?: IAlumno
     evento?: IEvento

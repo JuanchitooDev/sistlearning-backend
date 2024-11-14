@@ -12,9 +12,8 @@ class TipoEventoService {
             })
             return { result: true, data: tipos }
         } catch (error) {
-            // const msg = `Error al obtener los tipos de eventos: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -30,8 +29,8 @@ class TipoEventoService {
             })
             return { result: true, data: tipos }
         } catch (error) {
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -47,9 +46,8 @@ class TipoEventoService {
             }
             return { result: true, data: tipo }
         } catch (error) {
-            // const msg = `Error al obtener el tipo de evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -63,9 +61,8 @@ class TipoEventoService {
                 return { result: false, message: 'Error al registrar el tipo de evento' }
             }
         } catch (error) {
-            // const msg = `Error al crear el tipo de evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -83,9 +80,8 @@ class TipoEventoService {
             
             return { result: true, message: 'Tipo de evento actualizado con éxito', data: updatedTipo }
         } catch (error) {
-            // const msg = `Error al actualizar el tipo de evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -98,9 +94,8 @@ class TipoEventoService {
             await tipo.destroy();
             return { result: true, data: { id }, message: 'Tipo de evento eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el tipo de evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

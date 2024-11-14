@@ -8,21 +8,19 @@ class PersonaController {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener los actos médicos' });
         }
     }
 
     async getPersonaById(req: Request, res: Response) {
         const response = await PersonaService.getPersonaById(+req.params.id)
         if (response.result) {
-            if (response.data) {
-                res.status(200).json(response)
-            } else {
-                res.status(404).json({ message: 'Persona no encontrada' });
-            }
+            res.status(200).json(response)
         } else {
-            res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
@@ -30,25 +28,26 @@ class PersonaController {
         const { idtipodoc, numdoc } = req.params
         const response = await PersonaService.getPersonaByIdTipoDocAndNumDoc(Number(idtipodoc), numdoc)
         if (response.result) {
-            if (response.data) {
-                res.status(200).json(response)
-            } else {
-                res.status(404).json({ message: 'Persona no encontrada' });
-            }
+            res.status(200).json(response)
         } else {
-            res.status(404).json({ result: response.result, message: response.message })
-            // res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
     async createPersona(req: Request, res: Response) {
         const response = await PersonaService.createPersona(req.body);
         if (response.result) {
-            res.status(201).json(response);
+            res.status(200).json(response);
         } else {
-            res.status(500).json(response);
-            // res.status(500).json({ message: response.error || 'Error al crear el acto médico' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
@@ -58,8 +57,11 @@ class PersonaController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            res.status(400).json(response);
-            // res.status(400).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
@@ -69,8 +71,11 @@ class PersonaController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            res.status(404).json(response);
-            // res.status(404).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 }

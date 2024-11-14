@@ -75,8 +75,8 @@ class DocumentoService {
             }
             return { result: false, error: 'No se puede obtener la información del documento' }
         } catch (error) {
-            const msg = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+            return { result: false, error: errorMessage }
         }
     }
 }

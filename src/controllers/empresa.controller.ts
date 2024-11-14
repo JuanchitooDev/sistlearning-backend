@@ -8,31 +8,32 @@ class EmpresaController {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener los actos médicos' });
         }
     }
 
     async getEmpresaById(req: Request, res: Response) {
         const response = await EmpresaService.getEmpresaById(+req.params.id)
         if (response.result) {
-            if (response.data) {
-                res.status(200).json(response)
-            } else {
-                res.status(404).json({ message: 'Empresa no encontrada' });
-            }
+            res.status(200).json(response)
         } else {
-            res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
+            if (response.message) {
+                res.status(404).json(response)
+            } else {
+                res.status(500).json(response)
+            }
         }
     }
 
     async createEmpresa(req: Request, res: Response) {
         const response = await EmpresaService.createEmpresa(req.body);
         if (response.result) {
-            res.status(201).json(response);
+            res.status(200).json(response);
         } else {
-            res.status(500).json(response);
-            // res.status(500).json({ message: response.error || 'Error al crear el acto médico' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
@@ -42,8 +43,11 @@ class EmpresaController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            res.status(400).json(response);
-            // res.status(400).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
@@ -53,8 +57,11 @@ class EmpresaController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            res.status(404).json(response);
-            // res.status(404).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 }

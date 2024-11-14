@@ -28,9 +28,8 @@ class TrabajadorService {
             })
             return { result: true, data: trabajadores }
         } catch (error) {
-            // const msg = `Error al obtener el personal: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -60,9 +59,8 @@ class TrabajadorService {
             }
             return { result: true, data: trabajador }
         } catch (error) {
-            // const msg = `Error al obtener el personal: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -75,9 +73,8 @@ class TrabajadorService {
                 return { result: true, message: 'Error al registrar el trabajador' }
             }
         } catch (error) {
-            // const msg = `Error al crear el personal: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -90,9 +87,8 @@ class TrabajadorService {
             const updatedTrabajador = await trabajador.update(data)
             return { result: true, message: 'Trabajador actualizado con éxito', data: updatedTrabajador }
         } catch (error) {
-            // const msg = `Error al actualizar el personal: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -105,9 +101,8 @@ class TrabajadorService {
             await trabajador.destroy();
             return { result: true, data: { id }, message: 'Trabajador eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el personal: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

@@ -2,6 +2,7 @@ import { Model, DataTypes } from 'sequelize'
 import sequelize from '../config/db'
 import Alumno from './alumno.models'
 import Evento from './evento.models'
+import { Moneda, FormaPago, TipoPago, ModalidadPago, EstadoPago } from '../interfaces/matriculaInterface'
 
 class Matricula extends Model {
     public id?: number
@@ -10,10 +11,12 @@ class Matricula extends Model {
     public subtotal?: number
     public igv?: number
     public total?: number
-    public moneda?: 'PEN' | 'USD'
+    public moneda?: Moneda
     public fecha_pago?: string
-    public forma_pago?: 'CONTADO' | 'CREDITO'
-    public tipo_pago?: 'EFECTIVO' | 'TARJETA' | 'DEPOSITO'
+    public forma_pago?: FormaPago
+    public tipo_pago?: TipoPago
+    public estado_pago?: EstadoPago
+    public modalidad_pago?: ModalidadPago
     public nro_voucher?: string
     public nro_deposito?: string
     public imagen_pago?: string
@@ -22,7 +25,7 @@ class Matricula extends Model {
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string 
-    public estado_pago?: 'PARCIAL' | 'TOTAL'
+    
     public estado?: boolean
 }
 
@@ -61,7 +64,7 @@ Matricula.init({
         allowNull: false
     },
     moneda: {
-        type: DataTypes.ENUM('PEN', 'USD'),
+        type: DataTypes.ENUM(...Object.values(Moneda)),
         allowNull: false
     },
     fecha_pago: {
@@ -69,11 +72,19 @@ Matricula.init({
         allowNull: false
     },
     forma_pago: {
-        type: DataTypes.ENUM('CONTADO', 'CREDITO'),
+        type: DataTypes.ENUM(...Object.values(FormaPago)),
         allowNull: false
     },
     tipo_pago: {
-        type: DataTypes.ENUM('EFECTIVO', 'TARJETA', 'DEPOSITO'),
+        type: DataTypes.ENUM(...Object.values(TipoPago)),
+        allowNull: false
+    },
+    estado_pago: {
+        type: DataTypes.ENUM(...Object.values(EstadoPago)),
+        allowNull: false
+    },
+    modalidad_pago: {
+        type: DataTypes.ENUM(...Object.values(ModalidadPago)),
         allowNull: false
     },
     nro_voucher: {
@@ -90,11 +101,13 @@ Matricula.init({
     },
     acuenta: {
         type: DataTypes.DOUBLE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0.00
     },
     saldo: {
         type: DataTypes.DOUBLE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0.00
     },
     user_crea: {
         type: DataTypes.STRING(10),
@@ -107,10 +120,6 @@ Matricula.init({
     user_elimina: {
         type: DataTypes.STRING(10),
         allowNull: true
-    },
-    estado_pago: {
-        type: DataTypes.ENUM('PARCIAL', 'TOTAL'),
-        allowNull: false
     },
     estado: {
         type: DataTypes.BOOLEAN,

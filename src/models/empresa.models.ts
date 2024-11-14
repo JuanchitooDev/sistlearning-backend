@@ -27,7 +27,7 @@ Empresa.init({
         allowNull: false
     },
     direccion: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(70),
         allowNull: true
     },
     telefono: {

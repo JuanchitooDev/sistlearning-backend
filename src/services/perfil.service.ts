@@ -12,9 +12,8 @@ class PerfilService {
             })
             return { result: true, data: perfiles }
         } catch (error) {
-            // const msg = `Error al obtener los perfiles: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -31,9 +30,8 @@ class PerfilService {
             }
             return { result: true, data: perfil }
         } catch (error) {
-            // const msg = `Error al obtener el perfil: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -47,9 +45,8 @@ class PerfilService {
                 return { result: false, message: 'Error al registrar el perfil' }
             }
         } catch (error) {
-            // const msg = `Error al crear el perfil: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -67,9 +64,8 @@ class PerfilService {
             
             return { result: true, message: 'Perfil actualizado con éxito', data: updatedPerfil }
         } catch (error) {
-            // const msg = `Error al actualizar el perfil: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -82,9 +78,8 @@ class PerfilService {
             await perfil.destroy();
             return { result: true, data: { id }, message: 'Perfil eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el perfil: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

@@ -26,7 +26,6 @@ class AlumnoService {
             })
             return { result: true, data: alumnos }
         } catch (error) {
-            // const msg = `Error al obtener los alumnos: ${error.message}`
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage }
         }
@@ -54,9 +53,36 @@ class AlumnoService {
             }
             return { result: true, data: alumno }
         } catch (error) {
-            // const msg = `Error al obtener el alumno: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
+        }
+    }
+
+    async getAlumnoByNumDoc(numero_documento: string): Promise<AlumnoResponse> {
+        try {
+            const alumno = await Alumno.findOne({
+                where: { numero_documento },
+                attributes: [
+                    'id', 'id_tipodocumento', 'id_pais', 'id_departamento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'fecha_nacimiento', 'sexo', 'sistema', 'estado', 'nombre_capitalized', 'fecha_nacimiento_str'
+                ],
+                include: [{
+                    model: TipoDocumento,
+                    attributes: ['id', 'nombre', 'abreviatura']
+                }, {
+                    model: Pais,
+                    attributes: ['id', 'nombre']
+                }, {
+                    model: Departamento,
+                    attributes: ['id', 'nombre']
+                }]
+            })
+            if (!alumno) {
+                return { result: false, message: 'Alumno no encontrado' }
+            }
+            return { result: true, data: alumno }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -81,7 +107,6 @@ class AlumnoService {
                 return { result: false, message: 'Error al registrar al alumno' }
             }
         } catch (error) {
-            // const msg = `Error al crear el alumno: ${error.message}`
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage }
         }
@@ -89,31 +114,33 @@ class AlumnoService {
 
     async updateAlumno(id: number, data: IAlumno): Promise<AlumnoResponse> {
         try {
-            const fechaNacimiento = toZonedTime(data.fecha_nacimiento_str as string, 'America/Lima')
-            const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
-            const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
-
-            console.log('data updateAlumno', data)
-            console.log('fechaNacimiento', fechaNacimiento)
-
-            data.apellido_paterno = data.apellido_paterno?.trim()
-            data.apellido_materno = data.apellido_materno?.trim()
-            data.nombres = data.nombres?.trim()
-            data.fecha_nacimiento = fechaNacimiento
-            data.nombre_capitalized = nombreCapitalized
-
             const alumno = await Alumno.findByPk(id)
-            
+
             if (!alumno) {
                 return { result: false, message: 'Alumno no encontrado' }
             }
 
+            const fechaNacimientoStr = (data.fecha_nacimiento_str === undefined) ? alumno.fecha_nacimiento_str : data.fecha_nacimiento_str
+
+            const apellidoPaterno = (data.apellido_paterno === undefined) ? alumno.apellido_paterno?.trim() : data.apellido_paterno?.trim()
+            const apellidoMaterno = (data.apellido_materno === undefined) ? alumno.apellido_materno?.trim() : data.apellido_materno?.trim()
+            const nombres = (data.nombres === undefined) ? alumno.nombres?.trim() : data.nombres?.trim()
+
+            const fechaNacimiento = toZonedTime(fechaNacimientoStr as string, 'America/Lima')
+            const nombreCompleto = `${nombres} ${apellidoPaterno} ${apellidoMaterno}`
+            const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
+
+            data.apellido_paterno = apellidoPaterno
+            data.apellido_materno = apellidoMaterno
+            data.nombres = nombres
+            data.fecha_nacimiento = fechaNacimiento
+            data.nombre_capitalized = nombreCapitalized
+
             const updatedAlumno = await alumno.update(data)
             return { result: true, message: 'Alumno actualizado con éxito', data: updatedAlumno }
         } catch (error) {
-            // const msg = `Error al actualizar el alumno: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -126,9 +153,8 @@ class AlumnoService {
             await alumno.destroy();
             return { result: true, data: { id }, message: 'Alumno eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el alumno: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

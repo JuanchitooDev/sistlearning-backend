@@ -37,9 +37,8 @@ class CertificadoService {
             })
             return { result: true, data: certificados }
         } catch (error) {
-            // const msg = `Error al obtener los certificados: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -64,9 +63,8 @@ class CertificadoService {
             }
             return { result: true, data: certificado }
         } catch (error) {
-            // const msg = `Error al obtener el certificado: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -92,9 +90,8 @@ class CertificadoService {
             }
             return { result: true, data: certificado }
         } catch (error) {
-            // const msg = `Error al obtener el certificado: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -130,7 +127,7 @@ class CertificadoService {
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
             const alumnoResponse = await AlumnoService.getAlumnoById(id_alumno as number)
-            
+
             if (!alumnoResponse.result) {
                 if (alumnoResponse.error) {
                     return { result: false, error: alumnoResponse.error }
@@ -168,20 +165,19 @@ class CertificadoService {
             } else {
                 return { result: false, message: 'Error al registrar el certificado' }
             }
-            
+
         } catch (error) {
-            // const msg = `Error al crear el certificado: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
     async updateCertificado(id: number, data: ICertificado): Promise<CertificadoResponse> {
         try {
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
-            
+
             const certificado = await Certificado.findByPk(id)
-            
+
             if (!certificado) {
                 return { result: false, message: 'Certificado no encontrado' }
             }
@@ -199,7 +195,6 @@ class CertificadoService {
                     } else {
                         return { result: false, message: alumnoResponse.message }
                     }
-                    
                 }
                 const alumno = alumnoResponse.data as IAlumno
 
@@ -210,7 +205,6 @@ class CertificadoService {
                     } else {
                         return { result: false, message: eventoResponse.message }
                     }
-                    
                 }
 
                 const evento = eventoResponse.data as IEvento
@@ -219,6 +213,12 @@ class CertificadoService {
                 if (fs.existsSync(certificado.ruta as string)) {
                     fs.unlinkSync(certificado.ruta as string); // Eliminar el archivo anterior
                 }
+
+                const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
+                    ? `${alumno.nombres} ${alumno.apellido_paterno} ${alumno.apellido_materno}`
+                    : data.nombre_alumno_impresion
+
+                data.nombre_alumno_impresion = nombreAlumnoImpresion
 
                 // Generar un nuevo archivo PDF
                 const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento);
@@ -240,9 +240,8 @@ class CertificadoService {
                 return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
             }
         } catch (error) {
-            // const msg = `Error al actualizar el certificado: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -262,9 +261,8 @@ class CertificadoService {
             await certificado.destroy();
             return { result: true, data: { id }, message: 'Certificado eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el certificado: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 
@@ -290,8 +288,9 @@ class CertificadoService {
         const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
 
         // Definiendo la fecha de emisión
-        const fechaEnvio = data.fecha_envio ? new Date(data.fecha_envio) : new Date()
-        fechaEnvio.setMinutes(fechaEnvio.getMinutes() - fechaEnvio.getTimezoneOffset())
+        // const fechaEnvio = data.fecha_envio ? new Date(data.fecha_envio) : new Date()
+        // fechaEnvio.setMinutes(fechaEnvio.getMinutes() - fechaEnvio.getTimezoneOffset())
+        const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
         const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
         const lugarFechaEmision = `${lugar}, ${fechaEmision}`
@@ -328,10 +327,10 @@ class CertificadoService {
         let x = 280; // posición X
         let y = 260; // posición Y
 
-        const nombreAlumno = data.nombre_alumno_impresion ? data.nombre_alumno_impresion : alumno.nombre_capitalized
+        // const nombreAlumno = data.nombre_alumno_impresion ? data.nombre_alumno_impresion : alumno.nombre_capitalized
 
         // Añadir el nombre del alumno
-        pagina.drawText(nombreAlumno as string, {
+        pagina.drawText(data.nombre_alumno_impresion as string, {
             x,
             y,
             size: fontSizeForAlumno,

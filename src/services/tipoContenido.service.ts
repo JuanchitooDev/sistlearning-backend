@@ -11,9 +11,8 @@ class TipoContenidoService {
             })
             return { result: true, data: tipos }
         } catch (error) {
-            // const msg = `Error al obtener los tipos de contenidos: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -29,9 +28,8 @@ class TipoContenidoService {
             }
             return { result: true, data: tipo }
         } catch (error) {
-            // const msg = `Error al obtener el tipo de contenido: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -44,9 +42,8 @@ class TipoContenidoService {
                 return { result: false, message: 'Error al registrar el tipo de contenido' }
             }
         } catch (error) {
-            // const msg = `Error al crear el tipo de contenido: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -61,9 +58,8 @@ class TipoContenidoService {
             const updatedTipo = await tipo.update(data)
             return { result: true, message: 'Tipo de contenido actualizado con éxito', data: updatedTipo }
         } catch (error) {
-            // const msg = `Error al actualizar el tipo de contenido: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -76,9 +72,8 @@ class TipoContenidoService {
             await tipo.destroy();
             return { result: true, data: { id }, message: 'Tipo de contenido eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el tipo de contenido: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

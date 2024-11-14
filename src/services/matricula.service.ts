@@ -23,9 +23,8 @@ class MatriculaService {
             })
             return { result: true, data: matriculas }
         } catch (error) {
-            // const msg = `Error al obtener los eventos: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -51,9 +50,8 @@ class MatriculaService {
             }
             return { result: true, data: matricula }
         } catch (error) {
-            // const msg = `Error al obtener el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -67,9 +65,8 @@ class MatriculaService {
                 return { result: false, message: 'Error al registrar la matrícula' }
             }
         } catch (error) {
-            // const msg = `Error al crear el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -82,9 +79,8 @@ class MatriculaService {
             const updatedMatricula = await matricula.update(data)
             return { result: true, message: 'Matrícula actualizada con éxito', data: updatedMatricula }
         } catch (error) {
-            // const msg = `Error al actualizar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -97,9 +93,8 @@ class MatriculaService {
             await matricula.destroy();
             return { result: true, data: { id }, message: 'Matrícula eliminada correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar el evento: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

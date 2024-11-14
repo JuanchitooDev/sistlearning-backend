@@ -5,6 +5,7 @@ class Pais extends Model {
     public id?: number
     public nombre?: string
     public nombre_url?: string
+    public codigo_postal?: string
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -24,6 +25,10 @@ Pais.init({
     nombre_url: {
         type: DataTypes.STRING(40),
         allowNull: false
+    },
+    codigo_postal: {
+        type: DataTypes.STRING(10),
+        allowNull: true
     },
     user_crea: {
         type: DataTypes.STRING(10),

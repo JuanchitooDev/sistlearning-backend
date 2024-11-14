@@ -9,7 +9,6 @@ class CertificadoController {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener los actos médicos' });
         }
     }
 
@@ -85,7 +84,6 @@ class CertificadoController {
         const { id } = req.params;
         const response = await CertificadoService.updateCertificado(+id, req.body);
         if (response.result) {
-            // res.status(200).json(response);
             const data = response.data as ICertificado
             const outputPath = data.ruta as string
             const fileName = data.fileName as string

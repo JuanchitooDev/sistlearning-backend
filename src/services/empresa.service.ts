@@ -11,9 +11,8 @@ class EmpresaService {
             })
             return { result: true, data: empresas }
         } catch (error) {
-            // const msg = `Error al obtener las empresas: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -29,9 +28,8 @@ class EmpresaService {
             }
             return { result: true, data: empresa }
         } catch (error) {
-            // const msg = `Error al obtener la empresa: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -45,9 +43,8 @@ class EmpresaService {
             }
             
         } catch (error) {
-            // const msg = `Error al crear la empresa: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -60,9 +57,8 @@ class EmpresaService {
             const updatedEmpresa = await empresa.update(data)
             return { result: true, message: 'Empresa actualizada con éxito', data: updatedEmpresa }
         } catch (error) {
-            // const msg = `Error al actualizar la empresa: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg }
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -75,9 +71,8 @@ class EmpresaService {
             await empresa.destroy();
             return { result: true, data: { id }, message: 'Empresa eliminado correctamente' };
         } catch (error) {
-            // const msg = `Error al eliminar la empresa: ${error.message}`
-            const msg = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: msg };
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
     }
 }

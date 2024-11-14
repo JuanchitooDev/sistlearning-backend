@@ -73,11 +73,11 @@ Persona.init({
         allowNull: true
     },
     direccion: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(80),
         allowNull: true
     },
     direccion_completa: {
-        type: DataTypes.STRING(120),
+        type: DataTypes.STRING(140),
         allowNull: true
     },
     ubigeo_reniec: {

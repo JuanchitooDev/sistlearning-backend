@@ -8,31 +8,32 @@ class TipoEventoController {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener los actos médicos' });
         }
     }
 
     async getTipoById(req: Request, res: Response) {
         const response = await TipoEventoService.getTipoById(+req.params.id)
         if (response.result) {
-            if (response.data) {
-                res.status(200).json(response)
-            } else {
-                res.status(404).json({ message: 'Tipo de evento no encontrado' });
-            }
+            res.status(200).json(response)
         } else {
-            res.status(500).json(response)
-            // res.status(500).json({ message: response.error || 'Error al obtener el acto médico' });
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
     async createTipo(req: Request, res: Response) {
         const response = await TipoEventoService.createTipo(req.body);
         if (response.result) {
-            res.status(201).json(response);
+            res.status(200).json(response);
         } else {
-            res.status(500).json(response);
-            // res.status(500).json({ message: response.error || 'Error al crear el acto médico' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
@@ -42,8 +43,11 @@ class TipoEventoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            res.status(400).json(response);
-            // res.status(400).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 
@@ -53,8 +57,11 @@ class TipoEventoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            res.status(404).json(response);
-            // res.status(404).json({ message: response.error || 'Acto médico no encontrado' });
+            if (response.error) {
+                res.status(500).json(response);
+            } else {
+                res.status(404).json(response);
+            }
         }
     }
 }
