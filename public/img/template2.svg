@@ -540,7 +540,7 @@
       </g>
       <text class="cls-41" transform="translate(52.32 356.56)"><tspan x="0" y="0">A participado en la capacitación:</tspan></text>
       <text class="cls-47" transform="translate(52.32 446.34)"><tspan x="0" y="0">Organizado por la Escuela de Capacitación Agropecuaria PERÚ AGRO S.A.C., llevado </tspan><tspan x="0" y="20.62" xml:space="preserve">a cabo el  9 de Noviembre en modalidad virtual a través de la plataforma Zoom, con </tspan><tspan x="0" y="41.24">una duración total de 80 horas académicas.</tspan></text>
-      <text class="cls-38" transform="translate(52.32 324.62) scale(.9 1)"><tspan x="0" y="0">Nombre del Participante</tspan></text>
+      <text class="cls-38" transform="translate(52.32 324.62) scale(.9 1)"><tspan x="0" y="0" id="participante">Nombre del Participante</tspan></text>
       <text class="cls-41" transform="translate(52.32 245.13)"><tspan x="0" y="0">Por el presente se deja constancia que</tspan></text>
       <text class="cls-40" transform="translate(52.32 391.53)"><tspan x="0" y="0">&quot;SANIDAD AVÍCOLA, CÓMO MAXIMIZAR LA PRODUCCIÓN DE</tspan><tspan x="0" y="28.05">GALLINAS SALUDABLES&quot;</tspan></text>
       <g>

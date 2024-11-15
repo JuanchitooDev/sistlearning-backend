@@ -28,7 +28,8 @@
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "qrcode": "^1.5.4",
-    "sequelize": "^6.37.4"
+    "sequelize": "^6.37.4",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -39,6 +40,7 @@
     "@types/node": "^22.7.5",
     "@types/pdfkit": "^0.13.5",
     "@types/qrcode": "^1.5.5",
+    "@types/xml2js": "^0.4.14",
     "cross-env": "^7.0.3",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
