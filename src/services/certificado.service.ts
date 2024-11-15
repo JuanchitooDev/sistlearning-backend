@@ -18,8 +18,10 @@ import { es } from 'date-fns/locale'
 import { toZonedTime } from 'date-fns-tz'
 import dotenv from 'dotenv'
 import xml2js from 'xml2js'
+import sharp from 'sharp'
 
 class CertificadoService {
+
     async getCertificados(): Promise<CertificadoResponse> {
         try {
             const certificados = await Certificado.findAll({
@@ -97,26 +99,31 @@ class CertificadoService {
     }
 
     async downloadCertificado(id: number) {
-        const responseCertificado = await this.getCertificadoById(id)
-        if (responseCertificado.result) {
-            const certificado = responseCertificado.data as ICertificado
-            const outputPath = certificado.ruta as string
-            const fileName = certificado.fileName as string
+        try {
+            const responseCertificado = await this.getCertificadoById(id)
+            if (responseCertificado.result) {
+                const certificado = responseCertificado.data as ICertificado
+                const outputPath = certificado.ruta as string
+                const fileName = certificado.fileName as string
 
-            // Verificar si el archivo existe antes de descargarlo
-            if (fs.existsSync(outputPath)) {
-                const result = {
-                    result: true,
-                    message: 'Certificado encontrado',
-                    outputPath,
-                    fileName
+                // Verificar si el archivo existe antes de descargarlo
+                if (fs.existsSync(outputPath)) {
+                    const result = {
+                        result: true,
+                        message: 'Certificado encontrado',
+                        outputPath,
+                        fileName
+                    }
+                    return result
+                } else {
+                    return { result: false, message: 'Certificado no encontrado', outputPath: null, fileName: null }
                 }
-                return result
             } else {
-                return { result: false, message: 'Certificado no encontrado', outputPath: null, fileName: null }
+                return { result: false, error: responseCertificado.error, outputPath: null, fileName: null }
             }
-        } else {
-            return { result: false, error: responseCertificado.error, outputPath: null, fileName: null }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
         }
     }
 
@@ -150,15 +157,32 @@ class CertificadoService {
 
             const evento = eventoResponse.data as IEvento
 
-            // Generar un nuevo archivo PDF
-            // const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento);
-            const { outputPath, fileName, codigoQR, codigo } = await this.generatePdfFromSvg(data, alumno, evento)
+            const svgPath = path.resolve(__dirname, '..', '..', 'public', 'img', 'template2.svg');
+
+            const svgData = fs.readFileSync(svgPath, 'utf-8');
+
+            const nombreAlumno = (data.nombre_alumno_impresion === undefined)
+                ? `${alumno.nombre_capitalized}`
+                : HString.capitalizeNames(data.nombre_alumno_impresion)
+
+            // Modificar el SVG con el nombre del participante
+            const modifiedSvg = await this.modificarSvg(svgData, nombreAlumno);
+
+            // Asegúrate de que el valor es un string antes de convertirlo a un buffer
+            const svgBuffer = Buffer.from(modifiedSvg, 'utf-8');
+
+            // Convertir el SVG a PNG con sharp
+            const pngBuffer = await sharp(svgBuffer)
+                .png()  // Convertir a PNG
+                .toBuffer();
+
+            const { pathFileName, fileName, pathCodigoQR, codigo } = await this.generatePdfFromSvg(pngBuffer, alumno, evento)
 
             data.fecha_envio = fechaEnvio
             data.fecha_registro = new Date()
-            data.ruta = outputPath
+            data.ruta = pathFileName
             data.fileName = fileName
-            data.codigoQR = codigoQR
+            data.codigoQR = pathCodigoQR
             data.codigo = codigo
 
             const newCertificado = await Certificado.create(data as any)
@@ -269,453 +293,399 @@ class CertificadoService {
 
     // Método auxiliar para generar el PDF del certificado
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento) {
-        const lugar = 'Lambayeque';
-        const pathTemplate = path.resolve(__dirname, '../../public/pdf/template.pdf');
-        const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/Kuenstler Script LT Std 2 Bold.otf');
-        const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
-        const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
-        const pathLogo = path.resolve(__dirname, '../../public/img/logo_small.png');
+        try {
 
-        const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
-        const temarioEvento = evento.temario?.split('\n') as String[]
+            const lugar = 'Lambayeque';
+            const pathTemplate = path.resolve(__dirname, '../../public/pdf/template.pdf');
+            const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/Kuenstler Script LT Std 2 Bold.otf');
+            const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
+            const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
+            const pathLogo = path.resolve(__dirname, '../../public/img/logo_small.png');
 
-        // Código del certificado
-        const codigo = HString.generateCodigo()
+            const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
+            const temarioEvento = evento.temario?.split('\n') as String[]
 
-        // Definiendo el nombre del archivo
-        const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
-        const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
-        const fileName = `certificado_${sanitizedAlumno}.pdf`
-        const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
+            // Código del certificado
+            const codigo = HString.generateCodigo()
 
-        // Definiendo la fecha de emisión
-        // const fechaEnvio = data.fecha_envio ? new Date(data.fecha_envio) : new Date()
-        // fechaEnvio.setMinutes(fechaEnvio.getMinutes() - fechaEnvio.getTimezoneOffset())
-        const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
+            // Definiendo el nombre del archivo
+            const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
+            const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
+            const fileName = `certificado_${sanitizedAlumno}.pdf`
+            const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
 
-        const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
-        const lugarFechaEmision = `${lugar}, ${fechaEmision}`
+            // Definiendo la fecha de emisión
+            const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
-        // Verificando que el directorio de salida exista, sino se crea
-        const outputDir = path.dirname(outputPath)
-        if (!fs.existsSync(outputDir)) {
-            fs.mkdirSync(outputDir, { recursive: true })
-        }
+            const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
+            const lugarFechaEmision = `${lugar}, ${fechaEmision}`
 
-        // Cargar el PDF de plantilla
-        const templateBytes = fs.readFileSync(pathTemplate);
-        const pdfDoc = await PDFDocument.load(templateBytes);
+            // Verificando que el directorio de salida exista, sino se crea
+            const outputDir = path.dirname(outputPath)
+            if (!fs.existsSync(outputDir)) {
+                fs.mkdirSync(outputDir, { recursive: true })
+            }
 
-        // Registrar fontkit
-        pdfDoc.registerFontkit(fontkit as any)
+            // Cargar el PDF de plantilla
+            const templateBytes = fs.readFileSync(pathTemplate);
+            const pdfDoc = await PDFDocument.load(templateBytes);
 
-        // Cargar la fuente
-        const fontKuenstlerBytes = fs.readFileSync(pathFontKuenstler)
-        const customFontKuenstler = await pdfDoc.embedFont(fontKuenstlerBytes)
+            // Registrar fontkit
+            pdfDoc.registerFontkit(fontkit as any)
 
-        // Cargar otra fuentes
-        const fontBalooBold = fs.readFileSync(pathFontBalooBold)
-        const customFontBalooBold = await pdfDoc.embedFont(fontBalooBold)
+            // Cargar la fuente
+            const fontKuenstlerBytes = fs.readFileSync(pathFontKuenstler)
+            const customFontKuenstler = await pdfDoc.embedFont(fontKuenstlerBytes)
 
-        const fontBalooMedium = fs.readFileSync(pathFontBalooMedium)
-        const customFontBalooMedium = await pdfDoc.embedFont(fontBalooMedium)
+            // Cargar otra fuentes
+            const fontBalooBold = fs.readFileSync(pathFontBalooBold)
+            const customFontBalooBold = await pdfDoc.embedFont(fontBalooBold)
 
-        // Obtener la primera página
-        const pagina = pdfDoc.getPage(0);
+            const fontBalooMedium = fs.readFileSync(pathFontBalooMedium)
+            const customFontBalooMedium = await pdfDoc.embedFont(fontBalooMedium)
 
-        // Configurar el texto (posición y estilo)
-        const fontSizeForAlumno = 60;
-        let x = 280; // posición X
-        let y = 260; // posición Y
+            // Obtener la primera página
+            const pagina = pdfDoc.getPage(0);
 
-        // const nombreAlumno = data.nombre_alumno_impresion ? data.nombre_alumno_impresion : alumno.nombre_capitalized
+            // Configurar el texto (posición y estilo)
+            const fontSizeForAlumno = 60;
+            let x = 280; // posición X
+            let y = 260; // posición Y
 
-        // Añadir el nombre del alumno
-        pagina.drawText(data.nombre_alumno_impresion as string, {
-            x,
-            y,
-            size: fontSizeForAlumno,
-            font: customFontKuenstler,
-            color: rgb(0, 0, 0), // negro
-        });
+            // const nombreAlumno = data.nombre_alumno_impresion ? data.nombre_alumno_impresion : alumno.nombre_capitalized
 
-        const fontSizeForEvento = 16
-        const fontSizeForFecha = 12
+            // Añadir el nombre del alumno
+            pagina.drawText(data.nombre_alumno_impresion as string, {
+                x,
+                y,
+                size: fontSizeForAlumno,
+                font: customFontKuenstler,
+                color: rgb(0, 0, 0), // negro
+            });
 
-        x = x + 60
-        y = y - 54
+            const fontSizeForEvento = 16
+            const fontSizeForFecha = 12
 
-        // Añadir el título del evento
-        pagina.drawText(evento.titulo as string, {
-            x,
-            y,
-            size: fontSizeForEvento,
-            font: customFontBalooBold,
-            color: rgb(4 / 255, 45 / 255, 71 / 255)
-        });
+            x = x + 60
+            y = y - 54
 
-        x = x + 91
-        y = y - 36
+            // Añadir el título del evento
+            pagina.drawText(evento.titulo as string, {
+                x,
+                y,
+                size: fontSizeForEvento,
+                font: customFontBalooBold,
+                color: rgb(4 / 255, 45 / 255, 71 / 255)
+            });
 
-        // Añadir la fecha del evento
-        pagina.drawText(fechaEvento, {
-            x,
-            y,
-            size: fontSizeForFecha,
-            font: customFontBalooMedium,
-            color: rgb(4 / 255, 45 / 255, 71 / 255)
-        });
+            x = x + 91
+            y = y - 36
 
-        x = x + 162
-        // y2 = 50
-        y = y - 50
+            // Añadir la fecha del evento
+            pagina.drawText(fechaEvento, {
+                x,
+                y,
+                size: fontSizeForFecha,
+                font: customFontBalooMedium,
+                color: rgb(4 / 255, 45 / 255, 71 / 255)
+            });
 
-        // Añadir la fecha del evento
-        pagina.drawText(lugarFechaEmision, {
-            x,
-            y,
-            size: fontSizeForFecha,
-            font: customFontBalooMedium,
-            color: rgb(4 / 255, 45 / 255, 71 / 255)
-        });
+            x = x + 162
+            // y2 = 50
+            y = y - 50
 
-        // Crear nueva página para el logo, código QR y tabla
-        const newPageWidth = 842
-        const newPageHeight = 590
-        const newPage = pdfDoc.addPage([newPageWidth, newPageHeight]);
+            // Añadir la fecha del evento
+            pagina.drawText(lugarFechaEmision, {
+                x,
+                y,
+                size: fontSizeForFecha,
+                font: customFontBalooMedium,
+                color: rgb(4 / 255, 45 / 255, 71 / 255)
+            });
 
-        // Crear un rectángulo para texto introductorio
-        const startX = 20
-        const startY = newPage.getHeight() - 170
-        const cellWidth = 370
-        const cellHeight = 150
+            // Crear nueva página para el logo, código QR y tabla
+            const newPageWidth = 842
+            const newPageHeight = 590
+            const newPage = pdfDoc.addPage([newPageWidth, newPageHeight]);
 
-        newPage.drawRectangle({
-            x: startX,
-            y: startY,
-            width: cellWidth,
-            height: cellHeight,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            // Crear un rectángulo para texto introductorio
+            const startX = 20
+            const startY = newPage.getHeight() - 170
+            const cellWidth = 370
+            const cellHeight = 150
 
-        // Añadir texto a la celda
-        let texto = `Esta es una copia auténtica imprimible de un documento electrónico archivado por PerúAgro, `
-        texto += `aplicando lo dispuesto por el Art. 25 de D.S. 070-2013-PCM y `
-        texto += `la Tercera Disposición Complementaria Final del D.S. 026-2016-PCM.`
-        // texto += `Su autenticidad e integridad `
-        // texto += `pueden ser contrastadas a través de la siguiente dirección web: `
-        // texto += `http://validacion.peruagro.edu.pe`
+            newPage.drawRectangle({
+                x: startX,
+                y: startY,
+                width: cellWidth,
+                height: cellHeight,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
 
-        newPage.drawText(texto, {
-            x: startX + 5,
-            y: startY + 135,
-            size: 12,
-            maxWidth: cellWidth,
-            color: rgb(0, 0, 0),
-        });
+            // Añadir texto a la celda
+            let texto = `Esta es una copia auténtica imprimible de un documento electrónico archivado por PerúAgro, `
+            texto += `aplicando lo dispuesto por el Art. 25 de D.S. 070-2013-PCM y `
+            texto += `la Tercera Disposición Complementaria Final del D.S. 026-2016-PCM.`
+            // texto += `Su autenticidad e integridad `
+            // texto += `pueden ser contrastadas a través de la siguiente dirección web: `
+            // texto += `http://validacion.peruagro.edu.pe`
 
-        // Cargar y añadir el logo
-        const logoBytes = fs.readFileSync(pathLogo)
-        const logoImage = await pdfDoc.embedPng(logoBytes)
-        const logoDimensions = logoImage.scale(1.0)
-        newPage.drawImage(logoImage, {
-            x: newPage.getWidth() - logoDimensions.width - 20,
-            y: newPage.getHeight() - logoDimensions.height - 20,
-            width: logoDimensions.width,
-            height: logoDimensions.height
-        })
+            newPage.drawText(texto, {
+                x: startX + 5,
+                y: startY + 135,
+                size: 12,
+                maxWidth: cellWidth,
+                color: rgb(0, 0, 0),
+            });
 
-        const startTemarioX = 20
-        const startTemarioY = 290
-        const cellWidthTemario = 370
-        const cellHeightTemario = 20
+            // Cargar y añadir el logo
+            const logoBytes = fs.readFileSync(pathLogo)
+            const logoImage = await pdfDoc.embedPng(logoBytes)
+            const logoDimensions = logoImage.scale(1.0)
+            newPage.drawImage(logoImage, {
+                x: newPage.getWidth() - logoDimensions.width - 20,
+                y: newPage.getHeight() - logoDimensions.height - 20,
+                width: logoDimensions.width,
+                height: logoDimensions.height
+            })
 
-        // Dibujar celda para el título del temario
-        newPage.drawRectangle({
-            x: startTemarioX,
-            y: startTemarioY,
-            width: cellWidthTemario,
-            height: cellHeightTemario,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            const startTemarioX = 20
+            const startTemarioY = 290
+            const cellWidthTemario = 370
+            const cellHeightTemario = 20
 
-        // Dibujar el título en la celda
-        newPage.drawText('Temario', {
-            x: startTemarioX + 5,
-            y: startTemarioY + 5,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
-
-        // Ajustar la posición para los ítems del temario
-        const itemsStartY = startTemarioY - (cellHeightTemario + 3);
-
-        temarioEvento.forEach((item, index) => {
-            const currentY = itemsStartY - index * (cellHeightTemario + 3)
-
-            // Dibujar las celdas
+            // Dibujar celda para el título del temario
             newPage.drawRectangle({
                 x: startTemarioX,
-                y: currentY,
+                y: startTemarioY,
                 width: cellWidthTemario,
                 height: cellHeightTemario,
                 borderColor: rgb(0, 0, 0),
-                borderWidth: 0,
-                color: rgb(1, 1, 1)
-            })
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
 
-            // Dibujar el texto en las celdas
-            newPage.drawText(`${index + 1}. ${item}`, {
-                x: startTemarioX + 3,
-                y: currentY + 3,
+            // Dibujar el título en la celda
+            newPage.drawText('Temario', {
+                x: startTemarioX + 5,
+                y: startTemarioY + 5,
                 size: 12,
-                color: rgb(0, 0, 0)
+                color: rgb(0, 0, 0),
+            });
+
+            // Ajustar la posición para los ítems del temario
+            const itemsStartY = startTemarioY - (cellHeightTemario + 3);
+
+            temarioEvento.forEach((item, index) => {
+                const currentY = itemsStartY - index * (cellHeightTemario + 3)
+
+                // Dibujar las celdas
+                newPage.drawRectangle({
+                    x: startTemarioX,
+                    y: currentY,
+                    width: cellWidthTemario,
+                    height: cellHeightTemario,
+                    borderColor: rgb(0, 0, 0),
+                    borderWidth: 0,
+                    color: rgb(1, 1, 1)
+                })
+
+                // Dibujar el texto en las celdas
+                newPage.drawText(`${index + 1}. ${item}`, {
+                    x: startTemarioX + 3,
+                    y: currentY + 3,
+                    size: 12,
+                    color: rgb(0, 0, 0)
+                })
             })
-        })
 
-        // Crear un rectángulo para la sección del código QR
-        let startQRX = 550
-        let startQRY = 290
-        let cellWidthQR = 240
-        let cellHeightQR = 20
+            // Crear un rectángulo para la sección del código QR
+            let startQRX = 550
+            let startQRY = 290
+            let cellWidthQR = 240
+            let cellHeightQR = 20
 
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY,
-            width: cellWidthQR,
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY,
+                width: cellWidthQR,
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
 
-        // Dibujar el título en la celda
-        newPage.drawText('REGISTRO ELECTRÓNICO', {
-            x: startQRX + 5,
-            y: startQRY + 5,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
+            // Dibujar el título en la celda
+            newPage.drawText('REGISTRO ELECTRÓNICO', {
+                x: startQRX + 5,
+                y: startQRY + 5,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
 
-        // Dibujar nuevo rectángulo para el título de código de validación
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY - 25,
-            width: (cellWidthQR / 2),
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            // Dibujar nuevo rectángulo para el título de código de validación
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY - 25,
+                width: (cellWidthQR / 2),
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
 
-        // Dibujar el título en la celda
-        newPage.drawText('Código Validación', {
-            x: startQRX + 5,
-            y: startQRY - 20,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
+            // Dibujar el título en la celda
+            newPage.drawText('Código Validación', {
+                x: startQRX + 5,
+                y: startQRY - 20,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
 
-        // Dibujar nuevo rectángulo para el código de validación
-        newPage.drawRectangle({
-            x: startQRX + (cellWidthQR / 2),
-            y: startQRY - 25,
-            width: (cellWidthQR / 2),
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            // Dibujar nuevo rectángulo para el código de validación
+            newPage.drawRectangle({
+                x: startQRX + (cellWidthQR / 2),
+                y: startQRY - 25,
+                width: (cellWidthQR / 2),
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
 
-        newPage.drawText(codigo, {
-            x: startQRX + (cellWidthQR / 2) + 5,
-            y: startQRY - 20,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
+            newPage.drawText(codigo, {
+                x: startQRX + (cellWidthQR / 2) + 5,
+                y: startQRY - 20,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
 
-        // Dibujar nuevo rectángulo para el título de verificación
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY - 50,
-            width: cellWidthQR,
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            // Dibujar nuevo rectángulo para el título de verificación
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY - 50,
+                width: cellWidthQR,
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
 
-        newPage.drawText('VERIFICACIÓN EN LÍNEA', {
-            x: startQRX + 5,
-            y: startQRY - 45,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
+            newPage.drawText('VERIFICACIÓN EN LÍNEA', {
+                x: startQRX + 5,
+                y: startQRY - 45,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
 
-        // Dibujar nuevo rectángulo para el código QR
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY - 195,
-            width: cellWidthQR,
-            height: (cellHeightQR * 7),
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            // Dibujar nuevo rectángulo para el código QR
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY - 195,
+                width: cellWidthQR,
+                height: (cellHeightQR * 7),
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
 
-        // Determina el ambiente
-        const env = process.env.NODE_ENV || 'development'
+            // Determina el ambiente
+            const env = process.env.NODE_ENV || 'development'
 
-        // Carga el archivo de configuración correspondiente
-        dotenv.config({ path: `.env.${env}` })
+            // Carga el archivo de configuración correspondiente
+            dotenv.config({ path: `.env.${env}` })
 
-        const baseUrl = process.env.BASE_URL
+            const baseUrl = process.env.CORS_ALLOWED_ORIGIN
 
-        // Generar código QR
-        const dataUrl = `${baseUrl}/certificado/${codigo}`
-        const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
-        const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
-        const qrCodeDimensions = qrCodeImage.scale(0.8)
-        newPage.drawImage(qrCodeImage, {
-            x: startQRX + 60,
-            y: startQRY - 190,
-            width: qrCodeDimensions.width,
-            height: qrCodeDimensions.height
-        })
+            // Generar código QR
+            const dataUrl = `${baseUrl}/certificado/${codigo}`
+            const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
+            const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
+            const qrCodeDimensions = qrCodeImage.scale(0.8)
+            newPage.drawImage(qrCodeImage, {
+                x: startQRX + 60,
+                y: startQRY - 190,
+                width: qrCodeDimensions.width,
+                height: qrCodeDimensions.height
+            })
 
-        // Guardar el PDF modificado
-        const pdfBytes = await pdfDoc.save();
-        fs.writeFileSync(outputPath, pdfBytes);
+            // Guardar el PDF modificado
+            const pdfBytes = await pdfDoc.save();
+            fs.writeFileSync(outputPath, pdfBytes);
 
-        // Guardar la ruta del QR como imagen
-        const qrFileName = `qrcode_${sanitizedAlumno}.png`
-        const qrOutputPath = path.resolve(__dirname, `../../public/qrcodes/${sanitizedTitulo}/${qrFileName}`)
+            // Guardar la ruta del QR como imagen
+            const qrFileName = `qrcode_${sanitizedAlumno}.png`
+            const qrOutputPath = path.resolve(__dirname, `../../public/qrcodes/${sanitizedTitulo}/${qrFileName}`)
 
-        // Verificando que el directorio de salida exista, sino se crea
-        const outputDirQRCode = path.dirname(qrOutputPath)
-        if (!fs.existsSync(outputDirQRCode)) {
-            fs.mkdirSync(outputDirQRCode, { recursive: true })
-        }
+            // Verificando que el directorio de salida exista, sino se crea
+            const outputDirQRCode = path.dirname(qrOutputPath)
 
-        await QRCode.toFile(qrOutputPath, `${dataUrl}`)
-
-        return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
-    }
-
-    async generateCertificadoSVG(data: ICertificado) {
-        // Leer el archivo SVG
-        // const pathTemplate = path.resolve(__dirname, '../../public/pdf/template.pdf');
-        const svgPath = path.join(__dirname, 'views', '../../public/img/template2.svg');
-        const svgData = fs.readFileSync(svgPath, 'utf-8');
-
-        const id_alumno = data.id_alumno
-        const id_evento = data.id_evento
-
-        const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
-
-        const alumnoResponse = await AlumnoService.getAlumnoById(id_alumno as number)
-
-        if (!alumnoResponse.result) {
-            if (alumnoResponse.error) {
-                return { result: false, error: alumnoResponse.error }
-            } else {
-                return { result: false, message: alumnoResponse.message }
+            if (!fs.existsSync(outputDirQRCode)) {
+                fs.mkdirSync(outputDirQRCode, { recursive: true })
             }
+
+            await QRCode.toFile(qrOutputPath, `${dataUrl}`)
+
+            return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage };
         }
-
-        const alumno = alumnoResponse.data as IAlumno
-
-        const eventoResponse = await EventoService.getEventoById(id_evento as number)
-        if (!eventoResponse.result) {
-            if (eventoResponse.error) {
-                return { result: false, error: eventoResponse.error }
-            } else {
-                return { result: false, message: eventoResponse.message }
-            }
-        }
-
-        const evento = eventoResponse.data as IEvento
-
-        // Definiendo el nombre del archivo
-        // const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
-        // const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
-        // const fileName = `certificado_${sanitizedAlumno}.pdf`
-        // const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
-
-        const nombreAlumno = (data.nombre_alumno_impresion === undefined)
-            ? `${alumno.nombre_capitalized}`
-            : HString.capitalizeNames(data.nombre_alumno_impresion)
-
-        // Modificar el SVG con el nombre del participante
-        const modifiedSvg = await this.modificarSvg(svgData, nombreAlumno)
-
-        // Generar un nuevo archivo PDF
-        const { outputPath, fileName, codigoQR, codigo } = await this.generatePdfFromSvg(modifiedSvg, alumno, evento);
-
-        data.fecha_envio = fechaEnvio
-        data.fecha_registro = new Date()
-        data.ruta = outputPath
-        data.fileName = fileName
-        data.codigoQR = codigoQR
-        data.codigo = codigo
-
-        const newCertificado = await Certificado.create(data as any)
-        if (newCertificado.id) {
-            return { result: true, message: 'Certificado registrado correctamente', data: newCertificado }
-        } else {
-            return { result: false, message: 'Error al registrar el certificado' }
-        }
-
-        // Generar el archivo PDF con el SVG modificado
-        // const pdfBytes = await this.generatePdfFromSvg(modifiedSvg, evento)
-
-        // Generar un nuevo archivo PDF
-        // const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento);
-
-        // data.fecha_envio = fechaEnvio
-        // data.fecha_registro = new Date()
-        // data.ruta = outputPath
-        // data.fileName = fileName
-        // data.codigoQR = codigoQR
-        // data.codigo = codigo
-
-        // const newCertificado = await Certificado.create(data as any)
-        // if (newCertificado.id) {
-        //     return { result: true, message: 'Certificado registrado correctamente', data: newCertificado }
-        // } else {
-        //     return { result: false, message: 'Error al registrar el certificado' }
-        // }
-
-        // Guardar el PDF
-        // fs.writeFileSync(outputPath, pdfBytes);
-
-        return { outputPath, fileName }
     }
 
     // Función para modificar el SVG
-    async modificarSvg(svgData: any, nombre: String) {
+    async modificarSvg(svgData: any, nombre: String): Promise<string> {
         return new Promise((resolve, reject) => {
+
+            const parseOptions = {
+                explicitArray: false, // Esto hará que los elementos únicos no se conviertan en arrays.
+                normalizeTags: true,  // Asegura que las etiquetas sean tratadas en minúsculas (por ejemplo, <text> en lugar de <Text>)
+                mergeAttrs: true      // Fusiona los atributos, si es necesario
+            };
+
+            // Eliminar el espacio de nombres 'xmlns:i' si no es necesario
+            // Esto reemplaza cualquier instancia del namespace 'xmlns:i' en el SVG
+            // svgData = svgData.replace(/xmlns:i="[^"]*"/g, "");
+
+            // Agregar el espacio de nombres xmlns:xlink si no existe
+            // if (!svgData.includes('xmlns:xlink')) {
+            //     svgData = svgData.replace('<svg', '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+            // }
+
             // Parsear al SVG para cambiar el contenido
-            xml2js.parseString(svgData, (err, result) => {
+            xml2js.parseString(svgData, parseOptions, (err, result) => {
                 if (err) {
+                    console.log('Error al parsear SVG: ', err)
                     return reject(err)
                 }
 
-                // Buscar el elemento <tspan> con el id="participante" y reemplazar su contenido
-                const textElements = result.svg.text as any[]
-                textElements.forEach((element) => {
-                    if (element.$ && element.$.id === 'participante') {
-                        element._ = nombre
+                // Buscar el elemento <tspan> con id="participante"
+                const textElements = result.svg.g['g'].text;  // Asumiendo que result.svg.g['g'].text tiene los elementos <text>
+
+                // Si el elemento 'text' no es un array, hacerlo un array
+                const textArray = Array.isArray(textElements) ? textElements : [textElements];
+
+                // Reemplazar el texto del <tspan> con id="participante"
+                textArray.forEach((textElement: any) => {
+                    const tspan = textElement.tspan;
+                    if (Array.isArray(tspan)) {
+                        tspan.forEach((tspanElement: any) => {
+                            if (tspanElement.$ && tspanElement.$.id === 'participante') {
+                                tspanElement._ = nombre;  // Reemplazar el contenido de <tspan>
+                            }
+                        });
+                    } else {
+                        if (tspan.id !== undefined && tspan.id === 'participante') {
+                            tspan._ = nombre;  // Reemplazar el contenido de <tspan>
+                        }
                     }
-                })
+                });
 
                 // Convertir el objeto XML modificado de nuevo a cadena
                 const builder = new xml2js.Builder()
-                const modifiedSvg = builder.buildObject(result)
+                const modifiedSvg: string = builder.buildObject(result)
 
                 resolve(modifiedSvg)
             })
@@ -724,264 +694,354 @@ class CertificadoService {
 
     // Función para generar el PDF a partir del SVG modificado
     async generatePdfFromSvg(svgData: any, alumno: IAlumno, evento: IEvento) {
-        const pathLogo = path.resolve(__dirname, '../../public/img/logo_small.png');
+        try {
+            const pathLogo = path.resolve(__dirname, '../../public/img/logo_small.png');
 
-        // Código del certificado
-        const codigo = HString.generateCodigo()
+            // Código del certificado
+            const codigo = HString.generateCodigo()
 
-        // Definiendo el nombre del archivo
-        const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
-        const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
-        const fileName = `certificado_${sanitizedAlumno}.pdf`
-        const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
+            // Definiendo el nombre del archivo
+            const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
+            const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
+            const fileName = `certificado_${sanitizedAlumno}.pdf`
+            const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
 
-        const temarioEvento = evento.temario?.split('\n') as String[]
+            const temarioEvento = evento.temario?.split('\n') as String[]
 
-        const pdfDoc = await PDFDocument.create();
+            // Verificando que el directorio de salida exista, sino se crea
+            const outputDir = path.dirname(outputPath)
+            if (!fs.existsSync(outputDir)) {
+                fs.mkdirSync(outputDir, { recursive: true })
+            }
 
-        // Crear una página en formato horizontal (landscape)
-        const page = pdfDoc.addPage([842, 595]); // A4 en formato landscape (842x595 puntos)
+            const pdfDoc = await PDFDocument.create();
 
-        // Convertir el SVG modificado a una imagen PNG
-        const svgBuffer = Buffer.from(svgData);
-        const img = await pdfDoc.embedPng(svgBuffer);
+            // Crear una página en formato horizontal (landscape)
+            const page = pdfDoc.addPage([842, 595]); // A4 en formato landscape (842x595 puntos)
 
-        // Dibujar la imagen en el PDF (ajustado al tamaño de la página)
-        const pageWidth = page.getWidth();
-        const pageHeight = page.getHeight();
-        page.drawImage(img, {
-            x: 0,
-            y: 0,
-            width: pageWidth,
-            height: pageHeight,
+            // Convertir el SVG modificado a una imagen PNG
+            const svgBuffer = Buffer.from(svgData);
+
+            const img = await pdfDoc.embedPng(svgBuffer);
+
+            // Dibujar la imagen en el PDF (ajustado al tamaño de la página)
+            const pageWidth = page.getWidth();
+            const pageHeight = page.getHeight();
+
+            page.drawImage(img, {
+                x: 0,
+                y: 0,
+                width: pageWidth,
+                height: pageHeight,
+            });
+
+            // Crear nueva página para el logo, código QR y tabla
+            const newPageWidth = 842
+            const newPageHeight = 590
+            const newPage = pdfDoc.addPage([newPageWidth, newPageHeight]);
+
+            // Crear un rectángulo para texto introductorio
+            const startX = 20
+            const startY = newPage.getHeight() - 170
+            const cellWidth = 370
+            const cellHeight = 150
+
+            newPage.drawRectangle({
+                x: startX,
+                y: startY,
+                width: cellWidth,
+                height: cellHeight,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
+
+            // Añadir texto a la celda
+            let texto = `Esta es una copia auténtica imprimible de un documento electrónico archivado por PerúAgro, `
+            texto += `aplicando lo dispuesto por el Art. 25 de D.S. 070-2013-PCM y `
+            texto += `la Tercera Disposición Complementaria Final del D.S. 026-2016-PCM.`
+            // texto += `Su autenticidad e integridad `
+            // texto += `pueden ser contrastadas a través de la siguiente dirección web: `
+            // texto += `http://validacion.peruagro.edu.pe`
+
+            newPage.drawText(texto, {
+                x: startX + 5,
+                y: startY + 135,
+                size: 12,
+                maxWidth: cellWidth,
+                color: rgb(0, 0, 0),
+            });
+
+            // Cargar y añadir el logo
+            const logoBytes = fs.readFileSync(pathLogo)
+            const logoImage = await pdfDoc.embedPng(logoBytes)
+            const logoDimensions = logoImage.scale(1.0)
+            newPage.drawImage(logoImage, {
+                x: newPage.getWidth() - logoDimensions.width - 20,
+                y: newPage.getHeight() - logoDimensions.height - 20,
+                width: logoDimensions.width,
+                height: logoDimensions.height
+            })
+
+            const startTemarioX = 20
+            const startTemarioY = 290
+            const cellWidthTemario = 370
+            const cellHeightTemario = 20
+
+            // Dibujar celda para el título del temario
+            newPage.drawRectangle({
+                x: startTemarioX,
+                y: startTemarioY,
+                width: cellWidthTemario,
+                height: cellHeightTemario,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
+
+            // Dibujar el título en la celda
+            newPage.drawText('Temario', {
+                x: startTemarioX + 5,
+                y: startTemarioY + 5,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+
+            // Ajustar la posición para los ítems del temario
+            const itemsStartY = startTemarioY - (cellHeightTemario + 3);
+
+            temarioEvento.forEach((item, index) => {
+                const currentY = itemsStartY - index * (cellHeightTemario + 3)
+
+                // Dibujar las celdas
+                newPage.drawRectangle({
+                    x: startTemarioX,
+                    y: currentY,
+                    width: cellWidthTemario,
+                    height: cellHeightTemario,
+                    borderColor: rgb(0, 0, 0),
+                    borderWidth: 0,
+                    color: rgb(1, 1, 1)
+                })
+
+                // Dibujar el texto en las celdas
+                newPage.drawText(`${index + 1}. ${item}`, {
+                    x: startTemarioX + 3,
+                    y: currentY + 3,
+                    size: 12,
+                    color: rgb(0, 0, 0)
+                })
+            })
+
+            // Crear un rectángulo para la sección del código QR
+            let startQRX = 550
+            let startQRY = 290
+            let cellWidthQR = 240
+            let cellHeightQR = 20
+
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY,
+                width: cellWidthQR,
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
+
+            // Dibujar el título en la celda
+            newPage.drawText('REGISTRO ELECTRÓNICO', {
+                x: startQRX + 5,
+                y: startQRY + 5,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+
+            // Dibujar nuevo rectángulo para el título de código de validación
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY - 25,
+                width: (cellWidthQR / 2),
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
+
+            // Dibujar el título en la celda
+            newPage.drawText('Código Validación', {
+                x: startQRX + 5,
+                y: startQRY - 20,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+
+            // Dibujar nuevo rectángulo para el código de validación
+            newPage.drawRectangle({
+                x: startQRX + (cellWidthQR / 2),
+                y: startQRY - 25,
+                width: (cellWidthQR / 2),
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
+
+            newPage.drawText(codigo, {
+                x: startQRX + (cellWidthQR / 2) + 5,
+                y: startQRY - 20,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+
+            // Dibujar nuevo rectángulo para el título de verificación
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY - 50,
+                width: cellWidthQR,
+                height: cellHeightQR,
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
+
+            newPage.drawText('VERIFICACIÓN EN LÍNEA', {
+                x: startQRX + 5,
+                y: startQRY - 45,
+                size: 12,
+                color: rgb(0, 0, 0),
+            });
+
+            // Dibujar nuevo rectángulo para el código QR
+            newPage.drawRectangle({
+                x: startQRX,
+                y: startQRY - 195,
+                width: cellWidthQR,
+                height: (cellHeightQR * 7),
+                borderColor: rgb(0, 0, 0),
+                borderWidth: 1,
+                color: rgb(1, 1, 1),
+            });
+
+            // Determina el ambiente
+            const env = process.env.NODE_ENV || 'development'
+
+            // Carga el archivo de configuración correspondiente
+            dotenv.config({ path: `.env.${env}` })
+
+            const baseUrl = process.env.CORS_ALLOWED_ORIGIN
+
+            // Generar código QR
+            const dataUrl = `${baseUrl}/certificado/${codigo}`
+            const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
+            const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
+            const qrCodeDimensions = qrCodeImage.scale(0.8)
+            newPage.drawImage(qrCodeImage, {
+                x: startQRX + 60,
+                y: startQRY - 190,
+                width: qrCodeDimensions.width,
+                height: qrCodeDimensions.height
+            })
+
+            // // Guardar el PDF y devolverlo como un buffer
+            const pdfBytes = await pdfDoc.save();
+            fs.writeFileSync(outputPath, pdfBytes);
+
+            // Guardar la ruta del QR como imagen
+            const qrFileName = `qrcode_${sanitizedAlumno}.png`
+            const qrOutputPath = path.resolve(__dirname, `../../public/qrcodes/${sanitizedTitulo}/${qrFileName}`)
+
+            // Verificando que el directorio de salida exista, sino se crea
+            const outputDirQRCode = path.dirname(qrOutputPath)
+            if (!fs.existsSync(outputDirQRCode)) {
+                fs.mkdirSync(outputDirQRCode, { recursive: true })
+            }
+
+            await QRCode.toFile(qrOutputPath, `${dataUrl}`)
+
+            return {
+                pathFileName: outputPath,
+                fileName: fileName,
+                pathCodigoQR: qrOutputPath,
+                codigo: codigo
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage }
+        }
+    }
+
+    // Función para dividir el texto según el ancho de la celda
+    splitTextToFitWidth(text: string, maxWidth: number, fontSize: number, font: any): string[] {
+        const lines: string[] = [];
+        let currentLine = '';
+
+        // Dividir el texto en palabras
+        const words = text.split(' ');
+
+        words.forEach(word => {
+            const testLine = currentLine ? `${currentLine} ${word}` : word;
+            const width = font.widthOfTextAtSize(testLine, fontSize); // Medir el ancho del texto
+
+            if (width > maxWidth) {
+                // Si el texto excede el ancho, agregar la línea anterior y comenzar una nueva
+                lines.push(currentLine);
+                currentLine = word; // Comienza con la palabra que no cabe
+            } else {
+                // Si cabe, agrega la palabra a la línea actual
+                currentLine = testLine;
+            }
         });
 
-        // Crear nueva página para el logo, código QR y tabla
-        const newPageWidth = 842
-        const newPageHeight = 590
-        const newPage = pdfDoc.addPage([newPageWidth, newPageHeight]);
+        if (currentLine) {
+            lines.push(currentLine); // Agregar la última línea
+        }
 
-        // Crear un rectángulo para texto introductorio
-        const startX = 20
-        const startY = newPage.getHeight() - 170
-        const cellWidth = 370
-        const cellHeight = 150
+        return lines;
+    }
 
-        newPage.drawRectangle({
-            x: startX,
-            y: startY,
-            width: cellWidth,
-            height: cellHeight,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+    // Ajustar el texto de acuerdo a la celda
+    async drawTemario(newPage: any, temarioEvento: string[], font: any) {
+        const startTemarioX = 20;
+        const startTemarioY = 290;
+        const cellWidthTemario = 370;
+        const baseCellHeight = 20; // Altura base de la celda
+        const fontSize = 12; // Tamaño de la fuente
 
-        // Añadir texto a la celda
-        let texto = `Esta es una copia auténtica imprimible de un documento electrónico archivado por PerúAgro, `
-        texto += `aplicando lo dispuesto por el Art. 25 de D.S. 070-2013-PCM y `
-        texto += `la Tercera Disposición Complementaria Final del D.S. 026-2016-PCM.`
-        // texto += `Su autenticidad e integridad `
-        // texto += `pueden ser contrastadas a través de la siguiente dirección web: `
-        // texto += `http://validacion.peruagro.edu.pe`
 
-        newPage.drawText(texto, {
-            x: startX + 5,
-            y: startY + 135,
-            size: 12,
-            maxWidth: cellWidth,
-            color: rgb(0, 0, 0),
-        });
+        const itemsStartY = startTemarioY - (baseCellHeight + 3);
 
-        // Cargar y añadir el logo
-        const logoBytes = fs.readFileSync(pathLogo)
-        const logoImage = await pdfDoc.embedPng(logoBytes)
-        const logoDimensions = logoImage.scale(1.0)
-        newPage.drawImage(logoImage, {
-            x: newPage.getWidth() - logoDimensions.width - 20,
-            y: newPage.getHeight() - logoDimensions.height - 20,
-            width: logoDimensions.width,
-            height: logoDimensions.height
-        })
+        for (let index = 0; index < temarioEvento.length; index++) {
+            const item = temarioEvento[index];
+            const currentY = itemsStartY - index * (baseCellHeight + 3);
 
-        const startTemarioX = 20
-        const startTemarioY = 290
-        const cellWidthTemario = 370
-        const cellHeightTemario = 20
+            // Dividir el texto para ajustarlo a la celda
+            const lines = this.splitTextToFitWidth(item, cellWidthTemario, fontSize, font);
 
-        // Dibujar celda para el título del temario
-        newPage.drawRectangle({
-            x: startTemarioX,
-            y: startTemarioY,
-            width: cellWidthTemario,
-            height: cellHeightTemario,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
+            // Calcular la altura de la celda basada en las líneas de texto
+            const cellHeight = baseCellHeight * lines.length;
 
-        // Dibujar el título en la celda
-        newPage.drawText('Temario', {
-            x: startTemarioX + 5,
-            y: startTemarioY + 5,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
-
-        // Ajustar la posición para los ítems del temario
-        const itemsStartY = startTemarioY - (cellHeightTemario + 3);
-
-        temarioEvento.forEach((item, index) => {
-            const currentY = itemsStartY - index * (cellHeightTemario + 3)
-
-            // Dibujar las celdas
+            // Dibujar la celda ajustada
             newPage.drawRectangle({
                 x: startTemarioX,
                 y: currentY,
                 width: cellWidthTemario,
-                height: cellHeightTemario,
+                height: cellHeight,
                 borderColor: rgb(0, 0, 0),
-                borderWidth: 0,
-                color: rgb(1, 1, 1)
-            })
+                borderWidth: 0.5,
+                color: rgb(1, 1, 1),
+            });
 
-            // Dibujar el texto en las celdas
-            newPage.drawText(`${index + 1}. ${item}`, {
-                x: startTemarioX + 3,
-                y: currentY + 3,
-                size: 12,
-                color: rgb(0, 0, 0)
-            })
-        })
-
-        // Crear un rectángulo para la sección del código QR
-        let startQRX = 550
-        let startQRY = 290
-        let cellWidthQR = 240
-        let cellHeightQR = 20
-
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY,
-            width: cellWidthQR,
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
-
-        // Dibujar el título en la celda
-        newPage.drawText('REGISTRO ELECTRÓNICO', {
-            x: startQRX + 5,
-            y: startQRY + 5,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
-
-        // Dibujar nuevo rectángulo para el título de código de validación
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY - 25,
-            width: (cellWidthQR / 2),
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
-
-        // Dibujar el título en la celda
-        newPage.drawText('Código Validación', {
-            x: startQRX + 5,
-            y: startQRY - 20,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
-
-        // Dibujar nuevo rectángulo para el código de validación
-        newPage.drawRectangle({
-            x: startQRX + (cellWidthQR / 2),
-            y: startQRY - 25,
-            width: (cellWidthQR / 2),
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
-
-        newPage.drawText(codigo, {
-            x: startQRX + (cellWidthQR / 2) + 5,
-            y: startQRY - 20,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
-
-        // Dibujar nuevo rectángulo para el título de verificación
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY - 50,
-            width: cellWidthQR,
-            height: cellHeightQR,
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
-
-        newPage.drawText('VERIFICACIÓN EN LÍNEA', {
-            x: startQRX + 5,
-            y: startQRY - 45,
-            size: 12,
-            color: rgb(0, 0, 0),
-        });
-
-        // Dibujar nuevo rectángulo para el código QR
-        newPage.drawRectangle({
-            x: startQRX,
-            y: startQRY - 195,
-            width: cellWidthQR,
-            height: (cellHeightQR * 7),
-            borderColor: rgb(0, 0, 0),
-            borderWidth: 1,
-            color: rgb(1, 1, 1),
-        });
-
-        // Determina el ambiente
-        const env = process.env.NODE_ENV || 'development'
-
-        // Carga el archivo de configuración correspondiente
-        dotenv.config({ path: `.env.${env}` })
-
-        const baseUrl = process.env.BASE_URL
-
-        // Generar código QR
-        const dataUrl = `${baseUrl}/certificado/${codigo}`
-        const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
-        const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
-        const qrCodeDimensions = qrCodeImage.scale(0.8)
-        newPage.drawImage(qrCodeImage, {
-            x: startQRX + 60,
-            y: startQRY - 190,
-            width: qrCodeDimensions.width,
-            height: qrCodeDimensions.height
-        })
-
-        // Guardar el PDF y devolverlo como un buffer
-        const pdfBytes = await pdfDoc.save();
-        // return pdfBytes;
-        fs.writeFileSync(outputPath, pdfBytes);
-
-        // Guardar la ruta del QR como imagen
-        const qrFileName = `qrcode_${sanitizedAlumno}.png`
-        const qrOutputPath = path.resolve(__dirname, `../../public/qrcodes/${sanitizedTitulo}/${qrFileName}`)
-
-        // Verificando que el directorio de salida exista, sino se crea
-        const outputDirQRCode = path.dirname(qrOutputPath)
-        if (!fs.existsSync(outputDirQRCode)) {
-            fs.mkdirSync(outputDirQRCode, { recursive: true })
+            // Dibujar las líneas de texto dentro de la celda
+            lines.forEach((line, lineIndex) => {
+                newPage.drawText(line, {
+                    x: startTemarioX + 3,
+                    y: currentY + (cellHeight - (lineIndex + 1) * fontSize) + 3,
+                    size: fontSize,
+                    color: rgb(0, 0, 0),
+                });
+            });
         }
-
-        await QRCode.toFile(qrOutputPath, `${dataUrl}`)
-
-        return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
     }
 }
 

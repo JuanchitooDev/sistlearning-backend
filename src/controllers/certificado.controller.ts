@@ -73,8 +73,10 @@ class CertificadoController {
             });
         } else {
             if (response.message) {
+                console.log('error 400 createCertificado', response.message)
                 res.status(400).json(response)
             } else {
+                console.log('error 500 createCertificado')
                 res.status(500).json(response)
             }
         }
