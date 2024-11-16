@@ -8,7 +8,7 @@ import { IAlumno } from '../interfaces/alumnoInterface';
 import { IEvento } from '../interfaces/eventoInterface';
 import HString from '../helpers/HString';
 import HDate from '../helpers/HDate'
-import { PDFDocument, rgb } from 'pdf-lib'
+import { PDFDocument, rgb, PDFImage } from 'pdf-lib'
 import fs from 'fs';
 import path from 'path';
 import fontkit from 'fontkit';
@@ -157,6 +157,23 @@ class CertificadoService {
 
             const evento = eventoResponse.data as IEvento
 
+            const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
+                ? `${alumno.nombre_capitalized}`
+                : HString.capitalizeNames(data.nombre_alumno_impresion)
+
+            data.nombre_alumno_impresion = nombreAlumnoImpresion
+
+            // Generar un nuevo archivo PDF
+            const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento);
+
+            data.fecha_envio = fechaEnvio
+            data.fecha_registro = new Date()
+            data.ruta = outputPath
+            data.fileName = fileName
+            data.codigoQR = codigoQR
+            data.codigo = codigo
+
+            /*
             const svgPath = path.resolve(__dirname, '..', '..', 'public', 'img', 'template2.svg');
 
             const svgData = fs.readFileSync(svgPath, 'utf-8');
@@ -184,6 +201,7 @@ class CertificadoService {
             data.fileName = fileName
             data.codigoQR = pathCodigoQR
             data.codigo = codigo
+            */
 
             const newCertificado = await Certificado.create(data as any)
             if (newCertificado.id) {
@@ -206,6 +224,9 @@ class CertificadoService {
             if (!certificado) {
                 return { result: false, message: 'Certificado no encontrado' }
             }
+
+            console.log('data updateCertificado', data)
+            console.log('certificado updateCertificado', certificado)
 
             if (
                 data.id_alumno !== certificado.id_alumno ||
@@ -239,10 +260,18 @@ class CertificadoService {
                     fs.unlinkSync(certificado.ruta as string); // Eliminar el archivo anterior
                 }
 
-                const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
-                    ? `${alumno.nombres} ${alumno.apellido_paterno} ${alumno.apellido_materno}`
-                    : data.nombre_alumno_impresion
+                // const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
+                //     ? `${alumno.nombre_capitalized}`
+                //     : data.nombre_alumno_impresion
 
+                const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
+                    ? `${alumno.nombre_capitalized}`
+                    : HString.capitalizeNames(data.nombre_alumno_impresion)
+
+                data.id = certificado.id
+                data.codigo = certificado.codigo
+                data.codigoQR = certificado.codigoQR
+                data.ruta = certificado.ruta
                 data.nombre_alumno_impresion = nombreAlumnoImpresion
 
                 // Generar un nuevo archivo PDF
@@ -255,6 +284,8 @@ class CertificadoService {
                 data.codigo = codigo;
                 data.fecha_envio = fechaEnvio
 
+                console.log('ruta', outputPath, 'fileName', fileName, 'codigoQR', codigoQR, 'codigo', codigo, 'fechaEnvio', fechaEnvio)
+
                 // Actualizamos el registro en la base de datos
                 const updatedCertificado = await certificado.update(data);
                 return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
@@ -266,6 +297,7 @@ class CertificadoService {
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            console.log('errorMessage updateCertificado', errorMessage)
             return { result: false, error: errorMessage }
         }
     }
@@ -295,6 +327,7 @@ class CertificadoService {
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento) {
         try {
 
+            let codigo = ""
             const lugar = 'Lambayeque';
             const pathTemplate = path.resolve(__dirname, '../../public/pdf/template.pdf');
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/Kuenstler Script LT Std 2 Bold.otf');
@@ -306,7 +339,11 @@ class CertificadoService {
             const temarioEvento = evento.temario?.split('\n') as String[]
 
             // Código del certificado
-            const codigo = HString.generateCodigo()
+            if (data.id) {
+                codigo = data.codigo as string
+            } else {
+                codigo = HString.generateCodigo()
+            }
 
             // Definiendo el nombre del archivo
             const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
@@ -348,26 +385,58 @@ class CertificadoService {
             const pagina = pdfDoc.getPage(0);
 
             // Configurar el texto (posición y estilo)
-            const fontSizeForAlumno = 60;
-            let x = 280; // posición X
-            let y = 260; // posición Y
+            let fontSizeForAlumno = 60;
+            // let x = 280; // posición X
+            let y = 270; // posición Y
+            const maxWidth = 500; // Ancho máximo disponible para el texto
 
-            // const nombreAlumno = data.nombre_alumno_impresion ? data.nombre_alumno_impresion : alumno.nombre_capitalized
+            const name = data.nombre_alumno_impresion as string;
+
+            // Calcular el ancho de cada línea de texto
+            const lineHeight = 0.8 * fontSizeForAlumno; // Distancia entre líneas
+
+            // Dividir el nombre del alumno en líneas
+            const lines = this.splitTextIntoLines(name, maxWidth, customFontKuenstler, fontSizeForAlumno);
+
+            // Obtener el ancho de la página
+            const pageWidth = pagina.getWidth();
+
+            if (lines.length > 1) {
+                y = y + 30
+                fontSizeForAlumno = 54
+            }
 
             // Añadir el nombre del alumno
-            pagina.drawText(data.nombre_alumno_impresion as string, {
-                x,
-                y,
-                size: fontSizeForAlumno,
-                font: customFontKuenstler,
-                color: rgb(0, 0, 0), // negro
-            });
+            // pagina.drawText(data.nombre_alumno_impresion as string, {
+            //     x,
+            //     y,
+            //     size: fontSizeForAlumno,
+            //     font: customFontKuenstler,
+            //     color: rgb(0, 0, 0), // negro
+            // });
+            for (let i = 0; i < lines.length; i++) {
+                const lineWidth = customFontKuenstler.widthOfTextAtSize(lines[i], fontSizeForAlumno);
+                const x = ((pageWidth - lineWidth) / 2) + 140;
+                console.log('lineWidth', lineWidth, 'pageWidth', pageWidth, 'x', x, 'newY', (y - i * lineHeight))
+
+                pagina.drawText(lines[i], {
+                    x,
+                    y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
+                    size: fontSizeForAlumno,
+                    font: customFontKuenstler,
+                    color: rgb(0, 0, 0), // Negro
+                });
+            }
 
             const fontSizeForEvento = 16
-            const fontSizeForFecha = 12
+            const fontSizeForFecha = 13
 
+            let x = 250
             x = x + 60
-            y = y - 54
+
+            // y = 290
+            // y = y - 54
+            y = 206
 
             // Añadir el título del evento
             pagina.drawText(evento.titulo as string, {
@@ -378,7 +447,7 @@ class CertificadoService {
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
 
-            x = x + 91
+            x = x + 125
             y = y - 36
 
             // Añadir la fecha del evento
@@ -390,7 +459,7 @@ class CertificadoService {
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
 
-            x = x + 162
+            x = x + 120
             // y2 = 50
             y = y - 50
 
@@ -599,10 +668,29 @@ class CertificadoService {
 
             const baseUrl = process.env.CORS_ALLOWED_ORIGIN
 
-            // Generar código QR
-            const dataUrl = `${baseUrl}/certificado/${codigo}`
-            const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
-            const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
+            console.log('env', env)
+            console.log('baseUrl', baseUrl)
+
+            const dataUrlQR = `${baseUrl}/certificado/${codigo}`
+
+            let qrCodeImage: PDFImage
+
+            const qrCodeFilePath = data.codigoQR as string
+
+            // Validando si existe el QR
+            try {
+                // Usamos fs.promises.access para evitar bloqueos sincrónicos
+                await fs.promises.access(qrCodeFilePath, fs.constants.F_OK)
+
+                // Si existe, obtenemos la imagen del QR desde la ruta local
+                const arrayBuffer = await fs.promises.readFile(qrCodeFilePath);
+                qrCodeImage = await pdfDoc.embedPng(arrayBuffer);
+            } catch (err) {
+                // Generar código QR
+                const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrlQR}`)
+                qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
+            }
+
             const qrCodeDimensions = qrCodeImage.scale(0.8)
             newPage.drawImage(qrCodeImage, {
                 x: startQRX + 60,
@@ -619,20 +707,65 @@ class CertificadoService {
             const qrFileName = `qrcode_${sanitizedAlumno}.png`
             const qrOutputPath = path.resolve(__dirname, `../../public/qrcodes/${sanitizedTitulo}/${qrFileName}`)
 
-            // Verificando que el directorio de salida exista, sino se crea
+            // // Verificando que el directorio de salida exista, sino se crea
             const outputDirQRCode = path.dirname(qrOutputPath)
 
-            if (!fs.existsSync(outputDirQRCode)) {
-                fs.mkdirSync(outputDirQRCode, { recursive: true })
+            // Verificamos si el directorio de salida existe
+            try {
+                await fs.promises.access(outputDirQRCode, fs.constants.F_OK)
+            } catch (err) {
+                // Si el directorio no existe, se crea
+                await fs.promises.mkdir(outputDirQRCode, { recursive: true })
             }
 
-            await QRCode.toFile(qrOutputPath, `${dataUrl}`)
+            // Verificamos si el archivo QR existe
+            try {
+                await fs.promises.access(qrOutputPath, fs.constants.F_OK)
+                console.log(`El archivo QR ya existe en: ${qrOutputPath}`);
+            } catch (err) {
+                // Si el archivo no existe, lo generamos
+                console.log(`Generando nuevo código QR en: ${qrOutputPath}`);
+                await QRCode.toFile(qrOutputPath, dataUrlQR);
+                console.log(`Código QR guardado en: ${qrOutputPath}`);
+            }
+
+            // if (!fs.existsSync(outputDirQRCode)) {
+            //     fs.mkdirSync(outputDirQRCode, { recursive: true })
+            // }
+
+            // await QRCode.toFile(qrOutputPath, `${dataUrlQR}`)
 
             return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage };
         }
+    }
+
+    splitTextIntoLines(text: string, maxWidth: number, font: any, fontSize: number) {
+        const words = text.split(' '); // Dividir el texto por palabras
+        let lines: string[] = [];
+        let currentLine = '';
+
+        for (let i = 0; i < words.length; i++) {
+            const testLine = currentLine ? `${currentLine} ${words[i]}` : words[i];
+            const width = font.widthOfTextAtSize(testLine, fontSize); // Medir el ancho del texto
+
+            if (width <= maxWidth) {
+                currentLine = testLine; // La palabra cabe en la línea actual
+            } else {
+                if (currentLine) {
+                    lines.push(currentLine); // Agregar la línea completa
+                }
+                currentLine = words[i]; // Iniciar una nueva línea con la palabra actual
+            }
+        }
+
+        if (currentLine) {
+            lines.push(currentLine); // Agregar la última línea
+        }
+
+        return lines;
     }
 
     // Función para modificar el SVG
@@ -968,79 +1101,6 @@ class CertificadoService {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage }
-        }
-    }
-
-    // Función para dividir el texto según el ancho de la celda
-    splitTextToFitWidth(text: string, maxWidth: number, fontSize: number, font: any): string[] {
-        const lines: string[] = [];
-        let currentLine = '';
-
-        // Dividir el texto en palabras
-        const words = text.split(' ');
-
-        words.forEach(word => {
-            const testLine = currentLine ? `${currentLine} ${word}` : word;
-            const width = font.widthOfTextAtSize(testLine, fontSize); // Medir el ancho del texto
-
-            if (width > maxWidth) {
-                // Si el texto excede el ancho, agregar la línea anterior y comenzar una nueva
-                lines.push(currentLine);
-                currentLine = word; // Comienza con la palabra que no cabe
-            } else {
-                // Si cabe, agrega la palabra a la línea actual
-                currentLine = testLine;
-            }
-        });
-
-        if (currentLine) {
-            lines.push(currentLine); // Agregar la última línea
-        }
-
-        return lines;
-    }
-
-    // Ajustar el texto de acuerdo a la celda
-    async drawTemario(newPage: any, temarioEvento: string[], font: any) {
-        const startTemarioX = 20;
-        const startTemarioY = 290;
-        const cellWidthTemario = 370;
-        const baseCellHeight = 20; // Altura base de la celda
-        const fontSize = 12; // Tamaño de la fuente
-
-
-        const itemsStartY = startTemarioY - (baseCellHeight + 3);
-
-        for (let index = 0; index < temarioEvento.length; index++) {
-            const item = temarioEvento[index];
-            const currentY = itemsStartY - index * (baseCellHeight + 3);
-
-            // Dividir el texto para ajustarlo a la celda
-            const lines = this.splitTextToFitWidth(item, cellWidthTemario, fontSize, font);
-
-            // Calcular la altura de la celda basada en las líneas de texto
-            const cellHeight = baseCellHeight * lines.length;
-
-            // Dibujar la celda ajustada
-            newPage.drawRectangle({
-                x: startTemarioX,
-                y: currentY,
-                width: cellWidthTemario,
-                height: cellHeight,
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 0.5,
-                color: rgb(1, 1, 1),
-            });
-
-            // Dibujar las líneas de texto dentro de la celda
-            lines.forEach((line, lineIndex) => {
-                newPage.drawText(line, {
-                    x: startTemarioX + 3,
-                    y: currentY + (cellHeight - (lineIndex + 1) * fontSize) + 3,
-                    size: fontSize,
-                    color: rgb(0, 0, 0),
-                });
-            });
         }
     }
 }

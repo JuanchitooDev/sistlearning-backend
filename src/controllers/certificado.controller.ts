@@ -17,10 +17,10 @@ class CertificadoController {
         if (response.result) {
             res.status(200).json(response)
         } else {
-            if (response.error) {
-                res.status(500).json(response)
-            } else {
+            if (response.message) {
                 res.status(404).json(response)
+            } else {
+                res.status(500).json(response)
             }
         }
     }
@@ -30,10 +30,15 @@ class CertificadoController {
         if (response.result) {
             res.status(200).json(response)
         } else {
-            if (response.error) {
-                res.status(500).json(response)
-            } else {
+            // if (response.error) {
+            //     res.status(500).json(response)
+            // } else {
+            //     res.status(404).json(response)
+            // }
+            if (response.message) {
                 res.status(404).json(response)
+            } else {
+                res.status(500).json(response)
             }
         }
     }
@@ -71,13 +76,12 @@ class CertificadoController {
                     console.error(err);
                 }
             });
+            res.status(200).json(response);
         } else {
             if (response.message) {
-                console.log('error 400 createCertificado', response.message)
-                res.status(400).json(response)
+                res.status(404).send(response)
             } else {
-                console.log('error 500 createCertificado')
-                res.status(500).json(response)
+                res.status(500).send(response)
             }
         }
     }
@@ -94,11 +98,17 @@ class CertificadoController {
                     console.error(err);
                 }
             });
+            // res.status(200).json(response);
         } else {
-            if (response.error) {
-                res.status(500).json(response)
+            // if (response.error) {
+            //     res.status(500).json(response)
+            // } else {
+            //     res.status(400).json(response)
+            // }
+            if (response.message) {
+                res.status(404).send(response)
             } else {
-                res.status(400).json(response)
+                res.status(500).send(response)
             }
         }
     }
@@ -109,10 +119,15 @@ class CertificadoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
-                res.status(500).json(response);
+            // if (response.error) {
+            //     res.status(500).json(response);
+            // } else {
+            //     res.status(404).json(response);
+            // }
+            if (response.message) {
+                res.status(404).send(response)
             } else {
-                res.status(404).json(response);
+                res.status(500).send(response)
             }
         }
     }

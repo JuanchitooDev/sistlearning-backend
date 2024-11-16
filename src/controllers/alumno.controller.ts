@@ -29,10 +29,10 @@ class AlumnoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
-                res.status(500).json(response);
+            if (response.message) {
+                res.status(404).send(response)
             } else {
-                res.status(404).json(response)
+                res.status(500).send(response)
             }
         }
     }
@@ -44,10 +44,10 @@ class AlumnoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
-                res.status(500).json(response)
+            if (response.message) {
+                res.status(404).send(response)
             } else {
-                res.status(404).json(response);
+                res.status(500).send(response)
             }
         }
     }
@@ -58,10 +58,10 @@ class AlumnoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
-                res.status(500).json(response);
+            if (response.message) {
+                res.status(404).send(response)
             } else {
-                res.status(404).json(response);
+                res.status(500).send(response)
             }
         }
     }
