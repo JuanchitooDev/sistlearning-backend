@@ -173,36 +173,6 @@ class CertificadoService {
             data.codigoQR = codigoQR
             data.codigo = codigo
 
-            /*
-            const svgPath = path.resolve(__dirname, '..', '..', 'public', 'img', 'template2.svg');
-
-            const svgData = fs.readFileSync(svgPath, 'utf-8');
-
-            const nombreAlumno = (data.nombre_alumno_impresion === undefined)
-                ? `${alumno.nombre_capitalized}`
-                : HString.capitalizeNames(data.nombre_alumno_impresion)
-
-            // Modificar el SVG con el nombre del participante
-            const modifiedSvg = await this.modificarSvg(svgData, nombreAlumno);
-
-            // Asegúrate de que el valor es un string antes de convertirlo a un buffer
-            const svgBuffer = Buffer.from(modifiedSvg, 'utf-8');
-
-            // Convertir el SVG a PNG con sharp
-            const pngBuffer = await sharp(svgBuffer)
-                .png()  // Convertir a PNG
-                .toBuffer();
-
-            const { pathFileName, fileName, pathCodigoQR, codigo } = await this.generatePdfFromSvg(pngBuffer, alumno, evento)
-
-            data.fecha_envio = fechaEnvio
-            data.fecha_registro = new Date()
-            data.ruta = pathFileName
-            data.fileName = fileName
-            data.codigoQR = pathCodigoQR
-            data.codigo = codigo
-            */
-
             const newCertificado = await Certificado.create(data as any)
             if (newCertificado.id) {
                 return { result: true, message: 'Certificado registrado correctamente', data: newCertificado }
@@ -224,9 +194,6 @@ class CertificadoService {
             if (!certificado) {
                 return { result: false, message: 'Certificado no encontrado' }
             }
-
-            console.log('data updateCertificado', data)
-            console.log('certificado updateCertificado', certificado)
 
             if (
                 data.id_alumno !== certificado.id_alumno ||
@@ -260,10 +227,6 @@ class CertificadoService {
                     fs.unlinkSync(certificado.ruta as string); // Eliminar el archivo anterior
                 }
 
-                // const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
-                //     ? `${alumno.nombre_capitalized}`
-                //     : data.nombre_alumno_impresion
-
                 const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
                     ? `${alumno.nombre_capitalized}`
                     : HString.capitalizeNames(data.nombre_alumno_impresion)
@@ -284,8 +247,6 @@ class CertificadoService {
                 data.codigo = codigo;
                 data.fecha_envio = fechaEnvio
 
-                console.log('ruta', outputPath, 'fileName', fileName, 'codigoQR', codigoQR, 'codigo', codigo, 'fechaEnvio', fechaEnvio)
-
                 // Actualizamos el registro en la base de datos
                 const updatedCertificado = await certificado.update(data);
                 return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
@@ -297,7 +258,6 @@ class CertificadoService {
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            console.log('errorMessage updateCertificado', errorMessage)
             return { result: false, error: errorMessage }
         }
     }
@@ -406,18 +366,9 @@ class CertificadoService {
                 fontSizeForAlumno = 54
             }
 
-            // Añadir el nombre del alumno
-            // pagina.drawText(data.nombre_alumno_impresion as string, {
-            //     x,
-            //     y,
-            //     size: fontSizeForAlumno,
-            //     font: customFontKuenstler,
-            //     color: rgb(0, 0, 0), // negro
-            // });
             for (let i = 0; i < lines.length; i++) {
                 const lineWidth = customFontKuenstler.widthOfTextAtSize(lines[i], fontSizeForAlumno);
                 const x = ((pageWidth - lineWidth) / 2) + 140;
-                console.log('lineWidth', lineWidth, 'pageWidth', pageWidth, 'x', x, 'newY', (y - i * lineHeight))
 
                 pagina.drawText(lines[i], {
                     x,
@@ -668,9 +619,6 @@ class CertificadoService {
 
             const baseUrl = process.env.CORS_ALLOWED_ORIGIN
 
-            console.log('env', env)
-            console.log('baseUrl', baseUrl)
-
             const dataUrlQR = `${baseUrl}/certificado/${codigo}`
 
             let qrCodeImage: PDFImage
@@ -707,7 +655,7 @@ class CertificadoService {
             const qrFileName = `qrcode_${sanitizedAlumno}.png`
             const qrOutputPath = path.resolve(__dirname, `../../public/qrcodes/${sanitizedTitulo}/${qrFileName}`)
 
-            // // Verificando que el directorio de salida exista, sino se crea
+            // Verificando que el directorio de salida exista, sino se crea
             const outputDirQRCode = path.dirname(qrOutputPath)
 
             // Verificamos si el directorio de salida existe
@@ -721,19 +669,10 @@ class CertificadoService {
             // Verificamos si el archivo QR existe
             try {
                 await fs.promises.access(qrOutputPath, fs.constants.F_OK)
-                console.log(`El archivo QR ya existe en: ${qrOutputPath}`);
             } catch (err) {
                 // Si el archivo no existe, lo generamos
-                console.log(`Generando nuevo código QR en: ${qrOutputPath}`);
                 await QRCode.toFile(qrOutputPath, dataUrlQR);
-                console.log(`Código QR guardado en: ${qrOutputPath}`);
             }
-
-            // if (!fs.existsSync(outputDirQRCode)) {
-            //     fs.mkdirSync(outputDirQRCode, { recursive: true })
-            // }
-
-            // await QRCode.toFile(qrOutputPath, `${dataUrlQR}`)
 
             return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
         } catch (error) {
@@ -790,7 +729,6 @@ class CertificadoService {
             // Parsear al SVG para cambiar el contenido
             xml2js.parseString(svgData, parseOptions, (err, result) => {
                 if (err) {
-                    console.log('Error al parsear SVG: ', err)
                     return reject(err)
                 }
 

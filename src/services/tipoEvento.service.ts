@@ -69,15 +69,15 @@ class TipoEventoService {
     async updateTipo(id: number, data: ITipoEvento): Promise<TipoEventoResponse> {
         try {
             data.nombre_url = HString.convertToUrlString(data.nombre as String)
-            
+
             const tipo = await TipoEvento.findByPk(id)
-            
+
             if (!tipo) {
                 return { result: false, message: 'Tipo de evento no encontrado' }
             }
-            
+
             const updatedTipo = await tipo.update(data)
-            
+
             return { result: true, message: 'Tipo de evento actualizado con éxito', data: updatedTipo }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
