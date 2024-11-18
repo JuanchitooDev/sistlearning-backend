@@ -120,13 +120,7 @@ class AlumnoService {
                 return { result: false, message: 'Alumno no encontrado' }
             }
 
-            console.log('alumno updateAlumno', alumno)
-
-            console.log('data updateAlumno', data)
-
             const fechaNacimientoStr = (data.fecha_nacimiento_str === undefined) ? alumno.fecha_nacimiento_str : data.fecha_nacimiento_str
-
-            console.log('fechaNacimientoStr', fechaNacimientoStr)
 
             const apellidoPaterno = (data.apellido_paterno === undefined) ? alumno.apellido_paterno?.trim() : data.apellido_paterno?.trim()
             const apellidoMaterno = (data.apellido_materno === undefined) ? alumno.apellido_materno?.trim() : data.apellido_materno?.trim()
@@ -142,13 +136,10 @@ class AlumnoService {
             data.fecha_nacimiento = fechaNacimiento
             data.nombre_capitalized = nombreCapitalized
 
-            console.log('data actualizada', data)
-
             const updatedAlumno = await alumno.update(data)
             return { result: true, message: 'Alumno actualizado con éxito', data: updatedAlumno }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            console.log('errorMessage updateAlumno', errorMessage)
             return { result: false, error: errorMessage }
         }
     }

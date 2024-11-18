@@ -4,7 +4,6 @@ import DocumentoService from '../services/documento.service'
 class DocumentoController {
     async getDocumentoInfo(req: Request, res: Response) {
         const { idtipodoc, numdoc } = req.params
-        console.log('idtipodoc', idtipodoc, 'numdoc', numdoc)
         const idTipoDocNumber = Number(idtipodoc)
         const response = await DocumentoService.getDocumentoInfo(idTipoDocNumber, numdoc)
 

@@ -81,7 +81,6 @@ class PersonaService {
         const t = await sequelize.transaction()
         try {
             const newPersona = await Persona.create(data as any)
-            console.log('newPersona createPersona', newPersona)
 
             await t.commit()
 
@@ -156,8 +155,6 @@ class PersonaService {
 
             // Actualizamos la persona
             const updatedPersona = await persona.update(data, { transaction: t })
-
-            console.log('updatePersona', this.updatePersona)
 
             await t.commit()
 

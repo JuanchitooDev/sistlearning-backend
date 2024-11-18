@@ -60,24 +60,69 @@ class CertificadoController {
         }
     }
 
+    // async createCertificado(req: Request, res: Response) {
+    //     try {
+    //         const response = await CertificadoService.createCertificado(req.body)
+    //         console.log('response createCertificado', response)
+    //         if (response.result) {
+    //             // console.log('response.data', response.data)
+    //             const data = response.data as ICertificado
+    //             const outputPath = data.ruta as string
+    //             const fileName = data.fileName as string
+
+    //             // Verificar que la ruta y el nombre del archivo no estén vacíos o nulos
+    //             if (!outputPath || !fileName) {
+    //                 return res.status(500).json({ message: 'Ruta o nombre de archivo inválido' });
+    //             }
+
+    //             console.log('data ICertificado', data)
+    //             console.log('data.ruta', data.ruta)
+    //             console.log('data.fileName', data.fileName)
+
+    //             res.download(outputPath, fileName, (err) => {
+    //                 if (err) {
+    //                     console.error('Error al descargar el archivo:', err);
+    //                     console.error(err);
+    //                 }
+    //             });
+    //             // res.status(200).json(response.message);
+    //         } else {
+    //             if (response.message) {
+    //                 res.status(404).send(response.message)
+    //             } else {
+    //                 res.status(500).send(response.error)
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error inesperado:', error);
+    //         return res.status(500).json({ message: 'Error inesperado en el servidor' });
+    //     }
+    // }
+
     async createCertificado(req: Request, res: Response) {
-        const response = await CertificadoService.createCertificado(req.body)
-        if (response.result) {
-            const data = response.data as ICertificado
-            const outputPath = data.ruta as string
-            const fileName = data.fileName as string
-            res.download(outputPath, fileName, (err) => {
-                if (err) {
-                    console.error(err);
-                }
-            });
-            res.status(200).json(response.message);
-        } else {
-            if (response.message) {
-                res.status(404).send(response.message)
+        try {
+            const response = await CertificadoService.createCertificado(req.body)
+            if (response.result) {
+                const data = response.data as ICertificado
+                const outputPath = data.ruta as string
+                const fileName = data.fileName as string
+                res.download(outputPath, fileName, (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
+                // res.status(200).json(response.message);
             } else {
-                res.status(500).send(response.error)
+                if (response.message) {
+                    res.status(404).send(response.message)
+                } else {
+                    res.status(500).send(response.error)
+                }
             }
+        } catch (error) {
+            // return res.status(500).json({ message: 'Error inesperado en el servidor' });
+            console.error('Error inesperado:', error);
+            res.status(500).send(error)
         }
     }
 
