@@ -35,9 +35,13 @@ class DocumentoService {
                 // Determina el ambiente
                 const env = process.env.NODE_ENV || 'development'
 
+                console.log('env', env)
+
                 dotenv.config({ path: `.env.${env}` })
 
                 const token = process.env.TOKEN_API_DOCS
+
+                console.log('token', token)
 
                 const response = await axios.get(`${urlApiDoc}`, {
                     headers: {
