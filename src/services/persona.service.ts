@@ -81,6 +81,7 @@ class PersonaService {
         const t = await sequelize.transaction()
         try {
             const newPersona = await Persona.create(data as any)
+            console.log('newPersona createPersona', newPersona)
 
             await t.commit()
 
@@ -92,6 +93,7 @@ class PersonaService {
         } catch (error) {
             await t.rollback()
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            console.log('errorMessage', errorMessage)
             return { result: false, error: errorMessage }
         }
     }

@@ -14,17 +14,23 @@ class DocumentoService {
 
             // Verificando si existe una persona
             const dataPersona = await personaService.getPersonaByIdTipoDocAndNumDoc(idTipoDocumento, numeroDocumento)
-            
+            console.log('dataPersona', dataPersona)
+
             const getTipoDocumento = await tipoDocumentoService.getTipoById(idTipoDocumento);
             const dataTipoDocumento = getTipoDocumento.data as ITipoDocumento
             const { abreviatura } = dataTipoDocumento
         
+            console.log('abreviatura', abreviatura)
+
             if (!dataPersona.result) {
+                console.log('dataPersona es falso')
                 if ( abreviatura === 'DNI' ) {
                     urlApiDoc = `${API_DNI}${numeroDocumento}`
                 } else {
                     urlApiDoc = `${API_CEE}${numeroDocumento}`
                 }
+
+                console.log('urlApiDoc', urlApiDoc)
 
                 // Determina el ambiente
                 const env = process.env.NODE_ENV || 'development'
@@ -39,8 +45,11 @@ class DocumentoService {
                     }
                 })
 
+                console.log('env', env, 'token', token, 'response api reniec', response)
+
                 // Comprobando si la respuesta es exitosa
                 if (response.data.success) {
+                    console.log('consulta api exitosa')
                     const data = response.data.data
                     
                     const persona: IPersona = {
@@ -76,6 +85,7 @@ class DocumentoService {
             return { result: false, error: 'No se puede obtener la información del documento' }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+            console.log('errorMessage getDocumentoInfo', errorMessage)
             return { result: false, error: errorMessage }
         }
     }
