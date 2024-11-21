@@ -380,7 +380,8 @@ class CertificadoService {
             }
 
             const fontSizeForEvento = 16
-            const fontSizeForFecha = 13
+            const fontSizeForFechaEvento = 12
+            const fontSizeForFechaEmision = 13
 
             let x = 250
             x = x + 60
@@ -405,7 +406,7 @@ class CertificadoService {
             pagina.drawText(fechaEvento, {
                 x,
                 y,
-                size: fontSizeForFecha,
+                size: fontSizeForFechaEvento,
                 font: customFontBalooMedium,
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
@@ -418,7 +419,7 @@ class CertificadoService {
             pagina.drawText(lugarFechaEmision, {
                 x,
                 y,
-                size: fontSizeForFecha,
+                size: fontSizeForFechaEmision,
                 font: customFontBalooMedium,
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
