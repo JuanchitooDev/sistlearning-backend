@@ -225,9 +225,6 @@ class CertificadoService {
                 return { result: false, message: 'Certificado no encontrado' }
             }
 
-            console.log('data updateCertificado', data)
-            console.log('certificado updateCertificado', certificado)
-
             if (
                 data.id_alumno !== certificado.id_alumno ||
                 data.id_evento !== certificado.id_evento ||
@@ -284,8 +281,6 @@ class CertificadoService {
                 data.codigo = codigo;
                 data.fecha_envio = fechaEnvio
 
-                console.log('ruta', outputPath, 'fileName', fileName, 'codigoQR', codigoQR, 'codigo', codigo, 'fechaEnvio', fechaEnvio)
-
                 // Actualizamos el registro en la base de datos
                 const updatedCertificado = await certificado.update(data);
                 return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
@@ -297,7 +292,6 @@ class CertificadoService {
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            console.log('errorMessage updateCertificado', errorMessage)
             return { result: false, error: errorMessage }
         }
     }
@@ -414,10 +408,10 @@ class CertificadoService {
             //     font: customFontKuenstler,
             //     color: rgb(0, 0, 0), // negro
             // });
+
             for (let i = 0; i < lines.length; i++) {
                 const lineWidth = customFontKuenstler.widthOfTextAtSize(lines[i], fontSizeForAlumno);
                 const x = ((pageWidth - lineWidth) / 2) + 140;
-                console.log('lineWidth', lineWidth, 'pageWidth', pageWidth, 'x', x, 'newY', (y - i * lineHeight))
 
                 pagina.drawText(lines[i], {
                     x,
@@ -429,7 +423,8 @@ class CertificadoService {
             }
 
             const fontSizeForEvento = 16
-            const fontSizeForFecha = 13
+            const fontSizeForFechaEvento = 12
+            const fontSizeForFechaEmision = 13
 
             let x = 250
             x = x + 60
@@ -447,14 +442,14 @@ class CertificadoService {
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
 
-            x = x + 125
+            x = x + 123
             y = y - 36
 
             // Añadir la fecha del evento
             pagina.drawText(fechaEvento, {
                 x,
                 y,
-                size: fontSizeForFecha,
+                size: fontSizeForFechaEvento,
                 font: customFontBalooMedium,
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
@@ -467,7 +462,7 @@ class CertificadoService {
             pagina.drawText(lugarFechaEmision, {
                 x,
                 y,
-                size: fontSizeForFecha,
+                size: fontSizeForFechaEmision,
                 font: customFontBalooMedium,
                 color: rgb(4 / 255, 45 / 255, 71 / 255)
             });
@@ -668,9 +663,6 @@ class CertificadoService {
 
             const baseUrl = process.env.CORS_ALLOWED_ORIGIN
 
-            console.log('env', env)
-            console.log('baseUrl', baseUrl)
-
             const dataUrlQR = `${baseUrl}/certificado/${codigo}`
 
             let qrCodeImage: PDFImage
@@ -721,12 +713,9 @@ class CertificadoService {
             // Verificamos si el archivo QR existe
             try {
                 await fs.promises.access(qrOutputPath, fs.constants.F_OK)
-                console.log(`El archivo QR ya existe en: ${qrOutputPath}`);
             } catch (err) {
                 // Si el archivo no existe, lo generamos
-                console.log(`Generando nuevo código QR en: ${qrOutputPath}`);
                 await QRCode.toFile(qrOutputPath, dataUrlQR);
-                console.log(`Código QR guardado en: ${qrOutputPath}`);
             }
 
             // if (!fs.existsSync(outputDirQRCode)) {
@@ -790,7 +779,6 @@ class CertificadoService {
             // Parsear al SVG para cambiar el contenido
             xml2js.parseString(svgData, parseOptions, (err, result) => {
                 if (err) {
-                    console.log('Error al parsear SVG: ', err)
                     return reject(err)
                 }
 

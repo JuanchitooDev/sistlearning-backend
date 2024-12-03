@@ -155,8 +155,6 @@ class PersonaService {
             // Actualizamos la persona
             const updatedPersona = await persona.update(data, { transaction: t })
 
-            console.log('updatePersona', this.updatePersona)
-
             await t.commit()
 
             return { result: true, message: 'Persona actualizada con éxito', data: updatedPersona }

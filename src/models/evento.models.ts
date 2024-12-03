@@ -1,19 +1,23 @@
 import { Model, DataTypes } from 'sequelize'
 import sequelize from '../config/db'
 import TipoEvento from './tipoEvento.models'
+import CategoriaEvento from './categoriaEvento.models'
 
 class Evento extends Model {
     public id?: number
     public id_parent?: number
     public id_tipoevento?: number
+    public id_categoriaevento?: number
     public titulo?: string
     public titulo_url?: string
     public descripcion?: string
     public temario?: string
     public plantilla_certificado?: string
     public fecha?: Date
-    public modalidad?: 'PRESENCIAL' | 'VIRTUAL'
+    public fecha_fin?: string
+    public modalidad?: 'PRESENCIAL' | 'VIRTUAL' | 'MIXTO'
     public precio?: number
+    public duracion?: string
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -42,6 +46,14 @@ Evento.init({
             key: 'id'
         }
     },
+    id_categoriaevento: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: CategoriaEvento,
+            key: 'id'
+        }
+    },
     titulo: {
         type: DataTypes.STRING(70),
         allowNull: false
@@ -66,12 +78,20 @@ Evento.init({
         type: DataTypes.DATE,
         allowNull: true
     },
+    fecha_fin: {
+        type: DataTypes.STRING(12),
+        allowNull: true
+    },
     modalidad: {
-        type: DataTypes.ENUM('PRESENCIAL', 'VIRTUAL'),
+        type: DataTypes.ENUM('PRESENCIAL', 'VIRTUAL', 'MIXTO'),
         allowNull: false
     },
     precio: {
         type: DataTypes.DOUBLE,
+        allowNull: true
+    },
+    duracion: {
+        type: DataTypes.STRING(10),
         allowNull: true
     },
     user_crea: {
@@ -98,6 +118,8 @@ Evento.init({
     freezeTableName: true
 })
 
-Evento.belongsTo(TipoEvento, {foreignKey: 'id_tipoevento'})
+Evento.belongsTo(TipoEvento, { foreignKey: 'id_tipoevento' })
+
+Evento.belongsTo(CategoriaEvento, { foreignKey: 'id_categoriaevento' })
 
 export default Evento

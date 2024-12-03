@@ -27,7 +27,7 @@ class EmpresaController {
     async createEmpresa(req: Request, res: Response) {
         const response = await EmpresaService.createEmpresa(req.body);
         if (response.result) {
-            res.status(200).json(response);
+            res.status(201).json(response);
         } else {
             if (response.error) {
                 res.status(500).json(response);

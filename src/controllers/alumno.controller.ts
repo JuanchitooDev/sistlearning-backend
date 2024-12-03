@@ -27,7 +27,7 @@ class AlumnoController {
     async createAlumno(req: Request, res: Response) {
         const response = await AlumnoService.createAlumno(req.body);
         if (response.result) {
-            res.status(200).json(response);
+            res.status(201).json(response);
         } else {
             if (response.message) {
                 res.status(404).send(response)
@@ -40,7 +40,6 @@ class AlumnoController {
     async updateAlumno(req: Request, res: Response) {
         const { id } = req.params;
         const response = await AlumnoService.updateAlumno(+id, req.body);
-        console.log('response updateAlumno', response)
         if (response.result) {
             res.status(200).json(response);
         } else {

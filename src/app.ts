@@ -4,6 +4,7 @@ import cors from 'cors'
 import alumnoRoutes from './routes/alumno.routes'
 import tipoDocumentoRoutes from './routes/tipoDocumento.routes'
 import tipoEventoRoutes from './routes/tipoEvento.routes'
+import categoriaEventoRoutes from './routes/categoriaEvento.routes'
 import tipoContenidoRoutes from './routes/tipoContenido.routes'
 import perfilRoutes from './routes/perfil.routes'
 import trabajadorRoutes from './routes/trabajador.routes'
@@ -33,6 +34,7 @@ app.use(express.json())
 app.use('/api/alumno', alumnoRoutes)
 app.use('/api/tipo-documento', tipoDocumentoRoutes)
 app.use('/api/tipo-evento', tipoEventoRoutes)
+app.use('/api/categoria-evento', categoriaEventoRoutes)
 app.use('/api/tipo-contenido', tipoContenidoRoutes)
 app.use('/api/perfil', perfilRoutes)
 app.use('/api/trabajador', trabajadorRoutes)

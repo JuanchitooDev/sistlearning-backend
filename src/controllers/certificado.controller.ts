@@ -30,11 +30,6 @@ class CertificadoController {
         if (response.result) {
             res.status(200).json(response)
         } else {
-            // if (response.error) {
-            //     res.status(500).json(response)
-            // } else {
-            //     res.status(404).json(response)
-            // }
             if (response.message) {
                 res.status(404).json(response)
             } else {
@@ -76,7 +71,7 @@ class CertificadoController {
                     console.error(err);
                 }
             });
-            res.status(200).json(response);
+            res.status(201).json(response);
         } else {
             if (response.message) {
                 res.status(404).send(response)
@@ -98,13 +93,7 @@ class CertificadoController {
                     console.error(err);
                 }
             });
-            // res.status(200).json(response);
         } else {
-            // if (response.error) {
-            //     res.status(500).json(response)
-            // } else {
-            //     res.status(400).json(response)
-            // }
             if (response.message) {
                 res.status(404).send(response)
             } else {
@@ -119,11 +108,6 @@ class CertificadoController {
         if (response.result) {
             res.status(200).json(response);
         } else {
-            // if (response.error) {
-            //     res.status(500).json(response);
-            // } else {
-            //     res.status(404).json(response);
-            // }
             if (response.message) {
                 res.status(404).send(response)
             } else {

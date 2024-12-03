@@ -27,7 +27,7 @@ class CargoController {
     async createCargo(req: Request, res: Response) {
         const response = await CargoService.createCargo(req.body);
         if (response.result) {
-            res.status(200).json(response);
+            res.status(201).json(response);
         } else {
             if (response.error) {
                 res.status(500).json(response);
