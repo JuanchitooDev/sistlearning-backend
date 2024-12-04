@@ -74,7 +74,9 @@ class ContenidoService {
 
     async updateContenido(id: number, data: IContenido): Promise<ContenidoResponse> {
         try {
-            data.titulo_url = HString.convertToUrlString(data.titulo as String)
+            if (data.titulo) {
+                data.titulo_url = HString.convertToUrlString(data.titulo as String)
+            }
 
             const contenido = await Contenido.findByPk(id)
 

@@ -52,16 +52,18 @@ class PerfilService {
 
     async updatePerfil(id: number, data: IPerfil): Promise<PerfilResponse> {
         try {
-            data.nombre_url = HString.convertToUrlString(data.nombre as String)
-            
+            if (data.nombre) {
+                data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            }
+
             const perfil = await Perfil.findByPk(id)
-            
+
             if (!perfil) {
                 return { result: false, message: 'Perfil no encontrado' }
             }
-            
+
             const updatedPerfil = await perfil.update(data)
-            
+
             return { result: true, message: 'Perfil actualizado con éxito', data: updatedPerfil }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';

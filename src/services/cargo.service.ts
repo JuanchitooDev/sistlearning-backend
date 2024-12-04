@@ -52,7 +52,9 @@ class CargoService {
 
     async updateCargo(id: number, data: ICargo): Promise<CargoResponse> {
         try {
-            data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            if (data.nombre) {
+                data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            }
             const cargo = await Cargo.findByPk(id)
             if (!cargo) {
                 return { result: false, message: 'Cargo no encontrado' }

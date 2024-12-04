@@ -68,7 +68,9 @@ class TipoEventoService {
 
     async updateTipo(id: number, data: ITipoEvento): Promise<TipoEventoResponse> {
         try {
-            data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            if (data.nombre) {
+                data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            }
 
             const tipo = await TipoEvento.findByPk(id)
 

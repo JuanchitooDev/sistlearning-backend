@@ -163,8 +163,16 @@ class CertificadoService {
 
             data.nombre_alumno_impresion = nombreAlumnoImpresion
 
+            const customTemplate = "template_dos"
+
             // Generar un nuevo archivo PDF
-            const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento);
+            const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, customTemplate);
+
+            console.log('response generateCertificadoPDF')
+            console.log('outputPath', outputPath)
+            console.log('fileName', fileName)
+            console.log('codigoQR', codigoQR)
+            console.log('codigo', codigo)
 
             data.fecha_envio = fechaEnvio
             data.fecha_registro = new Date()
@@ -237,8 +245,10 @@ class CertificadoService {
                 data.ruta = certificado.ruta
                 data.nombre_alumno_impresion = nombreAlumnoImpresion
 
+                const customTemplate = "template_dos"
+
                 // Generar un nuevo archivo PDF
-                const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento);
+                const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, customTemplate);
 
                 // Actualizar la base de datos con la nueva ruta y los nuevos datos
                 data.ruta = outputPath;
@@ -284,16 +294,19 @@ class CertificadoService {
     }
 
     // Método auxiliar para generar el PDF del certificado
-    async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento) {
+    async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
         try {
-
             let codigo = ""
             const lugar = 'Lambayeque';
-            const pathTemplate = path.resolve(__dirname, '../../public/pdf/template.pdf');
-            const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/Kuenstler Script LT Std 2 Bold.otf');
+            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${nombreTemplate}.pdf`);
+            const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.ttf')
+            const pathFontKuenstlerBold = path.resolve(__dirname, '../../public/fonts/Kuenstler Script LT Std 2 Bold.otf');
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
-            const pathLogo = path.resolve(__dirname, '../../public/img/logo_small.png');
+            const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente.png');
+
+            console.log('name template', nombreTemplate)
+            console.log('pathTemplate', pathTemplate)
 
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
             const temarioEvento = evento.temario?.split('\n') as String[]
@@ -311,11 +324,20 @@ class CertificadoService {
             const fileName = `certificado_${sanitizedAlumno}.pdf`
             const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
 
+            console.log('sanitizedTitulo', sanitizedTitulo)
+            console.log('sanitizedAlumno', sanitizedAlumno)
+            console.log('fileName', fileName)
+            console.log('outputPath', outputPath)
+
             // Definiendo la fecha de emisión
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
             const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
             const lugarFechaEmision = `${lugar}, ${fechaEmision}`
+
+            console.log('fechaEmision', fechaEmision)
+            console.log('lugarFechaEmision', lugarFechaEmision)
+            console.log('fechaEvento', fechaEvento)
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
@@ -331,8 +353,11 @@ class CertificadoService {
             pdfDoc.registerFontkit(fontkit as any)
 
             // Cargar la fuente
-            const fontKuenstlerBytes = fs.readFileSync(pathFontKuenstler)
-            const customFontKuenstler = await pdfDoc.embedFont(fontKuenstlerBytes)
+            const fontKuenstlerBold = fs.readFileSync(pathFontKuenstlerBold)
+            const customFontKuenstlerBold = await pdfDoc.embedFont(fontKuenstlerBold)
+
+            const fontKuenstler = fs.readFileSync(pathFontKuenstler)
+            const customFontKuenstler = await pdfDoc.embedFont(fontKuenstler)
 
             // Cargar otra fuentes
             const fontBalooBold = fs.readFileSync(pathFontBalooBold)
@@ -342,88 +367,123 @@ class CertificadoService {
             const customFontBalooMedium = await pdfDoc.embedFont(fontBalooMedium)
 
             // Obtener la primera página
-            const pagina = pdfDoc.getPage(0);
+            const pagina = pdfDoc.getPage(0)
 
-            // Configurar el texto (posición y estilo)
-            let fontSizeForAlumno = 60;
-            // let x = 280; // posición X
-            let y = 270; // posición Y
-            const maxWidth = 500; // Ancho máximo disponible para el texto
-
-            const name = data.nombre_alumno_impresion as string;
-
-            // Calcular el ancho de cada línea de texto
-            const lineHeight = 0.8 * fontSizeForAlumno; // Distancia entre líneas
-
-            // Dividir el nombre del alumno en líneas
-            const lines = this.splitTextIntoLines(name, maxWidth, customFontKuenstler, fontSizeForAlumno);
+            let fontSizeForAlumno = 0
+            let y = 0
+            let maxWidth = 0
+            let fontSizeForEvento = 0
 
             // Obtener el ancho de la página
             const pageWidth = pagina.getWidth();
 
-            if (lines.length > 1) {
-                y = y + 30
-                fontSizeForAlumno = 54
+            const nombreImpresion = data.nombre_alumno_impresion as string;
+
+            switch (nombreTemplate) {
+                case "template":
+                    // Configurar el texto (posición y estilo)
+                    fontSizeForAlumno = 60;
+                    y = 270; // posición Y
+                    maxWidth = 500; // Ancho máximo disponible para el texto
+
+                    // Calcular el ancho de cada línea de texto
+                    const lineHeight = 0.8 * fontSizeForAlumno; // Distancia entre líneas
+
+                    // Dividir el nombre del alumno en líneas
+                    const lines = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+
+                    if (lines.length > 1) {
+                        y = y + 30
+                        fontSizeForAlumno = 54
+                    }
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const lineWidth = customFontKuenstlerBold.widthOfTextAtSize(lines[i], fontSizeForAlumno);
+                        const x = ((pageWidth - lineWidth) / 2) + 140;
+
+                        pagina.drawText(lines[i], {
+                            x,
+                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForAlumno,
+                            font: customFontKuenstlerBold,
+                            color: rgb(0, 0, 0), // Negro
+                        });
+                    }
+
+                    fontSizeForEvento = 16
+                    const fontSizeForFechaEvento = 12
+                    const fontSizeForFechaEmision = 13
+
+                    let x = 250
+                    x = x + 60
+
+                    y = 206
+
+                    // Añadir el título del evento
+                    pagina.drawText(evento.titulo as string, {
+                        x,
+                        y,
+                        size: fontSizeForEvento,
+                        font: customFontBalooBold,
+                        color: rgb(4 / 255, 45 / 255, 71 / 255)
+                    });
+
+                    x = x + 123
+                    y = y - 36
+
+                    // Añadir la fecha del evento
+                    pagina.drawText(fechaEvento, {
+                        x,
+                        y,
+                        size: fontSizeForFechaEvento,
+                        font: customFontBalooMedium,
+                        color: rgb(4 / 255, 45 / 255, 71 / 255)
+                    });
+
+                    x = x + 120
+                    y = y - 50
+
+                    // Añadir la fecha del evento
+                    pagina.drawText(lugarFechaEmision, {
+                        x,
+                        y,
+                        size: fontSizeForFechaEmision,
+                        font: customFontBalooMedium,
+                        color: rgb(4 / 255, 45 / 255, 71 / 255)
+                    });
+                    break;
+                case "template_dos":
+                    // Configurar el texto (posición y estilo)
+                    fontSizeForAlumno = 50;
+                    y = 270; // posición Y
+                    maxWidth = 500; // Ancho máximo disponible para el texto
+                    const lineWidth = customFontKuenstler.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
+                    let posX = ((pageWidth - lineWidth) / 2) + 140;
+
+                    pagina.drawText(nombreImpresion, {
+                        x: posX,
+                        y, // Ajustar la posición vertical para cada línea
+                        size: fontSizeForAlumno,
+                        font: customFontKuenstler,
+                        color: rgb(0, 0, 0), // Negro
+                    });
+
+                    fontSizeForEvento = 23
+
+                    posX = 20
+                    y = y + 40
+
+                    // Añadir el título del evento
+                    pagina.drawText(evento.titulo as string, {
+                        x: posX,
+                        y,
+                        size: fontSizeForEvento,
+                        font: customFontBalooBold,
+                        color: rgb(19 / 255, 37 / 255, 60 / 255)
+                    });
+
+                    break;
             }
-
-
-            for (let i = 0; i < lines.length; i++) {
-                const lineWidth = customFontKuenstler.widthOfTextAtSize(lines[i], fontSizeForAlumno);
-                const x = ((pageWidth - lineWidth) / 2) + 140;
-
-                pagina.drawText(lines[i], {
-                    x,
-                    y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
-                    size: fontSizeForAlumno,
-                    font: customFontKuenstler,
-                    color: rgb(0, 0, 0), // Negro
-                });
-            }
-
-            const fontSizeForEvento = 16
-            const fontSizeForFechaEvento = 12
-            const fontSizeForFechaEmision = 13
-
-            let x = 250
-            x = x + 60
-
-            // y = 290
-            // y = y - 54
-            y = 206
-
-            // Añadir el título del evento
-            pagina.drawText(evento.titulo as string, {
-                x,
-                y,
-                size: fontSizeForEvento,
-                font: customFontBalooBold,
-                color: rgb(4 / 255, 45 / 255, 71 / 255)
-            });
-
-            x = x + 123
-            y = y - 36
-
-            // Añadir la fecha del evento
-            pagina.drawText(fechaEvento, {
-                x,
-                y,
-                size: fontSizeForFechaEvento,
-                font: customFontBalooMedium,
-                color: rgb(4 / 255, 45 / 255, 71 / 255)
-            });
-
-            x = x + 120
-            // y2 = 50
-            y = y - 50
-
-            // Añadir la fecha del evento
-            pagina.drawText(lugarFechaEmision, {
-                x,
-                y,
-                size: fontSizeForFechaEmision,
-                font: customFontBalooMedium,
-                color: rgb(4 / 255, 45 / 255, 71 / 255)
-            });
 
             // Crear nueva página para el logo, código QR y tabla
             const newPageWidth = 842
@@ -623,6 +683,10 @@ class CertificadoService {
 
             const dataUrlQR = `${baseUrl}/certificado/${codigo}`
 
+            console.log('env', env)
+            console.log('baseUrl', baseUrl)
+            console.log('dataUrlQR', dataUrlQR)
+
             let qrCodeImage: PDFImage
 
             const qrCodeFilePath = data.codigoQR as string
@@ -660,6 +724,10 @@ class CertificadoService {
             // Verificando que el directorio de salida exista, sino se crea
             const outputDirQRCode = path.dirname(qrOutputPath)
 
+            console.log('qrFileName', qrFileName)
+            console.log('qrOutputPath', qrOutputPath)
+            console.log('outputDirQRCode', outputDirQRCode)
+
             // Verificamos si el directorio de salida existe
             try {
                 await fs.promises.access(outputDirQRCode, fs.constants.F_OK)
@@ -676,9 +744,16 @@ class CertificadoService {
                 await QRCode.toFile(qrOutputPath, dataUrlQR);
             }
 
+            console.log('return generateCertificate')
+            console.log('outputPath', outputPath)
+            console.log('fileName', fileName)
+            console.log('qrOutputPath', qrOutputPath)
+            console.log('codigo', codigo)
+
             return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            console.log('errorMessage generateCertificate', errorMessage)
             return { result: false, error: errorMessage };
         }
     }
@@ -707,341 +782,6 @@ class CertificadoService {
         }
 
         return lines;
-    }
-
-    // Función para modificar el SVG
-    async modificarSvg(svgData: any, nombre: String): Promise<string> {
-        return new Promise((resolve, reject) => {
-
-            const parseOptions = {
-                explicitArray: false, // Esto hará que los elementos únicos no se conviertan en arrays.
-                normalizeTags: true,  // Asegura que las etiquetas sean tratadas en minúsculas (por ejemplo, <text> en lugar de <Text>)
-                mergeAttrs: true      // Fusiona los atributos, si es necesario
-            };
-
-            // Eliminar el espacio de nombres 'xmlns:i' si no es necesario
-            // Esto reemplaza cualquier instancia del namespace 'xmlns:i' en el SVG
-            // svgData = svgData.replace(/xmlns:i="[^"]*"/g, "");
-
-            // Agregar el espacio de nombres xmlns:xlink si no existe
-            // if (!svgData.includes('xmlns:xlink')) {
-            //     svgData = svgData.replace('<svg', '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-            // }
-
-            // Parsear al SVG para cambiar el contenido
-            xml2js.parseString(svgData, parseOptions, (err, result) => {
-                if (err) {
-                    return reject(err)
-                }
-
-                // Buscar el elemento <tspan> con id="participante"
-                const textElements = result.svg.g['g'].text;  // Asumiendo que result.svg.g['g'].text tiene los elementos <text>
-
-                // Si el elemento 'text' no es un array, hacerlo un array
-                const textArray = Array.isArray(textElements) ? textElements : [textElements];
-
-                // Reemplazar el texto del <tspan> con id="participante"
-                textArray.forEach((textElement: any) => {
-                    const tspan = textElement.tspan;
-                    if (Array.isArray(tspan)) {
-                        tspan.forEach((tspanElement: any) => {
-                            if (tspanElement.$ && tspanElement.$.id === 'participante') {
-                                tspanElement._ = nombre;  // Reemplazar el contenido de <tspan>
-                            }
-                        });
-                    } else {
-                        if (tspan.id !== undefined && tspan.id === 'participante') {
-                            tspan._ = nombre;  // Reemplazar el contenido de <tspan>
-                        }
-                    }
-                });
-
-                // Convertir el objeto XML modificado de nuevo a cadena
-                const builder = new xml2js.Builder()
-                const modifiedSvg: string = builder.buildObject(result)
-
-                resolve(modifiedSvg)
-            })
-        })
-    }
-
-    // Función para generar el PDF a partir del SVG modificado
-    async generatePdfFromSvg(svgData: any, alumno: IAlumno, evento: IEvento) {
-        try {
-            const pathLogo = path.resolve(__dirname, '../../public/img/logo_small.png');
-
-            // Código del certificado
-            const codigo = HString.generateCodigo()
-
-            // Definiendo el nombre del archivo
-            const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
-            const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
-            const fileName = `certificado_${sanitizedAlumno}.pdf`
-            const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
-
-            const temarioEvento = evento.temario?.split('\n') as String[]
-
-            // Verificando que el directorio de salida exista, sino se crea
-            const outputDir = path.dirname(outputPath)
-            if (!fs.existsSync(outputDir)) {
-                fs.mkdirSync(outputDir, { recursive: true })
-            }
-
-            const pdfDoc = await PDFDocument.create();
-
-            // Crear una página en formato horizontal (landscape)
-            const page = pdfDoc.addPage([842, 595]); // A4 en formato landscape (842x595 puntos)
-
-            // Convertir el SVG modificado a una imagen PNG
-            const svgBuffer = Buffer.from(svgData);
-
-            const img = await pdfDoc.embedPng(svgBuffer);
-
-            // Dibujar la imagen en el PDF (ajustado al tamaño de la página)
-            const pageWidth = page.getWidth();
-            const pageHeight = page.getHeight();
-
-            page.drawImage(img, {
-                x: 0,
-                y: 0,
-                width: pageWidth,
-                height: pageHeight,
-            });
-
-            // Crear nueva página para el logo, código QR y tabla
-            const newPageWidth = 842
-            const newPageHeight = 590
-            const newPage = pdfDoc.addPage([newPageWidth, newPageHeight]);
-
-            // Crear un rectángulo para texto introductorio
-            const startX = 20
-            const startY = newPage.getHeight() - 170
-            const cellWidth = 370
-            const cellHeight = 150
-
-            newPage.drawRectangle({
-                x: startX,
-                y: startY,
-                width: cellWidth,
-                height: cellHeight,
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 1,
-                color: rgb(1, 1, 1),
-            });
-
-            // Añadir texto a la celda
-            let texto = `Esta es una copia auténtica imprimible de un documento electrónico archivado por PerúAgro, `
-            texto += `aplicando lo dispuesto por el Art. 25 de D.S. 070-2013-PCM y `
-            texto += `la Tercera Disposición Complementaria Final del D.S. 026-2016-PCM.`
-            // texto += `Su autenticidad e integridad `
-            // texto += `pueden ser contrastadas a través de la siguiente dirección web: `
-            // texto += `http://validacion.peruagro.edu.pe`
-
-            newPage.drawText(texto, {
-                x: startX + 5,
-                y: startY + 135,
-                size: 12,
-                maxWidth: cellWidth,
-                color: rgb(0, 0, 0),
-            });
-
-            // Cargar y añadir el logo
-            const logoBytes = fs.readFileSync(pathLogo)
-            const logoImage = await pdfDoc.embedPng(logoBytes)
-            const logoDimensions = logoImage.scale(1.0)
-            newPage.drawImage(logoImage, {
-                x: newPage.getWidth() - logoDimensions.width - 20,
-                y: newPage.getHeight() - logoDimensions.height - 20,
-                width: logoDimensions.width,
-                height: logoDimensions.height
-            })
-
-            const startTemarioX = 20
-            const startTemarioY = 290
-            const cellWidthTemario = 370
-            const cellHeightTemario = 20
-
-            // Dibujar celda para el título del temario
-            newPage.drawRectangle({
-                x: startTemarioX,
-                y: startTemarioY,
-                width: cellWidthTemario,
-                height: cellHeightTemario,
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 1,
-                color: rgb(1, 1, 1),
-            });
-
-            // Dibujar el título en la celda
-            newPage.drawText('Temario', {
-                x: startTemarioX + 5,
-                y: startTemarioY + 5,
-                size: 12,
-                color: rgb(0, 0, 0),
-            });
-
-            // Ajustar la posición para los ítems del temario
-            const itemsStartY = startTemarioY - (cellHeightTemario + 3);
-
-            temarioEvento.forEach((item, index) => {
-                const currentY = itemsStartY - index * (cellHeightTemario + 3)
-
-                // Dibujar las celdas
-                newPage.drawRectangle({
-                    x: startTemarioX,
-                    y: currentY,
-                    width: cellWidthTemario,
-                    height: cellHeightTemario,
-                    borderColor: rgb(0, 0, 0),
-                    borderWidth: 0,
-                    color: rgb(1, 1, 1)
-                })
-
-                // Dibujar el texto en las celdas
-                newPage.drawText(`${index + 1}. ${item}`, {
-                    x: startTemarioX + 3,
-                    y: currentY + 3,
-                    size: 12,
-                    color: rgb(0, 0, 0)
-                })
-            })
-
-            // Crear un rectángulo para la sección del código QR
-            let startQRX = 550
-            let startQRY = 290
-            let cellWidthQR = 240
-            let cellHeightQR = 20
-
-            newPage.drawRectangle({
-                x: startQRX,
-                y: startQRY,
-                width: cellWidthQR,
-                height: cellHeightQR,
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 1,
-                color: rgb(1, 1, 1),
-            });
-
-            // Dibujar el título en la celda
-            newPage.drawText('REGISTRO ELECTRÓNICO', {
-                x: startQRX + 5,
-                y: startQRY + 5,
-                size: 12,
-                color: rgb(0, 0, 0),
-            });
-
-            // Dibujar nuevo rectángulo para el título de código de validación
-            newPage.drawRectangle({
-                x: startQRX,
-                y: startQRY - 25,
-                width: (cellWidthQR / 2),
-                height: cellHeightQR,
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 1,
-                color: rgb(1, 1, 1),
-            });
-
-            // Dibujar el título en la celda
-            newPage.drawText('Código Validación', {
-                x: startQRX + 5,
-                y: startQRY - 20,
-                size: 12,
-                color: rgb(0, 0, 0),
-            });
-
-            // Dibujar nuevo rectángulo para el código de validación
-            newPage.drawRectangle({
-                x: startQRX + (cellWidthQR / 2),
-                y: startQRY - 25,
-                width: (cellWidthQR / 2),
-                height: cellHeightQR,
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 1,
-                color: rgb(1, 1, 1),
-            });
-
-            newPage.drawText(codigo, {
-                x: startQRX + (cellWidthQR / 2) + 5,
-                y: startQRY - 20,
-                size: 12,
-                color: rgb(0, 0, 0),
-            });
-
-            // Dibujar nuevo rectángulo para el título de verificación
-            newPage.drawRectangle({
-                x: startQRX,
-                y: startQRY - 50,
-                width: cellWidthQR,
-                height: cellHeightQR,
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 1,
-                color: rgb(1, 1, 1),
-            });
-
-            newPage.drawText('VERIFICACIÓN EN LÍNEA', {
-                x: startQRX + 5,
-                y: startQRY - 45,
-                size: 12,
-                color: rgb(0, 0, 0),
-            });
-
-            // Dibujar nuevo rectángulo para el código QR
-            newPage.drawRectangle({
-                x: startQRX,
-                y: startQRY - 195,
-                width: cellWidthQR,
-                height: (cellHeightQR * 7),
-                borderColor: rgb(0, 0, 0),
-                borderWidth: 1,
-                color: rgb(1, 1, 1),
-            });
-
-            // Determina el ambiente
-            const env = process.env.NODE_ENV || 'development'
-
-            // Carga el archivo de configuración correspondiente
-            dotenv.config({ path: `.env.${env}` })
-
-            const baseUrl = process.env.CORS_ALLOWED_ORIGIN
-
-            // Generar código QR
-            const dataUrl = `${baseUrl}/certificado/${codigo}`
-            const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrl}`)
-            const qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
-            const qrCodeDimensions = qrCodeImage.scale(0.8)
-            newPage.drawImage(qrCodeImage, {
-                x: startQRX + 60,
-                y: startQRY - 190,
-                width: qrCodeDimensions.width,
-                height: qrCodeDimensions.height
-            })
-
-            // // Guardar el PDF y devolverlo como un buffer
-            const pdfBytes = await pdfDoc.save();
-            fs.writeFileSync(outputPath, pdfBytes);
-
-            // Guardar la ruta del QR como imagen
-            const qrFileName = `qrcode_${sanitizedAlumno}.png`
-            const qrOutputPath = path.resolve(__dirname, `../../public/qrcodes/${sanitizedTitulo}/${qrFileName}`)
-
-            // Verificando que el directorio de salida exista, sino se crea
-            const outputDirQRCode = path.dirname(qrOutputPath)
-            if (!fs.existsSync(outputDirQRCode)) {
-                fs.mkdirSync(outputDirQRCode, { recursive: true })
-            }
-
-            await QRCode.toFile(qrOutputPath, `${dataUrl}`)
-
-            return {
-                pathFileName: outputPath,
-                fileName: fileName,
-                pathCodigoQR: qrOutputPath,
-                codigo: codigo
-            }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
-        }
     }
 }
 

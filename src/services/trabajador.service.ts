@@ -9,7 +9,24 @@ class TrabajadorService {
         try {
             const trabajadores = await Trabajador.findAll({
                 attributes: [
-                    'id', 'id_perfil', 'id_cargo', 'id_tipodocumento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'linkedin', 'fecha_nacimiento', 'biografia', 'sexo', 'firma', 'foto_perfil', 'estado'
+                    'id',
+                    'id_perfil',
+                    'id_cargo',
+                    'id_tipodocumento',
+                    'numero_documento',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombres',
+                    'telefono',
+                    'direccion',
+                    'email',
+                    'linkedin',
+                    'fecha_nacimiento',
+                    'biografia',
+                    'sexo',
+                    'firma',
+                    'foto_perfil',
+                    'estado'
                 ],
                 include: [
                     {
@@ -37,7 +54,24 @@ class TrabajadorService {
         try {
             const trabajador = await Trabajador.findByPk(id, {
                 attributes: [
-                    'id', 'id_perfil', 'id_cargo', 'id_tipodocumento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'linkedin', 'fecha_nacimiento', 'biografia', 'sexo', 'firma', 'foto_perfil', 'estado'
+                    'id',
+                    'id_perfil',
+                    'id_cargo',
+                    'id_tipodocumento',
+                    'numero_documento',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombres',
+                    'telefono',
+                    'direccion',
+                    'email',
+                    'linkedin',
+                    'fecha_nacimiento',
+                    'biografia',
+                    'sexo',
+                    'firma',
+                    'foto_perfil',
+                    'estado'
                 ],
                 include: [
                     {

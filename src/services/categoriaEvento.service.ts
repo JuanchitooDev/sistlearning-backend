@@ -68,7 +68,9 @@ class CategoriaEventoService {
 
     async updateCategoria(id: number, data: ICategoriaEvento): Promise<CategoriaEventoResponse> {
         try {
-            data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            if (data.nombre) {
+                data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            }
             
             const categoria = await CategoriaEvento.findByPk(id)
             

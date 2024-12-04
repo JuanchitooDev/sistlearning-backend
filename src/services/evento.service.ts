@@ -8,7 +8,21 @@ class EventoService {
         try {
             const eventos = await Evento.findAll({
                 attributes: [
-                    'id', 'id_parent', 'id_tipoevento', 'titulo', 'titulo_url', 'descripcion', 'temario', 'plantilla_certificado', 'fecha', 'modalidad', 'precio', 'estado'
+                    'id',
+                    'id_parent',
+                    'id_tipoevento',
+                    'id_categoriaevento',
+                    'titulo',
+                    'titulo_url',
+                    'descripcion',
+                    'temario',
+                    'plantilla_certificado',
+                    'fecha',
+                    'fecha_fin',
+                    'modalidad',
+                    'duracion',
+                    'precio',
+                    'estado'
                 ],
                 include: [{
                     model: TipoEvento,
@@ -26,7 +40,21 @@ class EventoService {
         try {
             const evento = await Evento.findByPk(id, {
                 attributes: [
-                    'id', 'id_parent', 'id_tipoevento', 'titulo', 'titulo_url', 'descripcion', 'temario', 'plantilla_certificado', 'fecha', 'modalidad', 'precio', 'estado'
+                    'id',
+                    'id_parent',
+                    'id_tipoevento',
+                    'id_categoriaevento',
+                    'titulo',
+                    'titulo_url',
+                    'descripcion',
+                    'temario',
+                    'plantilla_certificado',
+                    'fecha',
+                    'fecha_fin',
+                    'modalidad',
+                    'duracion',
+                    'precio',
+                    'estado'
                 ],
                 include: [{
                     model: TipoEvento,
@@ -62,7 +90,9 @@ class EventoService {
 
     async updateEvento(id: number, data: IEvento): Promise<EventoResponse> {
         try {
-            data.titulo_url = HString.convertToUrlString(data.titulo as String)
+            if (data.titulo) {
+                data.titulo_url = HString.convertToUrlString(data.titulo as String)
+            }
             const evento = await Evento.findByPk(id)
             if (!evento) {
                 return { result: false, message: 'Evento no encontrado' }
