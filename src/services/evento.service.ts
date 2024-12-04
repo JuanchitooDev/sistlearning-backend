@@ -53,7 +53,7 @@ class EventoService {
             } else {
                 return { result: false, message: 'Error al registrar el evento' }
             }
-            
+
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage }

@@ -61,23 +61,29 @@ class CertificadoController {
     }
 
     async createCertificado(req: Request, res: Response) {
-        const response = await CertificadoService.createCertificado(req.body)
-        if (response.result) {
-            const data = response.data as ICertificado
-            const outputPath = data.ruta as string
-            const fileName = data.fileName as string
-            res.download(outputPath, fileName, (err) => {
-                if (err) {
-                    console.error(err);
-                }
-            });
+        try {
+            const response = await CertificadoService.createCertificado(req.body)
+            if (response.result) {
+                const data = response.data as ICertificado
+                const outputPath = data.ruta as string
+                const fileName = data.fileName as string
+                res.download(outputPath, fileName, (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                });
             res.status(201).json(response);
-        } else {
-            if (response.message) {
-                res.status(404).send(response)
             } else {
-                res.status(500).send(response)
+                if (response.message) {
+                    res.status(404).send(response.message)
+                } else {
+                    res.status(500).send(response.error)
+                }
             }
+        } catch (error) {
+            // return res.status(500).json({ message: 'Error inesperado en el servidor' });
+            console.error('Error inesperado:', error);
+            res.status(500).send(error)
         }
     }
 

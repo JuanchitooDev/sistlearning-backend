@@ -14,7 +14,7 @@ class DocumentoService {
 
             // Verificando si existe una persona
             const dataPersona = await personaService.getPersonaByIdTipoDocAndNumDoc(idTipoDocumento, numeroDocumento)
-            
+
             const getTipoDocumento = await tipoDocumentoService.getTipoById(idTipoDocumento);
             const dataTipoDocumento = getTipoDocumento.data as ITipoDocumento
             const { abreviatura } = dataTipoDocumento
