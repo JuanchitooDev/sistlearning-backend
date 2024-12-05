@@ -168,12 +168,6 @@ class CertificadoService {
             // Generar un nuevo archivo PDF
             const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, customTemplate);
 
-            console.log('response generateCertificadoPDF')
-            console.log('outputPath', outputPath)
-            console.log('fileName', fileName)
-            console.log('codigoQR', codigoQR)
-            console.log('codigo', codigo)
-
             data.fecha_envio = fechaEnvio
             data.fecha_registro = new Date()
             data.ruta = outputPath
@@ -245,7 +239,7 @@ class CertificadoService {
                 data.ruta = certificado.ruta
                 data.nombre_alumno_impresion = nombreAlumnoImpresion
 
-                const customTemplate = "template_dos"
+                const customTemplate = "template_tres"
 
                 // Generar un nuevo archivo PDF
                 const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, customTemplate);
@@ -297,19 +291,30 @@ class CertificadoService {
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
         try {
             let codigo = ""
+            let fechaFinalStr = ""
+            let fechasEvento = []
+
             const lugar = 'Lambayeque';
             const pathTemplate = path.resolve(__dirname, `../../public/pdf/${nombreTemplate}.pdf`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.ttf')
             const pathFontKuenstlerBold = path.resolve(__dirname, '../../public/fonts/Kuenstler Script LT Std 2 Bold.otf');
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
-            const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente.png');
-
-            console.log('name template', nombreTemplate)
-            console.log('pathTemplate', pathTemplate)
+            const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
 
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
             const temarioEvento = evento.temario?.split('\n') as String[]
+            const duracion = evento.duracion
+
+            const fechaInicio = toZonedTime(evento.fecha as Date, 'America/Lima')
+            const fechaInicioStr = format(fechaInicio, "dd 'de' MMMM 'del' yyyy", { locale: es })
+            fechasEvento.push(`${fechaInicioStr} al`)
+
+            if (evento.fecha_fin) {
+                const fechaFinal = toZonedTime(evento.fecha_fin, 'America/Lima')
+                fechaFinalStr = format(fechaFinal, "dd 'de' MMMM 'del' yyyy", { locale: es })
+                fechasEvento.push(fechaFinalStr)
+            }
 
             // Código del certificado
             if (data.id) {
@@ -324,20 +329,11 @@ class CertificadoService {
             const fileName = `certificado_${sanitizedAlumno}.pdf`
             const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
 
-            console.log('sanitizedTitulo', sanitizedTitulo)
-            console.log('sanitizedAlumno', sanitizedAlumno)
-            console.log('fileName', fileName)
-            console.log('outputPath', outputPath)
-
             // Definiendo la fecha de emisión
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
             const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
             const lugarFechaEmision = `${lugar}, ${fechaEmision}`
-
-            console.log('fechaEmision', fechaEmision)
-            console.log('lugarFechaEmision', lugarFechaEmision)
-            console.log('fechaEvento', fechaEvento)
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
@@ -373,6 +369,12 @@ class CertificadoService {
             let y = 0
             let maxWidth = 0
             let fontSizeForEvento = 0
+            let fontSizeForFechaEvento = 0
+            let fontSizeForFechaEmision = 0
+            let lineHeight = 0
+            let lines = []
+            let lineWidth = 0
+            let posX = 0
 
             // Obtener el ancho de la página
             const pageWidth = pagina.getWidth();
@@ -387,10 +389,10 @@ class CertificadoService {
                     maxWidth = 500; // Ancho máximo disponible para el texto
 
                     // Calcular el ancho de cada línea de texto
-                    const lineHeight = 0.8 * fontSizeForAlumno; // Distancia entre líneas
+                    lineHeight = 0.8 * fontSizeForAlumno; // Distancia entre líneas
 
                     // Dividir el nombre del alumno en líneas
-                    const lines = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+                    lines = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
 
                     if (lines.length > 1) {
                         y = y + 30
@@ -398,7 +400,7 @@ class CertificadoService {
                     }
 
                     for (let i = 0; i < lines.length; i++) {
-                        const lineWidth = customFontKuenstlerBold.widthOfTextAtSize(lines[i], fontSizeForAlumno);
+                        lineWidth = customFontKuenstlerBold.widthOfTextAtSize(lines[i], fontSizeForAlumno);
                         const x = ((pageWidth - lineWidth) / 2) + 140;
 
                         pagina.drawText(lines[i], {
@@ -411,8 +413,8 @@ class CertificadoService {
                     }
 
                     fontSizeForEvento = 16
-                    const fontSizeForFechaEvento = 12
-                    const fontSizeForFechaEmision = 13
+                    fontSizeForFechaEvento = 12
+                    fontSizeForFechaEmision = 13
 
                     let x = 250
                     x = x + 60
@@ -453,34 +455,141 @@ class CertificadoService {
                     });
                     break;
                 case "template_dos":
-                    // Configurar el texto (posición y estilo)
-                    fontSizeForAlumno = 50;
-                    y = 270; // posición Y
-                    maxWidth = 500; // Ancho máximo disponible para el texto
-                    const lineWidth = customFontKuenstler.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
-                    let posX = ((pageWidth - lineWidth) / 2) + 140;
+                    fontSizeForAlumno = 48;
+                    fontSizeForEvento = 24
+                    fontSizeForFechaEvento = 24
 
+                    y = 330; // posición Y
+                    maxWidth = 550; // Ancho máximo disponible para el texto
+                    lineWidth = customFontKuenstlerBold.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
+                    if (lineWidth > maxWidth) {
+                        fontSizeForAlumno = 46
+                    }
+
+                    posX = 80
+                    console.log('pageWidth', pageWidth, 'lineWidth', lineWidth)
                     pagina.drawText(nombreImpresion, {
                         x: posX,
                         y, // Ajustar la posición vertical para cada línea
                         size: fontSizeForAlumno,
-                        font: customFontKuenstler,
+                        font: customFontKuenstlerBold,
                         color: rgb(0, 0, 0), // Negro
                     });
 
-                    fontSizeForEvento = 23
+                    // Calcular el ancho de cada línea de texto
+                    lineHeight = 1.2 * fontSizeForEvento; // Distancia entre líneas
 
-                    posX = 20
-                    y = y + 40
+                    // Dividir el nombre del alumno en líneas
+                    lines = this.splitTextIntoLines(evento.titulo as string, maxWidth, customFontBalooBold, fontSizeForEvento);
+                    console.log('lines', lines)
+                    y = y - 30
 
-                    // Añadir el título del evento
-                    pagina.drawText(evento.titulo as string, {
+                    if (lines.length > 1) {
+                        y = y - 40
+                    }
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const lineWidth = customFontBalooBold.widthOfTextAtSize(lines[i], fontSizeForEvento)
+                        const x = ((pageWidth - lineWidth) / 2) - 80
+                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
+
+                        pagina.drawText(lines[i], {
+                            x,
+                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForEvento,
+                            font: customFontBalooBold,
+                            color: rgb(19 / 255, 37 / 255, 60 / 255),
+                        });
+                    }
+
+                    if (fechasEvento.length > 1) {
+                        y = y - 60
+                    } else {
+                        y = y - 70
+                    }
+
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        const lineWidth = customFontBalooBold.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento)
+                        const x = ((pageWidth - lineWidth) / 2) - 80
+                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
+
+                        pagina.drawText(fechasEvento[i], {
+                            x,
+                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(38 / 255, 69 / 255, 100 / 255),
+                        });
+                    }
+
+                    break;
+                case "template_tres":
+                    fontSizeForAlumno = 48;
+                    fontSizeForEvento = 24
+                    fontSizeForFechaEvento = 24
+
+                    y = 330; // posición Y
+                    maxWidth = 550; // Ancho máximo disponible para el texto
+                    lineWidth = customFontKuenstlerBold.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
+                    if (lineWidth > maxWidth) {
+                        fontSizeForAlumno = 46
+                    }
+
+                    posX = 80
+                    console.log('pageWidth', pageWidth, 'lineWidth', lineWidth)
+                    pagina.drawText(nombreImpresion, {
                         x: posX,
-                        y,
-                        size: fontSizeForEvento,
-                        font: customFontBalooBold,
-                        color: rgb(19 / 255, 37 / 255, 60 / 255)
+                        y, // Ajustar la posición vertical para cada línea
+                        size: fontSizeForAlumno,
+                        font: customFontKuenstlerBold,
+                        color: rgb(0, 0, 0), // Negro
                     });
+
+                    // Calcular el ancho de cada línea de texto
+                    lineHeight = 1.2 * fontSizeForEvento; // Distancia entre líneas
+
+                    // Dividir el nombre del alumno en líneas
+                    lines = this.splitTextIntoLines(evento.titulo as string, maxWidth, customFontBalooBold, fontSizeForEvento);
+                    console.log('lines', lines)
+                    y = y - 30
+
+                    if (lines.length > 1) {
+                        y = y - 40
+                    }
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const lineWidth = customFontBalooBold.widthOfTextAtSize(lines[i], fontSizeForEvento)
+                        const x = ((pageWidth - lineWidth) / 2) - 80
+                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
+
+                        pagina.drawText(lines[i], {
+                            x,
+                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForEvento,
+                            font: customFontBalooBold,
+                            color: rgb(19 / 255, 37 / 255, 60 / 255),
+                        });
+                    }
+
+                    if (fechasEvento.length > 1) {
+                        y = y - 60
+                    } else {
+                        y = y - 70
+                    }
+
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        const lineWidth = customFontBalooBold.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento)
+                        const x = ((pageWidth - lineWidth) / 2) - 80
+                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
+
+                        pagina.drawText(fechasEvento[i], {
+                            x,
+                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(38 / 255, 69 / 255, 100 / 255),
+                        });
+                    }
 
                     break;
             }
@@ -683,10 +792,6 @@ class CertificadoService {
 
             const dataUrlQR = `${baseUrl}/certificado/${codigo}`
 
-            console.log('env', env)
-            console.log('baseUrl', baseUrl)
-            console.log('dataUrlQR', dataUrlQR)
-
             let qrCodeImage: PDFImage
 
             const qrCodeFilePath = data.codigoQR as string
@@ -724,10 +829,6 @@ class CertificadoService {
             // Verificando que el directorio de salida exista, sino se crea
             const outputDirQRCode = path.dirname(qrOutputPath)
 
-            console.log('qrFileName', qrFileName)
-            console.log('qrOutputPath', qrOutputPath)
-            console.log('outputDirQRCode', outputDirQRCode)
-
             // Verificamos si el directorio de salida existe
             try {
                 await fs.promises.access(outputDirQRCode, fs.constants.F_OK)
@@ -744,16 +845,9 @@ class CertificadoService {
                 await QRCode.toFile(qrOutputPath, dataUrlQR);
             }
 
-            console.log('return generateCertificate')
-            console.log('outputPath', outputPath)
-            console.log('fileName', fileName)
-            console.log('qrOutputPath', qrOutputPath)
-            console.log('codigo', codigo)
-
             return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            console.log('errorMessage generateCertificate', errorMessage)
             return { result: false, error: errorMessage };
         }
     }
