@@ -17,8 +17,6 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { toZonedTime } from 'date-fns-tz'
 import dotenv from 'dotenv'
-import xml2js from 'xml2js'
-import sharp from 'sharp'
 
 class CertificadoService {
 
@@ -26,7 +24,18 @@ class CertificadoService {
         try {
             const certificados = await Certificado.findAll({
                 attributes: [
-                    'id', 'id_alumno', 'id_evento', 'codigo', 'codigoQR', 'ruta', 'fileName', 'fecha_registro', 'fecha_descarga', 'fecha_envio', 'estado', 'nombre_alumno_impresion'
+                    'id',
+                    'id_alumno',
+                    'id_evento',
+                    'codigo',
+                    'codigoQR',
+                    'ruta',
+                    'fileName',
+                    'fecha_registro',
+                    'fecha_descarga',
+                    'fecha_envio',
+                    'estado',
+                    'nombre_alumno_impresion'
                 ],
                 include: [
                     {
@@ -34,7 +43,7 @@ class CertificadoService {
                         attributes: ['id', 'apellido_paterno', 'apellido_materno', 'nombres']
                     }, {
                         model: Evento,
-                        attributes: ['id', 'titulo']
+                        attributes: ['id', 'titulo', 'fecha', 'fecha_fin', 'duracion']
                     }
                 ]
             })
@@ -49,7 +58,18 @@ class CertificadoService {
         try {
             const certificado = await Certificado.findByPk(id, {
                 attributes: [
-                    'id', 'id_alumno', 'id_evento', 'codigo', 'codigoQR', 'ruta', 'fileName', 'fecha_registro', 'fecha_descarga', 'fecha_envio', 'estado', 'nombre_alumno_impresion'
+                    'id',
+                    'id_alumno',
+                    'id_evento',
+                    'codigo',
+                    'codigoQR',
+                    'ruta',
+                    'fileName',
+                    'fecha_registro',
+                    'fecha_descarga',
+                    'fecha_envio',
+                    'estado',
+                    'nombre_alumno_impresion'
                 ],
                 include: [
                     {
@@ -57,7 +77,7 @@ class CertificadoService {
                         attributes: ['id', 'apellido_paterno', 'apellido_materno', 'nombres', 'nombre_capitalized']
                     }, {
                         model: Evento,
-                        attributes: ['id', 'titulo']
+                        attributes: ['id', 'titulo', 'fecha', 'fecha_fin', 'duracion']
                     }
                 ]
             })
@@ -76,7 +96,18 @@ class CertificadoService {
             const certificado = await Certificado.findOne({
                 where: { codigo },
                 attributes: [
-                    'id', 'id_alumno', 'id_evento', 'codigo', 'codigoQR', 'ruta', 'fileName', 'fecha_registro', 'fecha_descarga', 'fecha_envio', 'estado', 'nombre_alumno_impresion'
+                    'id',
+                    'id_alumno',
+                    'id_evento',
+                    'codigo',
+                    'codigoQR',
+                    'ruta',
+                    'fileName',
+                    'fecha_registro',
+                    'fecha_descarga',
+                    'fecha_envio',
+                    'estado',
+                    'nombre_alumno_impresion'
                 ],
                 include: [
                     {
@@ -84,7 +115,7 @@ class CertificadoService {
                         attributes: ['id', 'apellido_paterno', 'apellido_materno', 'nombres', 'nombre_capitalized']
                     }, {
                         model: Evento,
-                        attributes: ['id', 'titulo']
+                        attributes: ['id', 'titulo', 'fecha', 'fecha_fin', 'duracion']
                     }
                 ]
             })
@@ -131,6 +162,7 @@ class CertificadoService {
         try {
             const id_alumno = data.id_alumno
             const id_evento = data.id_evento
+            const templateName = data.templateName as string
 
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
@@ -163,10 +195,8 @@ class CertificadoService {
 
             data.nombre_alumno_impresion = nombreAlumnoImpresion
 
-            const customTemplate = "template_dos"
-
             // Generar un nuevo archivo PDF
-            const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, customTemplate);
+            const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
 
             data.fecha_envio = fechaEnvio
             data.fecha_registro = new Date()
@@ -190,8 +220,8 @@ class CertificadoService {
     async updateCertificado(id: number, data: ICertificado): Promise<CertificadoResponse> {
         try {
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
-
             const certificado = await Certificado.findByPk(id)
+            const templateName = data.templateName as string
 
             if (!certificado) {
                 return { result: false, message: 'Certificado no encontrado' }
@@ -239,10 +269,8 @@ class CertificadoService {
                 data.ruta = certificado.ruta
                 data.nombre_alumno_impresion = nombreAlumnoImpresion
 
-                const customTemplate = "template_tres"
-
                 // Generar un nuevo archivo PDF
-                const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, customTemplate);
+                const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
 
                 // Actualizar la base de datos con la nueva ruta y los nuevos datos
                 data.ruta = outputPath;
@@ -304,7 +332,6 @@ class CertificadoService {
 
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
             const temarioEvento = evento.temario?.split('\n') as String[]
-            const duracion = evento.duracion
 
             const fechaInicio = toZonedTime(evento.fecha as Date, 'America/Lima')
             const fechaInicioStr = format(fechaInicio, "dd 'de' MMMM 'del' yyyy", { locale: es })
@@ -459,7 +486,7 @@ class CertificadoService {
                     fontSizeForEvento = 24
                     fontSizeForFechaEvento = 24
 
-                    y = 330; // posición Y
+                    y = 350; // posición Y
                     maxWidth = 550; // Ancho máximo disponible para el texto
                     lineWidth = customFontKuenstlerBold.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
                     if (lineWidth > maxWidth) {
@@ -467,7 +494,6 @@ class CertificadoService {
                     }
 
                     posX = 80
-                    console.log('pageWidth', pageWidth, 'lineWidth', lineWidth)
                     pagina.drawText(nombreImpresion, {
                         x: posX,
                         y, // Ajustar la posición vertical para cada línea
@@ -481,7 +507,6 @@ class CertificadoService {
 
                     // Dividir el nombre del alumno en líneas
                     lines = this.splitTextIntoLines(evento.titulo as string, maxWidth, customFontBalooBold, fontSizeForEvento);
-                    console.log('lines', lines)
                     y = y - 30
 
                     if (lines.length > 1) {
@@ -491,7 +516,6 @@ class CertificadoService {
                     for (let i = 0; i < lines.length; i++) {
                         const lineWidth = customFontBalooBold.widthOfTextAtSize(lines[i], fontSizeForEvento)
                         const x = ((pageWidth - lineWidth) / 2) - 80
-                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
 
                         pagina.drawText(lines[i], {
                             x,
@@ -511,7 +535,6 @@ class CertificadoService {
                     for (let i = 0; i < fechasEvento.length; i++) {
                         const lineWidth = customFontBalooBold.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento)
                         const x = ((pageWidth - lineWidth) / 2) - 80
-                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
 
                         pagina.drawText(fechasEvento[i], {
                             x,
@@ -528,7 +551,7 @@ class CertificadoService {
                     fontSizeForEvento = 24
                     fontSizeForFechaEvento = 24
 
-                    y = 330; // posición Y
+                    y = 310; // posición Y
                     maxWidth = 550; // Ancho máximo disponible para el texto
                     lineWidth = customFontKuenstlerBold.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
                     if (lineWidth > maxWidth) {
@@ -536,7 +559,6 @@ class CertificadoService {
                     }
 
                     posX = 80
-                    console.log('pageWidth', pageWidth, 'lineWidth', lineWidth)
                     pagina.drawText(nombreImpresion, {
                         x: posX,
                         y, // Ajustar la posición vertical para cada línea
@@ -550,7 +572,6 @@ class CertificadoService {
 
                     // Dividir el nombre del alumno en líneas
                     lines = this.splitTextIntoLines(evento.titulo as string, maxWidth, customFontBalooBold, fontSizeForEvento);
-                    console.log('lines', lines)
                     y = y - 30
 
                     if (lines.length > 1) {
@@ -560,8 +581,7 @@ class CertificadoService {
                     for (let i = 0; i < lines.length; i++) {
                         const lineWidth = customFontBalooBold.widthOfTextAtSize(lines[i], fontSizeForEvento)
                         const x = ((pageWidth - lineWidth) / 2) - 80
-                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
-
+                    
                         pagina.drawText(lines[i], {
                             x,
                             y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
@@ -580,8 +600,7 @@ class CertificadoService {
                     for (let i = 0; i < fechasEvento.length; i++) {
                         const lineWidth = customFontBalooBold.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento)
                         const x = ((pageWidth - lineWidth) / 2) - 80
-                        console.log('pageWidth', pageWidth, 'lineWidth', lineWidth, 'x', x)
-
+                    
                         pagina.drawText(fechasEvento[i], {
                             x,
                             y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
@@ -627,7 +646,7 @@ class CertificadoService {
                 x: startX + 5,
                 y: startY + 135,
                 size: 12,
-                maxWidth: cellWidth,
+                maxWidth: 370,
                 color: rgb(0, 0, 0),
             });
 
@@ -635,6 +654,7 @@ class CertificadoService {
             const logoBytes = fs.readFileSync(pathLogo)
             const logoImage = await pdfDoc.embedPng(logoBytes)
             const logoDimensions = logoImage.scale(1.0)
+            
             newPage.drawImage(logoImage, {
                 x: newPage.getWidth() - logoDimensions.width - 20,
                 y: newPage.getHeight() - logoDimensions.height - 20,
@@ -643,7 +663,7 @@ class CertificadoService {
             })
 
             const startTemarioX = 20
-            const startTemarioY = 290
+            const startTemarioY = 310
             const cellWidthTemario = 370
             const cellHeightTemario = 20
 
@@ -667,34 +687,32 @@ class CertificadoService {
             });
 
             // Ajustar la posición para los ítems del temario
-            const itemsStartY = startTemarioY - (cellHeightTemario + 3);
+            let currentY = 0
 
             temarioEvento.forEach((item, index) => {
-                const currentY = itemsStartY - index * (cellHeightTemario + 3)
+                if (index == 0) {
+                    currentY = startTemarioY - index * (cellHeightTemario + 3)
+                }
 
-                // Dibujar las celdas
-                newPage.drawRectangle({
-                    x: startTemarioX,
-                    y: currentY,
-                    width: cellWidthTemario,
-                    height: cellHeightTemario,
-                    borderColor: rgb(0, 0, 0),
-                    borderWidth: 0,
-                    color: rgb(1, 1, 1)
-                })
+                // Dividir cada ítem del temario
+                const linesItemTemario = this.splitTextIntoLines(item as string, 210, customFontKuenstler, 12);
+                for (let i = 0; i < linesItemTemario.length; i++) {
+                    currentY -= 18
 
-                // Dibujar el texto en las celdas
-                newPage.drawText(`${index + 1}. ${item}`, {
-                    x: startTemarioX + 3,
-                    y: currentY + 3,
-                    size: 12,
-                    color: rgb(0, 0, 0)
-                })
+                    newPage.drawText(`${linesItemTemario[i]}`, {
+                        x: startTemarioX + 3,
+                        y: currentY,
+                        size: 12,
+                        color: rgb(0, 0, 0)
+                    })
+                }
+
+                currentY -= 8
             })
 
             // Crear un rectángulo para la sección del código QR
             let startQRX = 550
-            let startQRY = 290
+            let startQRY = 310
             let cellWidthQR = 240
             let cellHeightQR = 20
 
@@ -860,7 +878,7 @@ class CertificadoService {
         for (let i = 0; i < words.length; i++) {
             const testLine = currentLine ? `${currentLine} ${words[i]}` : words[i];
             const width = font.widthOfTextAtSize(testLine, fontSize); // Medir el ancho del texto
-
+        
             if (width <= maxWidth) {
                 currentLine = testLine; // La palabra cabe en la línea actual
             } else {

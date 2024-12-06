@@ -12,6 +12,7 @@ class Certificado extends Model {
     public codigoQR?: string
     public ruta?: string
     public fileName?: string
+    public templateName?: string
     public fecha_registro?: Date
     public fecha_descarga?: Date
     public fecha_envio?: Date
@@ -62,6 +63,10 @@ Certificado.init({
     fileName: {
         type: DataTypes.STRING(300),
         allowNull: false
+    },
+    templateName: {
+        type: DataTypes.STRING(15),
+        allowNull: true
     },
     fecha_registro: {
         type: DataTypes.DATE,

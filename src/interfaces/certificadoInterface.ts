@@ -10,6 +10,7 @@ export interface ICertificado {
     codigoQR?: string
     ruta?: string
     fileName?: string
+    templateName?: string
     fecha_registro?: Date
     fecha_descarga?: Date
     fecha_envio?: Date
