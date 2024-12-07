@@ -204,13 +204,6 @@ class CertificadoService {
             data.fileName = fileName
             data.codigoQR = codigoQR
             data.codigo = codigo
-
-            console.log('data in createCertificado', data)
-            console.log('outputPath', outputPath)
-            console.log('fileName', fileName)
-            console.log('codigoQR', codigoQR)
-            console.log('codigo', codigo)
-            console.log('templateName', templateName)
             
             const newCertificado = await Certificado.create(data as any)
             if (newCertificado.id) {
@@ -325,8 +318,6 @@ class CertificadoService {
     // Método auxiliar para generar el PDF del certificado
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
         try {
-            console.log('validate variables in generateCertificadoPDF')
-
             let codigo = ""
             let fechaFinalStr = ""
             let fechasEvento = []
@@ -363,10 +354,6 @@ class CertificadoService {
                 return { result: false, message: `No existe el logo` }
             }
 
-            console.log('data in generateCertificadoPDF', data)
-            console.log('nombreTemplate', nombreTemplate)
-            console.log('pathTemplate', pathTemplate)
-
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
             const temarioEvento = evento.temario?.split('\n') as String[]
 
@@ -401,31 +388,15 @@ class CertificadoService {
             const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
             const lugarFechaEmision = `${lugar}, ${fechaEmision}`
 
-            console.log('fechasEvento', fechasEvento)
-            console.log('codigo', codigo)
-            console.log('sanitizedTitulo', sanitizedTitulo)
-            console.log('sanitizedAlumno', sanitizedAlumno)
-            console.log('fileName', fileName)
-            console.log('outputPath', outputPath)
-            console.log('lugarFechaEmision', lugarFechaEmision)
-
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
-            console.log('outputDir', outputDir)
             if (!fs.existsSync(outputDir)) {
-                console.log('crea directorio')
                 fs.mkdirSync(outputDir, { recursive: true })
-            } else {
-                console.log('existe directorio')
             }
-
-            console.log('load pdf')
 
             // Cargar el PDF de plantilla
             const templateBytes = fs.readFileSync(pathTemplate);
             const pdfDoc = await PDFDocument.load(templateBytes);
-
-            console.log('load fonts')
 
             // Registrar fontkit
             pdfDoc.registerFontkit(fontkit as any)
@@ -462,9 +433,6 @@ class CertificadoService {
             const pageWidth = pagina.getWidth();
 
             const nombreImpresion = data.nombre_alumno_impresion as string;
-
-            console.log('nombreImpresion', nombreImpresion)
-            console.log('nombreTemplate', nombreTemplate)
 
             switch (nombreTemplate) {
                 case "template":
@@ -861,8 +829,6 @@ class CertificadoService {
             // Determina el ambiente
             const env = process.env.NODE_ENV || 'development'
 
-            console.log('env', env)
-
             // Carga el archivo de configuración correspondiente
             dotenv.config({ path: `.env.${env}` })
 
@@ -873,11 +839,6 @@ class CertificadoService {
             let qrCodeImage: PDFImage
 
             const qrCodeFilePath = data.codigoQR as string
-
-            console.log('baseUrl', baseUrl)
-            console.log('dataUrlQR', dataUrlQR)
-            console.log('qrCodeFilePath', qrCodeFilePath)
-            console.log('baseUrl', baseUrl)
 
             // Validando si existe el QR
             try {
@@ -927,8 +888,6 @@ class CertificadoService {
                 // Si el archivo no existe, lo generamos
                 await QRCode.toFile(qrOutputPath, dataUrlQR);
             }
-            
-            console.log('hasta aquí')
 
             return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
         } catch (error) {
