@@ -2,6 +2,7 @@ import { Model, DataTypes } from 'sequelize'
 import sequelize from '../config/db'
 import TipoEvento from './tipoEvento.models'
 import CategoriaEvento from './categoriaEvento.models'
+import { EModalidad } from '../interfaces/eventoInterface'
 
 class Evento extends Model {
     public id?: number
@@ -15,7 +16,7 @@ class Evento extends Model {
     public plantilla_certificado?: string
     public fecha?: Date
     public fecha_fin?: string
-    public modalidad?: 'PRESENCIAL' | 'VIRTUAL' | 'MIXTO'
+    public modalidad?: EModalidad
     public precio?: number
     public duracion?: string
     public user_crea?: string
@@ -83,7 +84,7 @@ Evento.init({
         allowNull: true
     },
     modalidad: {
-        type: DataTypes.ENUM('PRESENCIAL', 'VIRTUAL', 'MIXTO'),
+        type: DataTypes.ENUM(...Object.values(EModalidad)),
         allowNull: false
     },
     precio: {

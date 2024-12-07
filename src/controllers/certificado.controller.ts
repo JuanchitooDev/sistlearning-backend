@@ -72,7 +72,7 @@ class CertificadoController {
                         console.error(err);
                     }
                 });
-            res.status(201).json(response);
+                // res.status(201).json(response);
             } else {
                 if (response.message) {
                     res.status(404).send(response.message)

@@ -11,7 +11,23 @@ class AlumnoService {
         try {
             const alumnos = await Alumno.findAll({
                 attributes: [
-                    'id', 'id_tipodocumento', 'id_pais', 'id_departamento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'fecha_nacimiento', 'sexo', 'sistema', 'estado', 'nombre_capitalized', 'fecha_nacimiento_str'
+                    'id',
+                    'id_tipodocumento',
+                    'id_pais',
+                    'id_departamento',
+                    'numero_documento',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombres',
+                    'telefono',
+                    'direccion',
+                    'email',
+                    'fecha_nacimiento',
+                    'nombre_capitalized',
+                    'fecha_nacimiento_str',
+                    'sexo',
+                    'sistema',
+                    'estado'
                 ],
                 include: [{
                     model: TipoDocumento,
@@ -35,7 +51,23 @@ class AlumnoService {
         try {
             const alumno = await Alumno.findByPk(id, {
                 attributes: [
-                    'id', 'id_tipodocumento', 'id_pais', 'id_departamento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'fecha_nacimiento', 'sexo', 'sistema', 'estado', 'nombre_capitalized', 'fecha_nacimiento_str'
+                    'id',
+                    'id_tipodocumento',
+                    'id_pais',
+                    'id_departamento',
+                    'numero_documento',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombres',
+                    'telefono',
+                    'direccion',
+                    'email',
+                    'fecha_nacimiento',
+                    'nombre_capitalized',
+                    'fecha_nacimiento_str',
+                    'sexo',
+                    'sistema',
+                    'estado'
                 ],
                 include: [{
                     model: TipoDocumento,
@@ -63,7 +95,23 @@ class AlumnoService {
             const alumno = await Alumno.findOne({
                 where: { numero_documento },
                 attributes: [
-                    'id', 'id_tipodocumento', 'id_pais', 'id_departamento', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres', 'telefono', 'direccion', 'email', 'fecha_nacimiento', 'sexo', 'sistema', 'estado', 'nombre_capitalized', 'fecha_nacimiento_str'
+                    'id',
+                    'id_tipodocumento',
+                    'id_pais',
+                    'id_departamento',
+                    'numero_documento',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombres',
+                    'telefono',
+                    'direccion',
+                    'email',
+                    'fecha_nacimiento',
+                    'nombre_capitalized',
+                    'fecha_nacimiento_str',
+                    'sexo',
+                    'sistema',
+                    'estado'
                 ],
                 include: [{
                     model: TipoDocumento,
@@ -120,11 +168,7 @@ class AlumnoService {
                 return { result: false, message: 'Alumno no encontrado' }
             }
 
-            console.log('alumno updateAlumno', alumno)
-
             const fechaNacimientoStr = (data.fecha_nacimiento_str === undefined) ? alumno.fecha_nacimiento_str : data.fecha_nacimiento_str
-
-            console.log('fechaNacimientoStr', fechaNacimientoStr)
 
             const apellidoPaterno = (data.apellido_paterno === undefined) ? alumno.apellido_paterno?.trim() : data.apellido_paterno?.trim()
             const apellidoMaterno = (data.apellido_materno === undefined) ? alumno.apellido_materno?.trim() : data.apellido_materno?.trim()
@@ -139,8 +183,6 @@ class AlumnoService {
             data.nombres = nombres
             data.fecha_nacimiento = fechaNacimiento
             data.nombre_capitalized = nombreCapitalized
-
-            console.log('newData alumno', data)
 
             const updatedAlumno = await alumno.update(data)
             return { result: true, message: 'Alumno actualizado con éxito', data: updatedAlumno }

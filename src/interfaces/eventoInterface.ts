@@ -1,6 +1,12 @@
 import { ITipoEvento } from "./tipoEventoInterface"
 import { ICategoriaEvento } from "./categoriaEventoInterface"
 
+export enum EModalidad {
+    VIRTUAL = "Virtual",
+    PRESENCIAL = "Presencial",
+    MIXTO = "Mixto"
+}
+
 export interface IEvento {
     id?: number
     id_parent?: number
@@ -13,7 +19,7 @@ export interface IEvento {
     plantilla_certificado?: string
     fecha?: Date
     fecha_fin?: string
-    modalidad?: string
+    modalidad?: EModalidad
     precio?: number
     duracion?: string
     user_crea?: string

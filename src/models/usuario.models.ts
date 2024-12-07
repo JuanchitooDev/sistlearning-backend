@@ -1,10 +1,12 @@
 import { Model, DataTypes } from 'sequelize'
 import sequelize from '../config/db'
 import Trabajador from './trabajador.models'
+import Perfil from './perfil.models'
 
 class Usuario extends Model {
     public id?: number
     public id_trabajador?: number
+    public id_perfil?: number
     public username?: string
     public password?: string
     public token?: string
@@ -26,6 +28,14 @@ Usuario.init({
         allowNull: true,
         references: {
             model: Trabajador,
+            key: "id"
+        }
+    },
+    id_perfil: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Perfil,
             key: "id"
         }
     },
@@ -70,5 +80,7 @@ Usuario.init({
 })
 
 Usuario.belongsTo(Trabajador, { foreignKey: 'id_trabajador'} )
+
+Usuario.belongsTo(Perfil, { foreignKey: 'id_perfil' })
 
 export default Usuario;

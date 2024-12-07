@@ -1,5 +1,11 @@
 import { ITipoDocumento } from "./tipoDocumentoInterface"
 
+export enum EOrigen {
+    WEB = "Web",
+    API = "Api",
+    APP = "App"
+}
+
 export interface IPersona {
     id?: number
     id_tipodocumento?: number
@@ -20,7 +26,7 @@ export interface IPersona {
     estado_civil?: string
     foto?: string
     sexo?: string
-    origen?: string
+    origen?: EOrigen
     estado?: boolean
     tipoDocumento?: ITipoDocumento
 }

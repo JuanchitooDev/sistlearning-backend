@@ -1,8 +1,10 @@
+import { IPerfil } from "./perfilInterface"
 import { ITrabajador } from "./trabajadorInterface"
 
 export interface IUsuario {
     id?: number
     id_trabajador?: number
+    id_perfil?: number
     username?: string
     password?: string
     token?: string
@@ -12,6 +14,7 @@ export interface IUsuario {
     user_elimina?: string
     estado?: boolean
     trabajador?: ITrabajador
+    perfil?: IPerfil
 }
 
 export interface UsuarioResponse {

@@ -160,7 +160,6 @@ class CertificadoService {
 
     async createCertificado(data: ICertificado): Promise<CertificadoResponse> {
         try {
-            console.log('data createCertificado', data)
             const id_alumno = data.id_alumno
             const id_evento = data.id_evento
             const templateName = data.templateName as string
@@ -189,10 +188,6 @@ class CertificadoService {
             }
 
             const evento = eventoResponse.data as IEvento
-
-            console.log('alumno response', alumno)
-
-            console.log('evento response', evento)
 
             const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
                 ? `${alumno.nombre_capitalized}`
@@ -335,8 +330,6 @@ class CertificadoService {
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
 
-            console.log('pathTemplate', pathTemplate)
-
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
             const temarioEvento = evento.temario?.split('\n') as String[]
 
@@ -344,8 +337,8 @@ class CertificadoService {
             const fechaInicioStr = format(fechaInicio, "dd 'de' MMMM 'del' yyyy", { locale: es })
 
             if (evento.fecha_fin) {
-                fechasEvento.push(`${fechaInicioStr} al`)
                 const fechaFinal = toZonedTime(evento.fecha_fin, 'America/Lima')
+                fechasEvento.push(`${fechaInicioStr} al`)
                 fechaFinalStr = format(fechaFinal, "dd 'de' MMMM 'del' yyyy", { locale: es })
                 fechasEvento.push(fechaFinalStr)
             } else {
@@ -364,11 +357,6 @@ class CertificadoService {
             const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
             const fileName = `certificado_${sanitizedAlumno}.pdf`
             const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
-
-            console.log('sanitizedTitulo', sanitizedTitulo)
-            console.log('sanitizedAlumno', sanitizedAlumno)
-            console.log('fileName', fileName)
-            console.log('outputPath', outputPath)
 
             // Definiendo la fecha de emisión
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
@@ -402,8 +390,6 @@ class CertificadoService {
 
             const fontBalooMedium = fs.readFileSync(pathFontBalooMedium)
             const customFontBalooMedium = await pdfDoc.embedFont(fontBalooMedium)
-
-            console.log('crear páginas')
 
             // Obtener la primera página
             const pagina = pdfDoc.getPage(0)

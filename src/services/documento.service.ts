@@ -4,7 +4,7 @@ import tipoDocumentoService from './tipoDocumento.service'
 import { ITipoDocumento } from '../interfaces/tipoDocumentoInterface'
 import dotenv from 'dotenv'
 import personaService from './persona.service'
-import { IPersona, PersonaResponse } from '../interfaces/personaInterface'
+import { EOrigen, IPersona, PersonaResponse } from '../interfaces/personaInterface'
 import HString from '../helpers/HString'
 
 class DocumentoService {
@@ -62,7 +62,7 @@ class DocumentoService {
                         estado_civil: HString.validateField(data.estado_civil),
                         foto: HString.validateField(data.foto),
                         sexo: HString.validateField(data.sexo),
-                        origen: 'API',
+                        origen: EOrigen.API,
                         estado: true
                     }
 

@@ -1,12 +1,10 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/db'
 import TipoDocumento from './tipoDocumento.models';
-import Perfil from './perfil.models';
 import Cargo from './cargo.models';
 
 class Trabajador extends Model {
     public id?: number
-    public id_perfil?: number
     public id_cargo?: number
     public id_tipodocumento?: number
     public numero_documento?: string
@@ -34,14 +32,6 @@ Trabajador.init({
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    id_perfil: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Perfil,
-            key: 'id'
-        }
     },
     id_cargo: {
         type: DataTypes.INTEGER,
@@ -139,8 +129,6 @@ Trabajador.init({
     timestamps: true,
     freezeTableName: true
 })
-
-Trabajador.belongsTo(Perfil, { foreignKey: 'id_perfil' })
 
 Trabajador.belongsTo(Cargo, { foreignKey: 'id_cargo' })
 

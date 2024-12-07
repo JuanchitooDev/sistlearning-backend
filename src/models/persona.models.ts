@@ -1,6 +1,7 @@
 import { Model, DataTypes } from 'sequelize'
 import sequelize from '../config/db'
 import TipoDocumento from './tipoDocumento.models'
+import { EOrigen } from '../interfaces/personaInterface'
 
 class Persona extends Model {
     public id?: number
@@ -22,7 +23,7 @@ class Persona extends Model {
     public estado_civil?: string
     public foto?: string
     public sexo?: string
-    public origen?: 'API | WEB | APP'
+    public origen?: EOrigen
     public estado?: boolean
 }
 
@@ -110,7 +111,7 @@ Persona.init({
         allowNull: false
     },
     origen: {
-        type: DataTypes.ENUM('API', 'WEB', 'APP'),
+        type: DataTypes.ENUM(...Object.values(EOrigen)),
         allowNull: false
     },
     estado: {
