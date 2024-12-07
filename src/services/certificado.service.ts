@@ -333,11 +333,35 @@ class CertificadoService {
 
             const lugar = 'Lambayeque';
             const pathTemplate = path.resolve(__dirname, `../../public/pdf/${nombreTemplate}.pdf`);
-            const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.ttf')
-            const pathFontKuenstlerBold = path.resolve(__dirname, '../../public/fonts/Kuenstler Script LT Std 2 Bold.otf');
+            const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
+            const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/Kuenstler Script LT Std 2 Bold.otf");
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
+
+            if (!fs.existsSync(pathTemplate)) {
+                return { result: false, message: `No existe la plantilla ${nombreTemplate}` }
+            }
+
+            if (!fs.existsSync(pathFontKuenstler)) {
+                return { result: false, message: `No existe fuente KUNSTLER.TTF` }
+            }
+
+            if (!fs.existsSync(pathFontKuenstlerBold)) {
+                return { result: false, message: `Kuenstler Script LT Std 2 Bold.otf` }
+            }
+
+            if (!fs.existsSync(pathFontBalooBold)) {
+                return { result: false, message: `No existe fuente BalooChettan2-Bold.ttf` }
+            }
+
+            if (!fs.existsSync(pathFontBalooMedium)) {
+                return { result: false, message: `No existe fuente BalooChettan2-Medium.ttf` }
+            }
+
+            if (!fs.existsSync(pathLogo)) {
+                return { result: false, message: `No existe el logo` }
+            }
 
             console.log('data in generateCertificadoPDF', data)
             console.log('nombreTemplate', nombreTemplate)
