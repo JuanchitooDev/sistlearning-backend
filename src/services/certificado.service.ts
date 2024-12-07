@@ -326,7 +326,7 @@ class CertificadoService {
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
         try {
             console.log('validate variables in generateCertificadoPDF')
-            
+
             let codigo = ""
             let fechaFinalStr = ""
             let fechasEvento = []
@@ -391,9 +391,13 @@ class CertificadoService {
                 fs.mkdirSync(outputDir, { recursive: true })
             }
 
+            console.log('load pdf')
+
             // Cargar el PDF de plantilla
             const templateBytes = fs.readFileSync(pathTemplate);
             const pdfDoc = await PDFDocument.load(templateBytes);
+
+            console.log('load fonts')
 
             // Registrar fontkit
             pdfDoc.registerFontkit(fontkit as any)
@@ -430,6 +434,9 @@ class CertificadoService {
             const pageWidth = pagina.getWidth();
 
             const nombreImpresion = data.nombre_alumno_impresion as string;
+
+            console.log('nombreImpresion', nombreImpresion)
+            console.log('nombreTemplate', nombreTemplate)
 
             switch (nombreTemplate) {
                 case "template":
