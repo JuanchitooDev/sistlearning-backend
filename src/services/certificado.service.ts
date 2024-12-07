@@ -387,8 +387,12 @@ class CertificadoService {
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
+            console.log('outputDir', outputDir)
             if (!fs.existsSync(outputDir)) {
+                console.log('crea directorio')
                 fs.mkdirSync(outputDir, { recursive: true })
+            } else {
+                console.log('existe directorio')
             }
 
             console.log('load pdf')
