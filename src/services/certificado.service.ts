@@ -205,6 +205,13 @@ class CertificadoService {
             data.codigoQR = codigoQR
             data.codigo = codigo
 
+            console.log('data in createCertificado', data)
+            console.log('outputPath', outputPath)
+            console.log('fileName', fileName)
+            console.log('codigoQR', codigoQR)
+            console.log('codigo', codigo)
+            console.log('templateName', templateName)
+            
             const newCertificado = await Certificado.create(data as any)
             if (newCertificado.id) {
                 return { result: true, message: 'Certificado registrado correctamente', data: newCertificado }
@@ -318,6 +325,8 @@ class CertificadoService {
     // Método auxiliar para generar el PDF del certificado
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
         try {
+            console.log('validate variables in generateCertificadoPDF')
+            
             let codigo = ""
             let fechaFinalStr = ""
             let fechasEvento = []
@@ -329,6 +338,10 @@ class CertificadoService {
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
+
+            console.log('data in generateCertificadoPDF', data)
+            console.log('nombreTemplate', nombreTemplate)
+            console.log('pathTemplate', pathTemplate)
 
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
             const temarioEvento = evento.temario?.split('\n') as String[]
@@ -363,6 +376,14 @@ class CertificadoService {
 
             const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
             const lugarFechaEmision = `${lugar}, ${fechaEmision}`
+
+            console.log('fechasEvento', fechasEvento)
+            console.log('codigo', codigo)
+            console.log('sanitizedTitulo', sanitizedTitulo)
+            console.log('sanitizedAlumno', sanitizedAlumno)
+            console.log('fileName', fileName)
+            console.log('outputPath', outputPath)
+            console.log('lugarFechaEmision', lugarFechaEmision)
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
@@ -805,6 +826,8 @@ class CertificadoService {
             // Determina el ambiente
             const env = process.env.NODE_ENV || 'development'
 
+            console.log('env', env)
+
             // Carga el archivo de configuración correspondiente
             dotenv.config({ path: `.env.${env}` })
 
@@ -815,6 +838,11 @@ class CertificadoService {
             let qrCodeImage: PDFImage
 
             const qrCodeFilePath = data.codigoQR as string
+
+            console.log('baseUrl', baseUrl)
+            console.log('dataUrlQR', dataUrlQR)
+            console.log('qrCodeFilePath', qrCodeFilePath)
+            console.log('baseUrl', baseUrl)
 
             // Validando si existe el QR
             try {
@@ -864,6 +892,8 @@ class CertificadoService {
                 // Si el archivo no existe, lo generamos
                 await QRCode.toFile(qrOutputPath, dataUrlQR);
             }
+            
+            console.log('hasta aquí')
 
             return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
         } catch (error) {
