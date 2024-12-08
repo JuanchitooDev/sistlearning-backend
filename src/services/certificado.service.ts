@@ -196,7 +196,17 @@ class CertificadoService {
             data.nombre_alumno_impresion = nombreAlumnoImpresion
 
             // Generar un nuevo archivo PDF
-            const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
+            // const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
+            const { result, message, dataResult } = await this.generateCertificadoPDF(data, alumno, evento, templateName)
+
+            const outputPath = dataResult?.outputPath
+            const fileName = dataResult?.fileName
+            const codigoQR = dataResult?.codigoQR
+            const codigo = dataResult?.codigo
+
+            if (!result) {
+                return { result, message }
+            }
 
             console.log('outputPath', outputPath)
             console.log('fileName', fileName)
@@ -275,7 +285,17 @@ class CertificadoService {
                 data.nombre_alumno_impresion = nombreAlumnoImpresion
 
                 // Generar un nuevo archivo PDF
-                const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
+                // const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
+                const { result, message, dataResult } = await this.generateCertificadoPDF(data, alumno, evento, templateName)
+
+                if (!result) {
+                    return { result, message }
+                }
+
+                const outputPath = dataResult?.outputPath
+                const fileName = dataResult?.fileName
+                const codigoQR = dataResult?.codigoQR
+                const codigo = dataResult?.codigo
 
                 // Actualizar la base de datos con la nueva ruta y los nuevos datos
                 data.ruta = outputPath;
@@ -964,7 +984,15 @@ class CertificadoService {
                 await QRCode.toFile(qrOutputPath, dataUrlQR);
             }
 
-            return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
+            // return { outputPath, fileName, codigoQR: qrOutputPath, codigo };
+            const dataResult = {
+                outputPath,
+                fileName,
+                codigoQR: qrOutputPath,
+                codigo
+            }
+
+            return { result: true, message: 'certificado generado con éxito', dataResult }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage };
