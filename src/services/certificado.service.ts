@@ -160,8 +160,6 @@ class CertificadoService {
 
     async createCertificado(data: ICertificado): Promise<CertificadoResponse> {
         try {
-            console.log('data createCertificado', data)
-
             const id_alumno = data.id_alumno
             const id_evento = data.id_evento
             const templateName = data.templateName as string
@@ -200,8 +198,6 @@ class CertificadoService {
             // Generar un nuevo archivo PDF
             const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
 
-            console.log('alumno createCertificado', alumno)
-            console.log('evento createCertificado', evento)
             console.log('nombreAlumnoImpresion', nombreAlumnoImpresion)
             console.log('outputPath', outputPath)
             console.log('fileName', fileName)
@@ -878,6 +874,7 @@ class CertificadoService {
             // Validando si existe el QR
             try {
                 if (data.id) {
+                    console.log('existe código QR')
                     qrCodeFilePath = data.codigoQR as string
                     // Usamos fs.promises.access para evitar bloqueos sincrónicos
                     await fs.promises.access(qrCodeFilePath, fs.constants.F_OK)
@@ -886,10 +883,12 @@ class CertificadoService {
                     const arrayBuffer = await fs.promises.readFile(qrCodeFilePath);
                     qrCodeImage = await pdfDoc.embedPng(arrayBuffer);
                 } else {
+                    console.log('no existe código qr')
                     const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrlQR}`)
                     qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
                 }
             } catch (err) {
+                console.log('generar nuevo códigp err')
                 // Generar código QR
                 const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrlQR}`)
                 qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
