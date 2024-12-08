@@ -198,7 +198,6 @@ class CertificadoService {
             // Generar un nuevo archivo PDF
             const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
 
-            console.log('nombreAlumnoImpresion', nombreAlumnoImpresion)
             console.log('outputPath', outputPath)
             console.log('fileName', fileName)
             console.log('codigoQR', codigoQR)
@@ -332,7 +331,7 @@ class CertificadoService {
             const lugar = 'Lambayeque';
             const pathTemplate = path.resolve(__dirname, `../../public/pdf/${nombreTemplate}.pdf`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
-            const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/'Kuenstler Script LT Std 2 Bold.otf'");
+            const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/Kuenstler Script LT Std 2 Bold.otf");
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
