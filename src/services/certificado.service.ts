@@ -702,6 +702,7 @@ class CertificadoService {
             const logoImage = await pdfDoc.embedPng(logoBytes)
             const logoDimensions = logoImage.scale(1.0)
 
+            console.log('add logoImage')
             newPage.drawImage(logoImage, {
                 x: newPage.getWidth() - logoDimensions.width - 20,
                 y: newPage.getHeight() - logoDimensions.height - 20,
@@ -725,6 +726,7 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
+            console.log('add titulo temario')
             // Dibujar el título en la celda
             newPage.drawText('Temario', {
                 x: startTemarioX + 5,
@@ -775,6 +777,7 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
+            console.log('add título registro electrónico')
             // Dibujar el título en la celda
             newPage.drawText('REGISTRO ELECTRÓNICO', {
                 x: startQRX + 5,
@@ -794,6 +797,7 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
+            console.log('add título código validación')
             // Dibujar el título en la celda
             newPage.drawText('Código Validación', {
                 x: startQRX + 5,
@@ -813,6 +817,7 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
+            console.log('add código')
             newPage.drawText(codigo, {
                 x: startQRX + (cellWidthQR / 2) + 5,
                 y: startQRY - 20,
