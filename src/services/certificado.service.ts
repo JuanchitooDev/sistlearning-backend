@@ -204,7 +204,7 @@ class CertificadoService {
             data.fileName = fileName
             data.codigoQR = codigoQR
             data.codigo = codigo
-            
+
             const newCertificado = await Certificado.create(data as any)
             if (newCertificado.id) {
                 return { result: true, message: 'Certificado registrado correctamente', data: newCertificado }
@@ -331,26 +331,32 @@ class CertificadoService {
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
 
             if (!fs.existsSync(pathTemplate)) {
+                console.log('aaa')
                 return { result: false, message: `No existe la plantilla ${nombreTemplate}` }
             }
 
             if (!fs.existsSync(pathFontKuenstler)) {
+                console.log('bbb')
                 return { result: false, message: `No existe fuente KUNSTLER.TTF` }
             }
 
             if (!fs.existsSync(pathFontKuenstlerBold)) {
+                console.log('ccc')
                 return { result: false, message: `Kuenstler Script LT Std 2 Bold.otf` }
             }
 
             if (!fs.existsSync(pathFontBalooBold)) {
+                console.log('ddd')
                 return { result: false, message: `No existe fuente BalooChettan2-Bold.ttf` }
             }
 
             if (!fs.existsSync(pathFontBalooMedium)) {
+                console.log('eee')
                 return { result: false, message: `No existe fuente BalooChettan2-Medium.ttf` }
             }
 
             if (!fs.existsSync(pathLogo)) {
+                console.log('fff')
                 return { result: false, message: `No existe el logo` }
             }
 
@@ -433,6 +439,8 @@ class CertificadoService {
             const pageWidth = pagina.getWidth();
 
             const nombreImpresion = data.nombre_alumno_impresion as string;
+
+            console.log('nombreImpresion', nombreImpresion)
 
             switch (nombreTemplate) {
                 case "template":
@@ -607,7 +615,7 @@ class CertificadoService {
                     for (let i = 0; i < lines.length; i++) {
                         const lineWidth = customFontBalooBold.widthOfTextAtSize(lines[i], fontSizeForEvento)
                         const x = ((pageWidth - lineWidth) / 2) - 80
-                    
+
                         pagina.drawText(lines[i], {
                             x,
                             y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
@@ -626,7 +634,7 @@ class CertificadoService {
                     for (let i = 0; i < fechasEvento.length; i++) {
                         const lineWidth = customFontBalooBold.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento)
                         const x = ((pageWidth - lineWidth) / 2) - 80
-                    
+
                         pagina.drawText(fechasEvento[i], {
                             x,
                             y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
@@ -680,7 +688,7 @@ class CertificadoService {
             const logoBytes = fs.readFileSync(pathLogo)
             const logoImage = await pdfDoc.embedPng(logoBytes)
             const logoDimensions = logoImage.scale(1.0)
-            
+
             newPage.drawImage(logoImage, {
                 x: newPage.getWidth() - logoDimensions.width - 20,
                 y: newPage.getHeight() - logoDimensions.height - 20,
@@ -840,6 +848,11 @@ class CertificadoService {
 
             const qrCodeFilePath = data.codigoQR as string
 
+            console.log('env', env)
+            console.log('baseUrl', baseUrl)
+            console.log('dataUrlQR', dataUrlQR)
+            console.log('qrCodeFilePath', qrCodeFilePath)
+
             // Validando si existe el QR
             try {
                 // Usamos fs.promises.access para evitar bloqueos sincrónicos
@@ -873,6 +886,10 @@ class CertificadoService {
             // Verificando que el directorio de salida exista, sino se crea
             const outputDirQRCode = path.dirname(qrOutputPath)
 
+            console.log('qrFileName', qrFileName)
+            console.log('qrOutputPath', qrOutputPath)
+            console.log('outputDirQRCode', outputDirQRCode)
+
             // Verificamos si el directorio de salida existe
             try {
                 await fs.promises.access(outputDirQRCode, fs.constants.F_OK)
@@ -904,7 +921,7 @@ class CertificadoService {
         for (let i = 0; i < words.length; i++) {
             const testLine = currentLine ? `${currentLine} ${words[i]}` : words[i];
             const width = font.widthOfTextAtSize(testLine, fontSize); // Medir el ancho del texto
-        
+
             if (width <= maxWidth) {
                 currentLine = testLine; // La palabra cabe en la línea actual
             } else {
