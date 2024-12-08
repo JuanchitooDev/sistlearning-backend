@@ -388,8 +388,10 @@ class CertificadoService {
 
             // Código del certificado
             if (data.id) {
+                console.log('existe código')
                 codigo = data.codigo as string
             } else {
+                console.log('generar nuevo código')
                 codigo = HString.generateCodigo()
             }
 
@@ -451,7 +453,7 @@ class CertificadoService {
 
             const nombreImpresion = data.nombre_alumno_impresion as string;
 
-            console.log('nombreImpresion', nombreImpresion)
+            console.log('nombreImpresion', nombreImpresion, 'nombreTemplate', nombreTemplate)
 
             switch (nombreTemplate) {
                 case "template":
@@ -658,6 +660,8 @@ class CertificadoService {
                     break;
             }
 
+            console.log('newPage')
+
             // Crear nueva página para el logo, código QR y tabla
             const newPageWidth = 842
             const newPageHeight = 590
@@ -694,6 +698,8 @@ class CertificadoService {
                 maxWidth: 370,
                 color: rgb(0, 0, 0),
             });
+
+            console.log('agregar logo')
 
             // Cargar y añadir el logo
             const logoBytes = fs.readFileSync(pathLogo)
@@ -733,6 +739,8 @@ class CertificadoService {
 
             // Ajustar la posición para los ítems del temario
             let currentY = 0
+
+            console.log('temarioEvento', temarioEvento)
 
             temarioEvento.forEach((item, index) => {
                 if (index == 0) {
@@ -845,6 +853,8 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
+            console.log('load .env')
+
             // Determina el ambiente
             const env = process.env.NODE_ENV || 'development'
 
@@ -857,21 +867,28 @@ class CertificadoService {
 
             let qrCodeImage: PDFImage
 
-            const qrCodeFilePath = data.codigoQR as string
+            // const qrCodeFilePath = data.codigoQR as string
+            let qrCodeFilePath: string = ""
 
             console.log('env', env)
             console.log('baseUrl', baseUrl)
             console.log('dataUrlQR', dataUrlQR)
-            console.log('qrCodeFilePath', qrCodeFilePath)
+            // console.log('qrCodeFilePath', qrCodeFilePath)
 
             // Validando si existe el QR
             try {
-                // Usamos fs.promises.access para evitar bloqueos sincrónicos
-                await fs.promises.access(qrCodeFilePath, fs.constants.F_OK)
+                if (data.id) {
+                    qrCodeFilePath = data.codigoQR as string
+                    // Usamos fs.promises.access para evitar bloqueos sincrónicos
+                    await fs.promises.access(qrCodeFilePath, fs.constants.F_OK)
 
-                // Si existe, obtenemos la imagen del QR desde la ruta local
-                const arrayBuffer = await fs.promises.readFile(qrCodeFilePath);
-                qrCodeImage = await pdfDoc.embedPng(arrayBuffer);
+                    // Si existe, obtenemos la imagen del QR desde la ruta local
+                    const arrayBuffer = await fs.promises.readFile(qrCodeFilePath);
+                    qrCodeImage = await pdfDoc.embedPng(arrayBuffer);
+                } else {
+                    const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrlQR}`)
+                    qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
+                }
             } catch (err) {
                 // Generar código QR
                 const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrlQR}`)
