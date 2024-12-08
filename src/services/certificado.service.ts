@@ -332,7 +332,7 @@ class CertificadoService {
             const lugar = 'Lambayeque';
             const pathTemplate = path.resolve(__dirname, `../../public/pdf/${nombreTemplate}.pdf`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
-            const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/Kuenstler Script LT Std 2 Bold.otf");
+            const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/'Kuenstler Script LT Std 2 Bold.otf'");
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
@@ -416,6 +416,7 @@ class CertificadoService {
             // Registrar fontkit
             pdfDoc.registerFontkit(fontkit as any)
 
+            console.log('load fonts')
             // Cargar la fuente
             const fontKuenstlerBold = fs.readFileSync(pathFontKuenstlerBold)
             const customFontKuenstlerBold = await pdfDoc.embedFont(fontKuenstlerBold)
@@ -430,6 +431,7 @@ class CertificadoService {
             const fontBalooMedium = fs.readFileSync(pathFontBalooMedium)
             const customFontBalooMedium = await pdfDoc.embedFont(fontBalooMedium)
 
+            console.log('crear página')
             // Obtener la primera página
             const pagina = pdfDoc.getPage(0)
 
