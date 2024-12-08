@@ -160,6 +160,8 @@ class CertificadoService {
 
     async createCertificado(data: ICertificado): Promise<CertificadoResponse> {
         try {
+            console.log('data createCertificado', data)
+
             const id_alumno = data.id_alumno
             const id_evento = data.id_evento
             const templateName = data.templateName as string
@@ -197,6 +199,14 @@ class CertificadoService {
 
             // Generar un nuevo archivo PDF
             const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
+
+            console.log('alumno createCertificado', alumno)
+            console.log('evento createCertificado', evento)
+            console.log('nombreAlumnoImpresion', nombreAlumnoImpresion)
+            console.log('outputPath', outputPath)
+            console.log('fileName', fileName)
+            console.log('codigoQR', codigoQR)
+            console.log('codigo', codigo)
 
             data.fecha_envio = fechaEnvio
             data.fecha_registro = new Date()
@@ -318,6 +328,7 @@ class CertificadoService {
     // Método auxiliar para generar el PDF del certificado
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
         try {
+            console.log('test variables generateCertificadoPDF')
             let codigo = ""
             let fechaFinalStr = ""
             let fechasEvento = []
