@@ -340,31 +340,43 @@ class CertificadoService {
             if (!fs.existsSync(pathTemplate)) {
                 console.log('aaa')
                 return { result: false, message: `No existe la plantilla ${nombreTemplate}` }
+            } else {
+                console.log('xx')
             }
 
             if (!fs.existsSync(pathFontKuenstler)) {
                 console.log('bbb')
                 return { result: false, message: `No existe fuente KUNSTLER.TTF` }
+            } else {
+                console.log('yy')
             }
 
             if (!fs.existsSync(pathFontKuenstlerBold)) {
                 console.log('ccc')
                 return { result: false, message: `Kuenstler Script LT Std 2 Bold.otf` }
+            } else {
+                console.log('zz')
             }
 
             if (!fs.existsSync(pathFontBalooBold)) {
                 console.log('ddd')
                 return { result: false, message: `No existe fuente BalooChettan2-Bold.ttf` }
+            } else {
+                console.log('ww')
             }
 
             if (!fs.existsSync(pathFontBalooMedium)) {
                 console.log('eee')
                 return { result: false, message: `No existe fuente BalooChettan2-Medium.ttf` }
+            } else {
+                console.log('qq')
             }
 
             if (!fs.existsSync(pathLogo)) {
                 console.log('fff')
                 return { result: false, message: `No existe el logo` }
+            } else {
+                console.log('pp')
             }
 
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
@@ -742,26 +754,39 @@ class CertificadoService {
 
             console.log('temarioEvento', temarioEvento)
 
-            temarioEvento.forEach((item, index) => {
-                if (index == 0) {
-                    currentY = startTemarioY - index * (cellHeightTemario + 3)
-                }
+            if (temarioEvento.length > 0) {
+                console.log('temarioEvento.length', temarioEvento.length)
+                temarioEvento.forEach((item, index) => {
+                    if (index == 0) {
+                        currentY = startTemarioY - index * (cellHeightTemario + 3)
+                    }
 
-                // Dividir cada ítem del temario
-                const linesItemTemario = this.splitTextIntoLines(item as string, 210, customFontKuenstler, 12);
-                for (let i = 0; i < linesItemTemario.length; i++) {
-                    currentY -= 18
+                    // Dividir cada ítem del temario
+                    const linesItemTemario = this.splitTextIntoLines(item as string, 210, customFontKuenstler, 12);
 
-                    newPage.drawText(`${linesItemTemario[i]}`, {
-                        x: startTemarioX + 3,
-                        y: currentY,
-                        size: 12,
-                        color: rgb(0, 0, 0)
-                    })
-                }
+                    console.log('linesItemTemario', linesItemTemario, 'currentY', currentY)
 
-                currentY -= 8
-            })
+                    if (linesItemTemario.length > 0) {
+                        console.log('linesItemTemario.length', linesItemTemario.length)
+                        for (let i = 0; i < linesItemTemario.length; i++) {
+                            currentY -= 18
+
+                            newPage.drawText(`${linesItemTemario[i]}`, {
+                                x: startTemarioX + 3,
+                                y: currentY,
+                                size: 12,
+                                color: rgb(0, 0, 0)
+                            })
+                        }
+                    } else {
+                        console.log('no existe linesItemTemario.length')
+                    }
+
+                    currentY -= 8
+                })
+            } else {
+                console.log('no existe temario')
+            }
 
             // Crear un rectángulo para la sección del código QR
             let startQRX = 550
