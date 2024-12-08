@@ -797,11 +797,13 @@ class CertificadoService {
                                 color: rgb(0, 0, 0)
                             })
                         }
+                        console.log('siguiente item temario')
                     } else {
                         console.log('no existe linesItemTemario.length')
                     }
 
                     currentY -= 8
+                    console.log('siguiente temario evento')
                 })
             } else {
                 console.log('no existe temario')
