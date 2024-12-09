@@ -199,19 +199,14 @@ class CertificadoService {
             // const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
             const { result, message, dataResult } = await this.generateCertificadoPDF(data, alumno, evento, templateName)
 
-            const outputPath = dataResult?.outputPath
-            const fileName = dataResult?.fileName
-            const codigoQR = dataResult?.codigoQR
-            const codigo = dataResult?.codigo
-
             if (!result) {
                 return { result, message }
             }
 
-            console.log('outputPath', outputPath)
-            console.log('fileName', fileName)
-            console.log('codigoQR', codigoQR)
-            console.log('codigo', codigo)
+            const outputPath = dataResult?.outputPath
+            const fileName = dataResult?.fileName
+            const codigoQR = dataResult?.codigoQR
+            const codigo = dataResult?.codigo
 
             data.fecha_envio = fechaEnvio
             data.fecha_registro = new Date()
@@ -343,7 +338,6 @@ class CertificadoService {
     // Método auxiliar para generar el PDF del certificado
     async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
         try {
-            console.log('test variables generateCertificadoPDF')
             let codigo = ""
             let fechaFinalStr = ""
             let fechasEvento = []
@@ -357,45 +351,27 @@ class CertificadoService {
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
 
             if (!fs.existsSync(pathTemplate)) {
-                console.log('aaa')
                 return { result: false, message: `No existe la plantilla ${nombreTemplate}` }
-            } else {
-                console.log('xx')
             }
 
             if (!fs.existsSync(pathFontKuenstler)) {
-                console.log('bbb')
                 return { result: false, message: `No existe fuente KUNSTLER.TTF` }
-            } else {
-                console.log('yy')
             }
 
             if (!fs.existsSync(pathFontKuenstlerBold)) {
-                console.log('ccc')
                 return { result: false, message: `Kuenstler Script LT Std 2 Bold.otf` }
-            } else {
-                console.log('zz')
             }
 
             if (!fs.existsSync(pathFontBalooBold)) {
-                console.log('ddd')
                 return { result: false, message: `No existe fuente BalooChettan2-Bold.ttf` }
-            } else {
-                console.log('ww')
             }
 
             if (!fs.existsSync(pathFontBalooMedium)) {
-                console.log('eee')
                 return { result: false, message: `No existe fuente BalooChettan2-Medium.ttf` }
-            } else {
-                console.log('qq')
             }
 
             if (!fs.existsSync(pathLogo)) {
-                console.log('fff')
                 return { result: false, message: `No existe el logo` }
-            } else {
-                console.log('pp')
             }
 
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
@@ -415,10 +391,8 @@ class CertificadoService {
 
             // Código del certificado
             if (data.id) {
-                console.log('existe código')
                 codigo = data.codigo as string
             } else {
-                console.log('generar nuevo código')
                 codigo = HString.generateCodigo()
             }
 
@@ -447,7 +421,6 @@ class CertificadoService {
             // Registrar fontkit
             pdfDoc.registerFontkit(fontkit as any)
 
-            console.log('load fonts')
             // Cargar la fuente
             const fontKuenstlerBold = fs.readFileSync(pathFontKuenstlerBold)
             const customFontKuenstlerBold = await pdfDoc.embedFont(fontKuenstlerBold)
@@ -462,7 +435,6 @@ class CertificadoService {
             const fontBalooMedium = fs.readFileSync(pathFontBalooMedium)
             const customFontBalooMedium = await pdfDoc.embedFont(fontBalooMedium)
 
-            console.log('crear página')
             // Obtener la primera página
             const pagina = pdfDoc.getPage(0)
 
@@ -482,10 +454,8 @@ class CertificadoService {
 
             const nombreImpresion = data.nombre_alumno_impresion as string;
 
-            console.log('nombreImpresion', nombreImpresion, 'nombreTemplate', nombreTemplate)
-
             switch (nombreTemplate) {
-                case "template":
+                case "template_uno":
                     // Configurar el texto (posición y estilo)
                     fontSizeForAlumno = 60;
                     y = 270; // posición Y
@@ -689,8 +659,6 @@ class CertificadoService {
                     break;
             }
 
-            console.log('newPage')
-
             // Crear nueva página para el logo, código QR y tabla
             const newPageWidth = 842
             const newPageHeight = 590
@@ -728,14 +696,11 @@ class CertificadoService {
                 color: rgb(0, 0, 0),
             });
 
-            console.log('agregar logo')
-
             // Cargar y añadir el logo
             const logoBytes = fs.readFileSync(pathLogo)
             const logoImage = await pdfDoc.embedPng(logoBytes)
             const logoDimensions = logoImage.scale(1.0)
 
-            console.log('add logoImage')
             newPage.drawImage(logoImage, {
                 x: newPage.getWidth() - logoDimensions.width - 20,
                 y: newPage.getHeight() - logoDimensions.height - 20,
@@ -759,7 +724,6 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
-            console.log('add titulo temario')
             // Dibujar el título en la celda
             newPage.drawText('Temario', {
                 x: startTemarioX + 5,
@@ -771,10 +735,7 @@ class CertificadoService {
             // Ajustar la posición para los ítems del temario
             let currentY = 0
 
-            console.log('temarioEvento', temarioEvento)
-
             if (temarioEvento.length > 0) {
-                console.log('temarioEvento.length', temarioEvento.length)
                 temarioEvento.forEach((item, index) => {
                     if (index == 0) {
                         currentY = startTemarioY - index * (cellHeightTemario + 3)
@@ -783,10 +744,7 @@ class CertificadoService {
                     // Dividir cada ítem del temario
                     const linesItemTemario = this.splitTextIntoLines(item as string, 210, customFontKuenstler, 12);
 
-                    console.log('linesItemTemario', linesItemTemario, 'currentY', currentY)
-
                     if (linesItemTemario.length > 0) {
-                        console.log('linesItemTemario.length', linesItemTemario.length)
                         for (let i = 0; i < linesItemTemario.length; i++) {
                             currentY -= 18
 
@@ -797,16 +755,10 @@ class CertificadoService {
                                 color: rgb(0, 0, 0)
                             })
                         }
-                        console.log('siguiente item temario')
-                    } else {
-                        console.log('no existe linesItemTemario.length')
                     }
 
                     currentY -= 8
-                    console.log('siguiente temario evento')
                 })
-            } else {
-                console.log('no existe temario')
             }
 
             // Crear un rectángulo para la sección del código QR
@@ -825,7 +777,6 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
-            console.log('add título registro electrónico')
             // Dibujar el título en la celda
             newPage.drawText('REGISTRO ELECTRÓNICO', {
                 x: startQRX + 5,
@@ -845,7 +796,6 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
-            console.log('add título código validación')
             // Dibujar el título en la celda
             newPage.drawText('Código Validación', {
                 x: startQRX + 5,
@@ -865,7 +815,6 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
-            console.log('add código')
             newPage.drawText(codigo, {
                 x: startQRX + (cellWidthQR / 2) + 5,
                 y: startQRY - 20,
@@ -902,8 +851,6 @@ class CertificadoService {
                 color: rgb(1, 1, 1),
             });
 
-            console.log('load .env')
-
             // Determina el ambiente
             const env = process.env.NODE_ENV || 'development'
 
@@ -919,15 +866,9 @@ class CertificadoService {
             // const qrCodeFilePath = data.codigoQR as string
             let qrCodeFilePath: string = ""
 
-            console.log('env', env)
-            console.log('baseUrl', baseUrl)
-            console.log('dataUrlQR', dataUrlQR)
-            // console.log('qrCodeFilePath', qrCodeFilePath)
-
             // Validando si existe el QR
             try {
                 if (data.id) {
-                    console.log('existe código QR')
                     qrCodeFilePath = data.codigoQR as string
                     // Usamos fs.promises.access para evitar bloqueos sincrónicos
                     await fs.promises.access(qrCodeFilePath, fs.constants.F_OK)
@@ -936,12 +877,10 @@ class CertificadoService {
                     const arrayBuffer = await fs.promises.readFile(qrCodeFilePath);
                     qrCodeImage = await pdfDoc.embedPng(arrayBuffer);
                 } else {
-                    console.log('no existe código qr')
                     const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrlQR}`)
                     qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
                 }
             } catch (err) {
-                console.log('generar nuevo códigp err')
                 // Generar código QR
                 const qrCodeDataUrl = await QRCode.toDataURL(`${dataUrlQR}`)
                 qrCodeImage = await pdfDoc.embedPng(qrCodeDataUrl)
@@ -965,10 +904,6 @@ class CertificadoService {
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDirQRCode = path.dirname(qrOutputPath)
-
-            console.log('qrFileName', qrFileName)
-            console.log('qrOutputPath', qrOutputPath)
-            console.log('outputDirQRCode', outputDirQRCode)
 
             // Verificamos si el directorio de salida existe
             try {
