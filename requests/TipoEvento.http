@@ -1,0 +1,12 @@
+# Solicitud GET
+GET http://localhost:3000/api/tipo-evento
+
+###
+
+# Solicitud POST
+POST http://localhost:3000/api/tipo-evento
+Content-Type: application/json
+
+{
+    "nombre": "Capacitación"
+}

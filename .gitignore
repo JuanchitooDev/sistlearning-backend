@@ -5,4 +5,4 @@ public/qrcodes
 dist
 
 # local env files
-.env.*
+.env.development

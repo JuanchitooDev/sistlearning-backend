@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import swaggerUI from 'swagger-ui-express'
 
 import alumnoRoutes from './routes/alumno.routes'
 import tipoDocumentoRoutes from './routes/tipoDocumento.routes'
@@ -18,6 +19,7 @@ import authRoutes from './routes/auth.routes'
 import cargoRoutes from './routes/cargo.routes'
 import documentoRoutes from './routes/documento.routes'
 import personaRoutes from './routes/persona.routes'
+import swaggerSpec from './swagger'
 
 const app = express()
 
@@ -48,5 +50,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/cargo', cargoRoutes)
 app.use('/api/documento', documentoRoutes)
 app.use('/api/persona', personaRoutes)
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec))
 
 export default app;
