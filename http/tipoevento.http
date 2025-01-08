@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:3000/api
+### Obteniendo el listado de tipo de eventos
+GET {{baseUrl}}/tipo-evento
+
+Content-Type: application/json
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTczNjExMzU2NiwiZXhwIjoxNzM2MTE3MTY2fQ.aRsF00iXjaTFDHAYUwqxauWgViSwbVDaVMjJnv7D1lY

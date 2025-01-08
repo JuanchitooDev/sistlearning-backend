@@ -1,0 +1,18 @@
+@baseUrl = http://localhost:3000/api
+### Crear un nuevo usuario
+POST {{baseUrl}}/usuario/create
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin"
+}
+
+### Iniciar sesión de usuario
+POST {{baseUrl}}/usuario/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin"
+}

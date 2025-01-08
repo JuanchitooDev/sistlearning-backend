@@ -21,5 +21,6 @@ export interface UsuarioResponse {
     result: boolean
     message?: string
     data?: IUsuario | IUsuario[],
+    token?: string,
     error?: string
 }

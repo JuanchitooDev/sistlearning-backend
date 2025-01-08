@@ -9,7 +9,16 @@ class ContenidoService {
         try {
             const contenidos = await Contenido.findAll({
                 attributes: [
-                    'id', 'id_tipocontenido', 'id_evento', 'titulo', 'titulo_url', 'descripcion', 'url', 'es_descargable', 'estado'
+                    'id',
+                    'id_tipocontenido',
+                    'id_evento',
+                    'titulo',
+                    'titulo_url',
+                    'descripcion',
+                    'url',
+                    'es_descargable',
+                    'es_visible',
+                    'estado'
                 ],
                 include: [
                     {

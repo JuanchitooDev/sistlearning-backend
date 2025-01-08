@@ -10,6 +10,7 @@ export interface IContenido {
     descripcion?: string
     url?: string
     es_descargable?: boolean
+    es_visible?: boolean
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string

@@ -12,6 +12,7 @@ class Contenido extends Model {
     public descripcion?: string
     public url?: string
     public es_descargable?: boolean
+    public es_visible?: boolean
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -60,6 +61,11 @@ Contenido.init({
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
+    },
+    es_visible: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     },
     user_crea: {
         type: DataTypes.STRING(10),

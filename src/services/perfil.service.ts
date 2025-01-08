@@ -37,6 +37,16 @@ class PerfilService {
 
     async createPerfil(data: IPerfil): Promise<PerfilResponse> {
         try {
+            const existePerfil = await Perfil.findOne({
+                where: {
+                    nombre: data.nombre
+                }
+            })
+
+            if (existePerfil) {
+                return { result: false, message: 'El perfil ya existe' }
+            }
+
             data.nombre_url = HString.convertToUrlString(data.nombre as String)
             const newPerfil = await Perfil.create(data as any)
             if (newPerfil.id) {
