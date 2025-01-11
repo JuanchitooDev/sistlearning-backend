@@ -9,7 +9,7 @@ const authToken = (req: any, res: any, next: any) => {
 
         console.log('obteniendo token', token)
 
-        if (!token) return res.status(401).json({ message: 'No se proporciona token' })
+        if (!token) return res.status(401).json({ message: 'No se encontró token, acceso no autorizado' })
             
         jwt.verify(token, process.env.JWT_SECRET as string, (err: any, decoded: any) => {
             if (err) return res.status(401).json({ message: 'Token no válido' })

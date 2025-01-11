@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import EventoController from '../controllers/evento.controller'
-import { authToken } from '../middleware/middleware'
+import { authToken } from '../middleware/authMiddleware'
 
 const router = Router()
 

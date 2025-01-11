@@ -20,10 +20,10 @@ const sequelize = new Sequelize(
 
 sequelize.authenticate()
     .then(() => {
-        console.log('Connection to the database has been established successfully')
+        console.log('Conexión a la base de datos fue establecida con éxito')
     })
     .catch((err) => {
-        console.log('Unable to connect to the database: ', err)
+        console.log('No se pudo conectar a la base de datos: ', err)
     })
 
 export default sequelize;
