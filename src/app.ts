@@ -18,7 +18,7 @@ import authRoutes from './routes/auth.routes'
 import cargoRoutes from './routes/cargo.routes'
 import documentoRoutes from './routes/documento.routes'
 import personaRoutes from './routes/persona.routes'
-// import usuarioRoutes from './routes/usuario.routes'
+import usuarioRoutes from './routes/usuario.routes'
 
 const app = express()
 
@@ -49,6 +49,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/cargo', cargoRoutes)
 app.use('/api/documento', documentoRoutes)
 app.use('/api/persona', personaRoutes)
-// app.use('/api/usuario', usuarioRoutes)
+app.use('/api/usuario', usuarioRoutes)
 
 export default app;

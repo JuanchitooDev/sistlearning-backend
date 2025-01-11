@@ -3,8 +3,7 @@ import UsuarioController from '../controllers/usuario.controller'
 
 const router = Router()
 
-router.post('/create', UsuarioController.createUsuario)
-router.post('/login', UsuarioController.loginUsuario)
-router.get('/verify', UsuarioController.verifyToken)
+router.post('/', UsuarioController.getUsuarios)
+router.post('/:id', UsuarioController.getUsuarioById)
 
 export default router
