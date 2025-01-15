@@ -34,8 +34,8 @@ class AuthService {
 
     async login(data: IUsuario): Promise<UsuarioResponse> {
         try {
-            const username = String(data.username)
-            const password = String(data.password)
+            const username = data.username as string
+            const password = data.password as string
 
             const usuario = await Usuario.findOne({ where: { username } })
 

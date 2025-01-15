@@ -22,9 +22,14 @@ class AuthController {
     async login(req: Request, res: Response) {
         try {
             const response = await AuthService.login(req.body)
+            // console.log('response login', response)
             if (response.result) {
                 if (response.data) {
-                    res.status(200).json(response.data);
+                    const dataLogin = {
+                        "token": response.token,
+                        "usuario": response.data
+                    }
+                    res.status(200).json(dataLogin);
                 } else {
                     res.status(404).json({ message: 'Usuario no encontrado' });
                 }
