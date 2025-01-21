@@ -31,14 +31,18 @@ LogSesion.init({
     fecha_sesion: {
         type: DataTypes.DATE,
         allowNull: false
+    },
+    user_agent: {
+        type: DataTypes.STRING(10),
+        allowNull: false
     }
 }, {
     sequelize,
-    modelName: "LogSesion",
+    modelName: 'LogSesion',
     timestamps: true,
     freezeTableName: true
 })
 
 LogSesion.belongsTo(Usuario, { foreignKey: 'id_usuario' })
 
-export default LogSesion;
+export default LogSesion

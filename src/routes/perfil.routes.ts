@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import PerfilController from '../controllers/perfil.controller'
-import { authToken } from '../middleware/authMiddleware'
+// import { authToken } from '../middleware/authMiddleware'
 
 const router = Router()
 

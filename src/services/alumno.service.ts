@@ -5,7 +5,6 @@ import Pais from '../models/pais.models';
 import Departamento from '../models/departamento.models';
 import HString from '../helpers/HString'
 import { toZonedTime } from 'date-fns-tz'
-import { Sequelize } from 'sequelize';
 
 class AlumnoService {
     async getAlumnos(): Promise<AlumnoResponse> {

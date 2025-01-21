@@ -26,7 +26,7 @@ class AuthService {
                 password: hashedPassword
             })
 
-            return { result: true, data: newUser as IUsuario }
+            return { result: true, message: 'Usuario registrado correctamente', data: newUser as IUsuario }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage };
@@ -72,6 +72,7 @@ class AuthService {
 
             return {
                 result: true,
+                message: 'Credenciales correctas',
                 token,
                 message: 'Inicio de sesión exitoso',
                 data: usuario as IUsuario

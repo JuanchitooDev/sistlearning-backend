@@ -10,7 +10,7 @@ class Usuario extends Model {
     public username?: string
     public password?: string
     public token?: string
-    public fecha_sesion?: string
+    public fecha_sesion?: Date
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string

@@ -1,24 +1,46 @@
-import { AlumnoResponse, IAlumno } from "../interfaces/alumnoInterface";
+import { AlumnoResponse } from "../interfaces/alumnoInterface";
 import Alumno from "../models/alumno.models";
+import TipoDocumento from '../models/tipoDocumento.models';
+import Pais from '../models/pais.models';
+import Departamento from '../models/departamento.models';
 
-class ReporteServices {
-    async getAllForBirthday(): Promise<AlumnoResponse> {
+class ReporteService {
+    async getCumpleaniosAlumnos(): Promise<AlumnoResponse> {
         try {
             const alumnos = await Alumno.findAll({
+                where: {
+                    estado: 1
+                },
                 attributes: [
                     'id',
-                    'nombres',
+                    'id_tipodocumento',
+                    'id_pais',
+                    'id_departamento',
+                    'numero_documento',
                     'apellido_paterno',
                     'apellido_materno',
+                    'nombres',
                     'telefono',
                     'direccion',
                     'email',
                     'fecha_nacimiento',
                     'nombre_capitalized',
                     'fecha_nacimiento_str',
+                    'sexo',
+                    'sistema',
+                    'estado'
                 ],
-                order: [
-                    ['fecha_nacimiento', 'DESC']
+                include: [
+                    {
+                        model: TipoDocumento,
+                        attributes: ['id', 'nombre', 'abreviatura']
+                    }, {
+                        model: Pais,
+                        attributes: ['id', 'nombre']
+                    }, {
+                        model: Departamento,
+                        attributes: ['id', 'nombre']
+                    }
                 ]
             })
 
@@ -30,4 +52,4 @@ class ReporteServices {
     }
 }
 
-export default new ReporteServices()
+export default new ReporteService()
