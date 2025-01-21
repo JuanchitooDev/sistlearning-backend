@@ -25,7 +25,7 @@ class AuthService {
                 password: hashedPassword
             })
 
-            return { result: true, data: newUser as IUsuario }
+            return { result: true, message: 'Usuario registrado correctamente', data: newUser as IUsuario }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage };
@@ -55,8 +55,13 @@ class AuthService {
                 { expiresIn: process.env.EXPIRE_TOKEN }
             )
 
+            usuario.token = token
+            usuario.fecha_sesion = new Date()
+            await usuario.save()
+
             return {
                 result: true,
+                message: 'Credenciales correctas',
                 token,
                 data: usuario as IUsuario
             }
