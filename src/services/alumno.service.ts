@@ -95,51 +95,6 @@ class AlumnoService {
         }
     }
 
-    async getCumpleanios(): Promise<AlumnoResponse> {
-        try {
-            const alumnos = await Alumno.findAll({
-                where: {
-                    estado: 1
-                },
-                attributes: [
-                    'id',
-                    'id_tipodocumento',
-                    'id_pais',
-                    'id_departamento',
-                    'numero_documento',
-                    'apellido_paterno',
-                    'apellido_materno',
-                    'nombres',
-                    'telefono',
-                    'direccion',
-                    'email',
-                    'fecha_nacimiento',
-                    'nombre_capitalized',
-                    'fecha_nacimiento_str',
-                    'sexo',
-                    'sistema',
-                    'estado'
-                ],
-                include: [
-                    {
-                        model: TipoDocumento,
-                        attributes: ['id', 'nombre', 'abreviatura']
-                    }, {
-                        model: Pais,
-                        attributes: ['id', 'nombre']
-                    }, {
-                        model: Departamento,
-                        attributes: ['id', 'nombre']
-                    }
-                ]
-            })
-            return { result: true, data: alumnos }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
-        }
-    }
-
     async getAlumnoByNumDoc(numero_documento: string): Promise<AlumnoResponse> {
         try {
             const alumno = await Alumno.findOne({

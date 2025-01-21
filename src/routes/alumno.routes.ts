@@ -1,14 +1,20 @@
 import { Router } from 'express'
 import AlumnoController from '../controllers/alumno.controller'
-import { authToken } from '../middleware/authMiddleware'
+// import { authToken } from '../middleware/authMiddleware'
 
 const router = Router()
 
-router.get('/', authToken, AlumnoController.getAlumnos)
-router.get('/:id', authToken, AlumnoController.getAlumnoById)
-router.post('/', authToken, AlumnoController.createAlumno)
-router.put('/:id', authToken, AlumnoController.updateAlumno)
-router.delete('/:id', authToken, AlumnoController.deleteAlumno)
-router.get('/cumpleanios/excel', authToken, AlumnoController.getCumpleanios)
+router.get('/', AlumnoController.getAlumnos)
+router.get('/:id', AlumnoController.getAlumnoById)
+router.post('/', AlumnoController.createAlumno)
+router.put('/:id', AlumnoController.updateAlumno)
+router.delete('/:id', AlumnoController.deleteAlumno)
+
+// router.get('/', authToken, AlumnoController.getAlumnos)
+// router.get('/:id', authToken, AlumnoController.getAlumnoById)
+// router.post('/', authToken, AlumnoController.createAlumno)
+// router.put('/:id', authToken, AlumnoController.updateAlumno)
+// router.delete('/:id', authToken, AlumnoController.deleteAlumno)
+// router.get('/cumpleanios/excel', authToken, AlumnoController.getCumpleanios)
 
 export default router

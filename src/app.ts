@@ -19,6 +19,7 @@ import cargoRoutes from './routes/cargo.routes'
 import documentoRoutes from './routes/documento.routes'
 import personaRoutes from './routes/persona.routes'
 import usuarioRoutes from './routes/usuario.routes'
+import reporteRoutes from './routes/reporte.routes'
 
 const app = express()
 
@@ -50,5 +51,6 @@ app.use('/api/cargo', cargoRoutes)
 app.use('/api/documento', documentoRoutes)
 app.use('/api/persona', personaRoutes)
 app.use('/api/usuario', usuarioRoutes)
+app.use('/api/reporte', reporteRoutes)
 
 export default app;

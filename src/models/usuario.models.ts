@@ -33,7 +33,7 @@ Usuario.init({
     },
     id_perfil: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
             model: Perfil,
             key: "id"

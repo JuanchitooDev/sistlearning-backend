@@ -11,7 +11,27 @@ class PersonaService {
         try {
             const personas = await Persona.findAll({
                 attributes: [
-                    'id', 'id_tipodocumento', 'numero', 'nombres', 'apellido_paterno', 'apellido_materno', 'nombre_completo', 'departamento', 'provincia', 'distrito', 'direccion', 'direccion_completa', 'ubigeo_reniec', 'ubigeo_sunat', 'ubigeo', 'fecha_nacimiento', 'estado_civil', 'foto', 'sexo', 'origen', 'estado'
+                    'id',
+                    'id_tipodocumento',
+                    'numero',
+                    'nombres',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombre_completo',
+                    'departamento',
+                    'provincia',
+                    'distrito',
+                    'direccion',
+                    'direccion_completa',
+                    'ubigeo_reniec',
+                    'ubigeo_sunat',
+                    'ubigeo',
+                    'fecha_nacimiento',
+                    'estado_civil',
+                    'foto',
+                    'sexo',
+                    'origen',
+                    'estado'
                 ],
                 include: [
                     {
@@ -31,7 +51,27 @@ class PersonaService {
         try {
             const persona = await Persona.findByPk(id, {
                 attributes: [
-                    'id', 'id_tipodocumento', 'numero', 'nombres', 'apellido_paterno', 'apellido_materno', 'nombre_completo', 'departamento', 'provincia', 'distrito', 'direccion', 'direccion_completa', 'ubigeo_reniec', 'ubigeo_sunat', 'ubigeo', 'fecha_nacimiento', 'estado_civil', 'foto', 'sexo', 'origen', 'estado'
+                    'id',
+                    'id_tipodocumento',
+                    'numero',
+                    'nombres',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombre_completo',
+                    'departamento',
+                    'provincia',
+                    'distrito',
+                    'direccion',
+                    'direccion_completa',
+                    'ubigeo_reniec',
+                    'ubigeo_sunat',
+                    'ubigeo',
+                    'fecha_nacimiento',
+                    'estado_civil',
+                    'foto',
+                    'sexo',
+                    'origen',
+                    'estado'
                 ],
                 include: [
                     {
@@ -58,7 +98,27 @@ class PersonaService {
                     numero: numDoc
                 },
                 attributes: [
-                    'id', 'id_tipodocumento', 'numero', 'nombres', 'apellido_paterno', 'apellido_materno', 'nombre_completo', 'departamento', 'provincia', 'distrito', 'direccion', 'direccion_completa', 'ubigeo_reniec', 'ubigeo_sunat', 'ubigeo', 'fecha_nacimiento', 'estado_civil', 'foto', 'sexo', 'origen', 'estado'
+                    'id',
+                    'id_tipodocumento',
+                    'numero',
+                    'nombres',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombre_completo',
+                    'departamento',
+                    'provincia',
+                    'distrito',
+                    'direccion',
+                    'direccion_completa',
+                    'ubigeo_reniec',
+                    'ubigeo_sunat',
+                    'ubigeo',
+                    'fecha_nacimiento',
+                    'estado_civil',
+                    'foto',
+                    'sexo',
+                    'origen',
+                    'estado'
                 ],
                 include: [
                     {
