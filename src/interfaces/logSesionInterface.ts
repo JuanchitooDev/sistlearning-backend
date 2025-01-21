@@ -6,11 +6,11 @@ export interface ILogSesion {
     token?: string
     fecha_sesion?: Date
     user_agent?: string
-    usuario?: IUsuario
+    usuario: IUsuario
 }
 
 export interface LogSesionResponse {
-    result: boolean
+    result: boolean,
     message?: string
     data?: ILogSesion | ILogSesion[],
     error?: string
