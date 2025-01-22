@@ -71,7 +71,12 @@ class ReporteController {
                 const archivoExcel = HExcel.generate(data)
 
                 // Definir la ruta para guardar el archivo en el servidor
-                const filePath = path.join(__dirname, '../../../public/xlsx/cumpleanios.xlsx')
+                const filePath = path.join(__dirname, '../../public/xlsx/cumpleanios.xlsx')
+
+                const dir = path.dirname(filePath)
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, { recursive: true })
+                }
 
                 // Guardar el archivo Excel en el directorio
                 fs.writeFileSync(filePath, archivoExcel)

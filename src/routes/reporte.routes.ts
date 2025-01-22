@@ -4,7 +4,7 @@ import ReporteController from '../controllers/reporte.controller'
 
 const router = Router()
 
-router.get('/alumnos-cumpleanios', ReporteController.getAllForBirthday)
+router.get('/alumnos-cumpleanios', ReporteController.saveExcelFile)
 
 // router.get('/alumnos-cumpleanios', authToken, ReporteController.getAllForBirthday)
 

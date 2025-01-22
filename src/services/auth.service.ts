@@ -72,7 +72,6 @@ class AuthService {
 
             return {
                 result: true,
-                message: 'Credenciales correctas',
                 token,
                 message: 'Inicio de sesión exitoso',
                 data: usuario as IUsuario
