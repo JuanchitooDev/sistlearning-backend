@@ -2,7 +2,10 @@ import { Sequelize } from 'sequelize'
 import dotenv from 'dotenv'
 
 // Determina el ambiente
-const env = process.env.NODE_ENV || 'development'
+// const env = process.env.NODE_ENV || 'development'
+console.log('process.env', process.env)
+
+const env = 'development'
 
 // Carga el archivo de configuración correspondiente
 dotenv.config({ path: `.env.${env}` })

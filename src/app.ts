@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import swaggerUI from 'swagger-ui-express'
 
 import alumnoRoutes from './routes/alumno.routes'
 import tipoDocumentoRoutes from './routes/tipoDocumento.routes'
