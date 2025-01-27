@@ -152,7 +152,6 @@ class PersonaService {
         } catch (error) {
             await t.rollback()
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            console.log('errorMessage', errorMessage)
             return { result: false, error: errorMessage }
         }
     }

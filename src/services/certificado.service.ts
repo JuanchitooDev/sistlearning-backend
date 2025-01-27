@@ -229,6 +229,7 @@ class CertificadoService {
 
     async updateCertificado(id: number, data: ICertificado): Promise<CertificadoResponse> {
         try {
+            console.log('data certificado', data)
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
             const certificado = await Certificado.findByPk(id)
             const templateName = data.templateName as string
@@ -859,7 +860,9 @@ class CertificadoService {
 
             const baseUrl = process.env.CORS_ALLOWED_ORIGIN
 
-            const dataUrlQR = `${baseUrl}/certificado/${codigo}`
+            const dataUrlQR = `${baseUrl}/web/certificado/${codigo}`
+
+            console.log('baseUrl', baseUrl, 'dataUrlQR', dataUrlQR)
 
             let qrCodeImage: PDFImage
 
