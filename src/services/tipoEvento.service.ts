@@ -7,7 +7,14 @@ class TipoEventoService {
         try {
             const tipos = await TipoEvento.findAll({
                 attributes: [
-                    'id', 'nombre', 'nombre_url', 'descripcion', 'estado'
+                    'id',
+                    'nombre',
+                    'nombre_url',
+                    'descripcion',
+                    'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: tipos }
@@ -24,7 +31,14 @@ class TipoEventoService {
                     activo: estado
                 },
                 attributes: [
-                    'id', 'nombre', 'nombre_url', 'descripcion', 'estado'
+                    'id',
+                    'nombre',
+                    'nombre_url',
+                    'descripcion',
+                    'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: tipos }
@@ -38,7 +52,11 @@ class TipoEventoService {
         try {
             const tipo = await TipoEvento.findByPk(id, {
                 attributes: [
-                    'id', 'nombre', 'nombre_url', 'descripcion', 'estado'
+                    'id',
+                    'nombre',
+                    'nombre_url',
+                    'descripcion',
+                    'estado'
                 ]
             })
             if (!tipo) {

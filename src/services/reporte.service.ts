@@ -41,6 +41,9 @@ class ReporteService {
                         model: Departamento,
                         attributes: ['id', 'nombre']
                     }
+                ],
+                order: [
+                    ['fecha_nacimiento', 'ASC']
                 ]
             })
 

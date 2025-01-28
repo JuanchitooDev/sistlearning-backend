@@ -40,6 +40,9 @@ class AlumnoService {
                         model: Departamento,
                         attributes: ['id', 'nombre']
                     }
+                ],
+                order: [
+                    ['apellido_paterno', 'ASC']
                 ]
             })
             return { result: true, data: alumnos }

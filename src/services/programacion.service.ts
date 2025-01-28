@@ -8,7 +8,17 @@ class ProgramacionService {
         try {
             const programaciones = await Programacion.findAll({
                 attributes: [
-                    'id', 'id_trabajador', 'id_evento', 'descripcion', 'enlace', 'fecha_inicio', 'fecha_final', 'fecha_registro', 'fecha_reprograma', 'fecha_cancela', 'estado'
+                    'id',
+                    'id_trabajador',
+                    'id_evento',
+                    'descripcion',
+                    'enlace',
+                    'fecha_inicio',
+                    'fecha_final',
+                    'fecha_registro',
+                    'fecha_reprograma',
+                    'fecha_cancela',
+                    'estado'
                 ],
                 include: [
                     {
@@ -19,6 +29,9 @@ class ProgramacionService {
                         model: Evento,
                         attributes: ['id', 'titulo']
                     }
+                ],
+                order: [
+                    ['fecha_inicio', 'ASC']
                 ]
             })
             return { result: true, data: programaciones }
@@ -32,7 +45,17 @@ class ProgramacionService {
         try {
             const programacion = await Programacion.findByPk(id, {
                 attributes: [
-                    'id', 'id_trabajador', 'id_evento', 'descripcion', 'enlace', 'fecha_inicio', 'fecha_final', 'fecha_registro', 'fecha_reprograma', 'fecha_cancela', 'estado'
+                    'id',
+                    'id_trabajador',
+                    'id_evento',
+                    'descripcion',
+                    'enlace',
+                    'fecha_inicio',
+                    'fecha_final',
+                    'fecha_registro',
+                    'fecha_reprograma',
+                    'fecha_cancela',
+                    'estado'
                 ],
                 include: [
                     {

@@ -45,6 +45,9 @@ class CertificadoService {
                         model: Evento,
                         attributes: ['id', 'titulo', 'fecha', 'fecha_fin', 'duracion']
                     }
+                ],
+                order: [
+                    ['fecha_envio', 'ASC']
                 ]
             })
             return { result: true, data: certificados }

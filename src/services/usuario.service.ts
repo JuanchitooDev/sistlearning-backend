@@ -8,7 +8,10 @@ class UsuarioService {
         try {
             const usuarios = await Usuario.findAll({
                 attributes: [
-                    'id', 'username', 'id_trabajador', 'id_perfil'
+                    'id',
+                    'username',
+                    'id_trabajador',
+                    'id_perfil'
                 ],
                 include: [
                     {
@@ -19,6 +22,9 @@ class UsuarioService {
                         model: Perfil,
                         attributes: ['id', 'nombre']
                     }
+                ],
+                order: [
+                    ['username', 'ASC']
                 ]
             })
             return { result: true, data: usuarios as IUsuario[] }
@@ -32,7 +38,10 @@ class UsuarioService {
         try {
             const usuario = await Usuario.findByPk(id, {
                 attributes: [
-                    'id', 'username', 'id_trabajador', 'id_perfil'
+                    'id',
+                    'username',
+                    'id_trabajador',
+                    'id_perfil'
                 ],
                 include: [
                     {

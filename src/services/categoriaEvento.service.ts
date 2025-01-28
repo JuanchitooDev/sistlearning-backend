@@ -8,6 +8,9 @@ class CategoriaEventoService {
             const categorias = await CategoriaEvento.findAll({
                 attributes: [
                     'id', 'nombre', 'nombre_url', 'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: categorias }
@@ -25,6 +28,9 @@ class CategoriaEventoService {
                 },
                 attributes: [
                     'id', 'nombre', 'nombre_url', 'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: categorias }

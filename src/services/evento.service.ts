@@ -27,7 +27,10 @@ class EventoService {
                 include: [{
                     model: TipoEvento,
                     attributes: ['id', 'nombre']
-                }]
+                }],
+                order: [
+                    ['titulo', 'ASC']
+                ]
             })
             return { result: true, data: eventos }
         } catch (error) {

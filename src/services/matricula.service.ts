@@ -8,7 +8,23 @@ class MatriculaService {
         try {
             const matriculas = await Matricula.findAll({
                 attributes: [
-                    'id', 'id_alumno', 'id_evento', 'subtotal', 'igv', 'total', 'moneda', 'fecha_pago', 'forma_pago', 'tipo_pago', 'nro_voucher', 'nro_deposito', 'imagen_pago', 'acuenta', 'saldo', 'estado_pago', 'estado'
+                    'id',
+                    'id_alumno',
+                    'id_evento',
+                    'subtotal',
+                    'igv',
+                    'total',
+                    'moneda',
+                    'fecha_pago',
+                    'forma_pago',
+                    'tipo_pago',
+                    'nro_voucher',
+                    'nro_deposito',
+                    'imagen_pago',
+                    'acuenta',
+                    'saldo',
+                    'estado_pago',
+                    'estado'
                 ],
                 include: [
                     {
@@ -19,6 +35,9 @@ class MatriculaService {
                         model: Evento,
                         attributes: ['id', 'titulo']
                     }
+                ],
+                order: [
+                    ['fecha_pago', 'ASC']
                 ]
             })
             return { result: true, data: matriculas }
@@ -32,7 +51,23 @@ class MatriculaService {
         try {
             const matricula = await Matricula.findByPk(id, {
                 attributes: [
-                    'id', 'id_alumno', 'id_evento', 'subtotal', 'igv', 'total', 'moneda', 'fecha_pago', 'forma_pago', 'tipo_pago', 'nro_voucher', 'nro_deposito', 'imagen_pago', 'acuenta', 'saldo', 'estado_pago', 'estado'
+                    'id',
+                    'id_alumno',
+                    'id_evento',
+                    'subtotal',
+                    'igv',
+                    'total',
+                    'moneda',
+                    'fecha_pago',
+                    'forma_pago',
+                    'tipo_pago',
+                    'nro_voucher',
+                    'nro_deposito',
+                    'imagen_pago',
+                    'acuenta',
+                    'saldo',
+                    'estado_pago',
+                    'estado'
                 ],
                 include: [
                     {

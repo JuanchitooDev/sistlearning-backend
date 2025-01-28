@@ -7,7 +7,14 @@ class PerfilService {
         try {
             const perfiles = await Perfil.findAll({
                 attributes: [
-                    'id', 'nombre', 'nombre_url', 'sistema', 'estado'
+                    'id',
+                    'nombre',
+                    'nombre_url',
+                    'sistema',
+                    'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: perfiles }
@@ -21,7 +28,11 @@ class PerfilService {
         try {
             const perfil = await Perfil.findByPk(id, {
                 attributes: [
-                    'id', 'nombre', 'nombre_url', 'sistema', 'estado'
+                    'id',
+                    'nombre',
+                    'nombre_url',
+                    'sistema',
+                    'estado'
                 ]
             })
 

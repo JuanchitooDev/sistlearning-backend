@@ -6,7 +6,12 @@ class TipoContenidoService {
         try {
             const tipos = await TipoContenido.findAll({
                 attributes: [
-                    'id', 'nombre', 'estado'
+                    'id',
+                    'nombre',
+                    'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: tipos }
@@ -20,7 +25,9 @@ class TipoContenidoService {
         try {
             const tipo = await TipoContenido.findByPk(id, {
                 attributes: [
-                    'id', 'nombre', 'estado'
+                    'id',
+                    'nombre',
+                    'estado'
                 ]
             })
             if (!tipo) {

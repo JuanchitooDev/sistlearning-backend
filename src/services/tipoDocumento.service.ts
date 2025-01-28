@@ -7,7 +7,20 @@ class TipoDocumentoService {
         try {
             const tipos = await TipoDocumento.findAll({
                 attributes: [
-                    'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                    'id',
+                    'nombre',
+                    'nombre_url',
+                    'abreviatura',
+                    'longitud',
+                    'en_persona',
+                    'en_empresa',
+                    'compra',
+                    'venta',
+                    'sistema',
+                    'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: tipos }
@@ -28,7 +41,20 @@ class TipoDocumentoService {
                         "estado": true
                     },
                     attributes: [
-                        'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                        'id',
+                        'nombre',
+                        'nombre_url',
+                        'abreviatura',
+                        'longitud',
+                        'en_persona',
+                        'en_empresa',
+                        'compra',
+                        'venta',
+                        'sistema',
+                        'estado'
+                    ],
+                    order: [
+                        ['nombre', 'ASC']
                     ]
                 })
             } else {
@@ -39,7 +65,20 @@ class TipoDocumentoService {
                         "estado": true
                     },
                     attributes: [
-                        'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                        'id',
+                        'nombre',
+                        'nombre_url',
+                        'abreviatura',
+                        'longitud',
+                        'en_persona',
+                        'en_empresa',
+                        'compra',
+                        'venta',
+                        'sistema',
+                        'estado'
+                    ],
+                    order: [
+                        ['nombre', 'ASC']
                     ]
                 })
             }
@@ -55,7 +94,17 @@ class TipoDocumentoService {
         try {
             const tipo = await TipoDocumento.findByPk(id, {
                 attributes: [
-                    'id', 'nombre', 'nombre_url', 'abreviatura', 'longitud', 'en_persona', 'en_empresa', 'compra', 'venta', 'sistema', 'estado'
+                    'id',
+                    'nombre',
+                    'nombre_url',
+                    'abreviatura',
+                    'longitud',
+                    'en_persona',
+                    'en_empresa',
+                    'compra',
+                    'venta',
+                    'sistema',
+                    'estado'
                 ]
             })
             if (!tipo) {

@@ -29,6 +29,9 @@ class ContenidoService {
                         model: Evento,
                         attributes: ['id', 'titulo']
                     }
+                ],
+                order: [
+                    ['titulo', 'ASC']
                 ]
             })
             return { result: true, data: contenidos }

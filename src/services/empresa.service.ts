@@ -7,6 +7,9 @@ class EmpresaService {
             const empresas = await Empresa.findAll({
                 attributes: [
                     'id', 'nombre', 'direccion', 'telefono', 'email', 'redes_sociales', 'logo', 'lema', 'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: empresas }

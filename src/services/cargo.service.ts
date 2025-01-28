@@ -8,6 +8,9 @@ class CargoService {
             const cargos = await Cargo.findAll({
                 attributes: [
                     'id', 'nombre', 'nombre_url', 'estado'
+                ],
+                order: [
+                    ['nombre', 'ASC']
                 ]
             })
             return { result: true, data: cargos }
