@@ -31,6 +31,7 @@ class CertificadoService {
                     'codigoQR',
                     'ruta',
                     'fileName',
+                    'templateName',
                     'fecha_registro',
                     'fecha_descarga',
                     'fecha_envio',
@@ -40,10 +41,21 @@ class CertificadoService {
                 include: [
                     {
                         model: Alumno,
-                        attributes: ['id', 'apellido_paterno', 'apellido_materno', 'nombres']
+                        attributes: [
+                            'id',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres'
+                        ]
                     }, {
                         model: Evento,
-                        attributes: ['id', 'titulo', 'fecha', 'fecha_fin', 'duracion']
+                        attributes: [
+                            'id',
+                            'titulo',
+                            'fecha',
+                            'fecha_fin',
+                            'duracion'
+                        ]
                     }
                 ],
                 order: [
@@ -70,6 +82,7 @@ class CertificadoService {
                     'fileName',
                     'fecha_registro',
                     'fecha_descarga',
+                    'templateName',
                     'fecha_envio',
                     'estado',
                     'nombre_alumno_impresion'
@@ -77,10 +90,22 @@ class CertificadoService {
                 include: [
                     {
                         model: Alumno,
-                        attributes: ['id', 'apellido_paterno', 'apellido_materno', 'nombres', 'nombre_capitalized']
+                        attributes: [
+                            'id',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres',
+                            'nombre_capitalized'
+                        ]
                     }, {
                         model: Evento,
-                        attributes: ['id', 'titulo', 'fecha', 'fecha_fin', 'duracion']
+                        attributes: [
+                            'id',
+                            'titulo',
+                            'fecha',
+                            'fecha_fin',
+                            'duracion'
+                        ]
                     }
                 ]
             })
@@ -108,6 +133,7 @@ class CertificadoService {
                     'fileName',
                     'fecha_registro',
                     'fecha_descarga',
+                    'templateName',
                     'fecha_envio',
                     'estado',
                     'nombre_alumno_impresion'
@@ -115,10 +141,22 @@ class CertificadoService {
                 include: [
                     {
                         model: Alumno,
-                        attributes: ['id', 'apellido_paterno', 'apellido_materno', 'nombres', 'nombre_capitalized']
+                        attributes: [
+                            'id',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres',
+                            'nombre_capitalized'
+                        ]
                     }, {
                         model: Evento,
-                        attributes: ['id', 'titulo', 'fecha', 'fecha_fin', 'duracion']
+                        attributes: [
+                            'id',
+                            'titulo',
+                            'fecha',
+                            'fecha_fin',
+                            'duracion'
+                        ]
                     }
                 ]
             })
@@ -232,7 +270,6 @@ class CertificadoService {
 
     async updateCertificado(id: number, data: ICertificado): Promise<CertificadoResponse> {
         try {
-            console.log('data certificado', data)
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
             const certificado = await Certificado.findByPk(id)
             const templateName = data.templateName as string
@@ -865,8 +902,6 @@ class CertificadoService {
 
             const dataUrlQR = `${baseUrl}/web/certificado/${codigo}`
 
-            console.log('baseUrl', baseUrl, 'dataUrlQR', dataUrlQR)
-
             let qrCodeImage: PDFImage
 
             // const qrCodeFilePath = data.codigoQR as string
@@ -935,7 +970,7 @@ class CertificadoService {
                 codigo
             }
 
-            return { result: true, message: 'certificado generado con éxito', dataResult }
+            return { result: true, message: 'Certificado generado con éxito', dataResult }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             return { result: false, error: errorMessage };

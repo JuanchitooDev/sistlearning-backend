@@ -143,15 +143,19 @@ class AlumnoService {
 
     async createAlumno(data: IAlumno): Promise<AlumnoResponse> {
         try {
-            const fechaNacimiento = toZonedTime(data.fecha_nacimiento_str as string, 'America/Lima')
             const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
+            const options = {
+                timeZone: 'America/Lima',
+                hour12: false
+            }
+            const fechaNacimientoStr = data.fecha_nacimiento?.toLocaleString('es-PE', options)
             const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
 
             data.apellido_paterno = data.apellido_paterno?.trim()
             data.apellido_materno = data.apellido_materno?.trim()
             data.nombres = data.nombres?.trim()
 
-            data.fecha_nacimiento = fechaNacimiento
+            data.fecha_nacimiento_str = fechaNacimientoStr
             data.nombre_capitalized = nombreCapitalized
 
             const newAlumno = await Alumno.create(data as any)
@@ -175,13 +179,19 @@ class AlumnoService {
                 return { result: false, message: 'Alumno no encontrado' }
             }
 
-            const fechaNacimientoStr = (data.fecha_nacimiento_str === undefined) ? alumno.fecha_nacimiento_str : data.fecha_nacimiento_str
+            // const fechaNacimientoStr = (data.fecha_nacimiento_str === undefined) ? alumno.fecha_nacimiento_str : data.fecha_nacimiento_str
+            const fechaNacimiento = (data.fecha_nacimiento == undefined) ? alumno.fecha_nacimiento : data.fecha_nacimiento
+            const options = {
+                timeZone: 'America/Lima',
+                hour12: false
+            }
+            const fechaNacimientoStr = fechaNacimiento?.toLocaleString('es-PE', options)
 
             const apellidoPaterno = (data.apellido_paterno === undefined) ? alumno.apellido_paterno?.trim() : data.apellido_paterno?.trim()
             const apellidoMaterno = (data.apellido_materno === undefined) ? alumno.apellido_materno?.trim() : data.apellido_materno?.trim()
             const nombres = (data.nombres === undefined) ? alumno.nombres?.trim() : data.nombres?.trim()
 
-            const fechaNacimiento = toZonedTime(fechaNacimientoStr as string, 'America/Lima')
+            // const fechaNacimiento = toZonedTime(fechaNacimientoStr as string, 'America/Lima')
             const nombreCompleto = `${nombres} ${apellidoPaterno} ${apellidoMaterno}`
             const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
 
@@ -189,6 +199,7 @@ class AlumnoService {
             data.apellido_materno = apellidoMaterno
             data.nombres = nombres
             data.fecha_nacimiento = fechaNacimiento
+            data.fecha_nacimiento_str = fechaNacimientoStr
             data.nombre_capitalized = nombreCapitalized
 
             const updatedAlumno = await alumno.update(data)
