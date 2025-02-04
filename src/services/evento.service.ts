@@ -29,7 +29,7 @@ class EventoService {
                     attributes: ['id', 'nombre']
                 }],
                 order: [
-                    ['titulo', 'ASC']
+                    ['id', 'ASC']
                 ]
             })
             return { result: true, data: eventos }

@@ -18,6 +18,7 @@ class ReporteController {
                     const apellidoPaterno = alumno.apellido_paterno
                     const apellidoMaterno = alumno.apellido_materno
                     const nombres = alumno.nombres
+                    const telefono = alumno.telefono
                     const fechaNacimiento = alumno.fecha_nacimiento_str
 
                     return {
@@ -25,6 +26,7 @@ class ReporteController {
                         ApellidoPaterno: apellidoPaterno,
                         ApellidoMaterno: apellidoMaterno,
                         Nombres: nombres,
+                        Telefono: telefono,
                         FechaNacimiento: fechaNacimiento
                     }
                 })
@@ -56,6 +58,7 @@ class ReporteController {
                     const apellidoPaterno = alumno.apellido_paterno
                     const apellidoMaterno = alumno.apellido_materno
                     const nombres = alumno.nombres
+                    const telefono = alumno.telefono
                     const fechaNacimiento = alumno.fecha_nacimiento_str
 
                     return {
@@ -63,6 +66,7 @@ class ReporteController {
                         ApellidoPaterno: apellidoPaterno,
                         ApellidoMaterno: apellidoMaterno,
                         Nombres: nombres,
+                        Telefono: telefono,
                         FechaNacimiento: fechaNacimiento
                     }
                 })
