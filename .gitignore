@@ -2,6 +2,7 @@
 node_modules
 public/certificados
 public/qrcodes
+public/xlsx
 dist
 
 # local env files
