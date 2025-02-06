@@ -203,7 +203,6 @@ class CertificadoService {
         try {
             const id_alumno = data.id_alumno
             const id_evento = data.id_evento
-            const templateName = data.templateName as string
 
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
 
@@ -230,6 +229,8 @@ class CertificadoService {
 
             const evento = eventoResponse.data as IEvento
 
+            console.log('evento in createCertificado', evento)
+
             const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
                 ? `${alumno.nombre_capitalized}`
                 : HString.capitalizeNames(data.nombre_alumno_impresion)
@@ -237,8 +238,7 @@ class CertificadoService {
             data.nombre_alumno_impresion = nombreAlumnoImpresion
 
             // Generar un nuevo archivo PDF
-            // const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
-            const { result, message, dataResult } = await this.generateCertificadoPDF(data, alumno, evento, templateName)
+            const { result, message, dataResult } = await this.generateCertificadoPDF(data, alumno, evento)
 
             if (!result) {
                 return { result, message }
@@ -272,7 +272,6 @@ class CertificadoService {
         try {
             const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
             const certificado = await Certificado.findByPk(id)
-            const templateName = data.templateName as string
 
             if (!certificado) {
                 return { result: false, message: 'Certificado no encontrado' }
@@ -321,8 +320,7 @@ class CertificadoService {
                 data.nombre_alumno_impresion = nombreAlumnoImpresion
 
                 // Generar un nuevo archivo PDF
-                // const { outputPath, fileName, codigoQR, codigo } = await this.generateCertificadoPDF(data, alumno, evento, templateName);
-                const { result, message, dataResult } = await this.generateCertificadoPDF(data, alumno, evento, templateName)
+                const { result, message, dataResult } = await this.generateCertificadoPDF(data, alumno, evento)
 
                 if (!result) {
                     return { result, message }
@@ -377,14 +375,14 @@ class CertificadoService {
     }
 
     // Método auxiliar para generar el PDF del certificado
-    async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento, nombreTemplate: string) {
+    async generateCertificadoPDF(data: ICertificado, alumno: IAlumno, evento: IEvento) {
         try {
             let codigo = ""
             let fechaFinalStr = ""
             let fechasEvento = []
 
             const lugar = 'Lambayeque';
-            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${nombreTemplate}.pdf`);
+            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${evento.plantilla_certificado}.pdf`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
             const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/Kuenstler Script LT Std 2 Bold.otf");
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
@@ -392,7 +390,7 @@ class CertificadoService {
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
 
             if (!fs.existsSync(pathTemplate)) {
-                return { result: false, message: `No existe la plantilla ${nombreTemplate}` }
+                return { result: false, message: `No existe la plantilla ${evento.plantilla_certificado}` }
             }
 
             if (!fs.existsSync(pathFontKuenstler)) {
@@ -415,11 +413,25 @@ class CertificadoService {
                 return { result: false, message: `No existe el logo` }
             }
 
+            const nombreImpresion = data.nombre_alumno_impresion as string;
+            const tituloEvento = evento.titulo as string
             const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
             const temarioEvento = evento.temario?.split('\n') as String[]
 
             const fechaInicio = toZonedTime(evento.fecha as Date, 'America/Lima')
             const fechaInicioStr = format(fechaInicio, "dd 'de' MMMM 'del' yyyy", { locale: es })
+
+            // Definiendo el nombre del archivo
+            const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
+            const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
+            const fileName = `certificado_${sanitizedAlumno}.pdf`
+            const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
+
+            // Definiendo la fecha de emisión
+            const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
+
+            const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
+            const lugarFechaEmision = `${lugar}, ${fechaEmision}`
 
             if (evento.fecha_fin) {
                 const fechaFinal = toZonedTime(evento.fecha_fin, 'America/Lima')
@@ -436,18 +448,6 @@ class CertificadoService {
             } else {
                 codigo = HString.generateCodigo()
             }
-
-            // Definiendo el nombre del archivo
-            const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
-            const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
-            const fileName = `certificado_${sanitizedAlumno}.pdf`
-            const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
-
-            // Definiendo la fecha de emisión
-            const fechaEnvio = toZonedTime(data.fecha_envio as Date, 'America/Lima')
-
-            const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
-            const lugarFechaEmision = `${lugar}, ${fechaEmision}`
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
@@ -481,223 +481,154 @@ class CertificadoService {
 
             let fontSizeForAlumno = 0
             let y = 0
+            let x = 0
             let maxWidth = 0
             let fontSizeForEvento = 0
             let fontSizeForFechaEvento = 0
             let fontSizeForFechaEmision = 0
-            let lineHeight = 0
-            let lines = []
-            let lineWidth = 0
-            let posX = 0
+            let lineHeightAlumno = 0
+            let linesAlumno = []
+            let lineWidthAlumno = 0
+            let lineHeightEvento = 0
+            let linesEvento = []
+            let lineWidthEvento = 0
 
             // Obtener el ancho de la página
             const pageWidth = pagina.getWidth();
+            console.log('pageWidth', pageWidth)
 
-            const nombreImpresion = data.nombre_alumno_impresion as string;
+            switch (evento.plantilla_certificado) {
+                case "buenas_practicas_agricolas_para_una_produccion_sostenible":
+                case "como_maximizar_la_produccion_de_gallinas_saludables":
+                case "nutricion_alimentacion_y_sanidad_de_animales_menores_y_mayores":
+                case "sanidad_avicola_y_optimizacion_productiva":
+                    
+                    y = 285; // posición Y
+                    maxWidth = 650; // Ancho máximo disponible para el texto
 
-            switch (nombreTemplate) {
-                case "template_uno":
-                    // Configurar el texto (posición y estilo)
-                    fontSizeForAlumno = 60;
-                    y = 270; // posición Y
-                    maxWidth = 500; // Ancho máximo disponible para el texto
+                    fontSizeForAlumno = 50;
 
-                    // Calcular el ancho de cada línea de texto
-                    lineHeight = 0.8 * fontSizeForAlumno; // Distancia entre líneas
+                    // Distancia entre líneas para el nombre del alumno
+                    lineHeightAlumno = 0.8 * fontSizeForAlumno;
 
                     // Dividir el nombre del alumno en líneas
-                    lines = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+                    linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
 
-                    if (lines.length > 1) {
-                        y = y + 30
-                        fontSizeForAlumno = 54
+                    if (linesAlumno.length > 1) {
+                        y += 30
+                        fontSizeForAlumno = 46
                     }
 
-                    for (let i = 0; i < lines.length; i++) {
-                        lineWidth = customFontKuenstlerBold.widthOfTextAtSize(lines[i], fontSizeForAlumno);
-                        const x = ((pageWidth - lineWidth) / 2) + 140;
+                    for (let i = 0; i < linesAlumno.length; i++) {
+                        lineWidthAlumno = customFontKuenstlerBold.widthOfTextAtSize(linesAlumno[i], fontSizeForAlumno);
+                        console.log('lineWidthAlumno', lineWidthAlumno)
+                        const nombrePositionX = ((pageWidth - lineWidthAlumno) / 2);
+                        console.log('nombrePositionX', nombrePositionX)
 
-                        pagina.drawText(lines[i], {
-                            x,
-                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
+                        pagina.drawText(linesAlumno[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightAlumno, // Ajustar la posición vertical para cada línea
                             size: fontSizeForAlumno,
                             font: customFontKuenstlerBold,
-                            color: rgb(0, 0, 0), // Negro
+                            color: rgb(0, 0, 0),
                         });
+
+                        console.log('position y', y)
                     }
 
-                    fontSizeForEvento = 16
-                    fontSizeForFechaEvento = 12
-                    fontSizeForFechaEmision = 13
+                    fontSizeForEvento = 24
 
-                    let x = 250
-                    x = x + 60
+                    // Distancia entre líneas para el nombre del evento
+                    lineHeightEvento = 0.8 * fontSizeForEvento
 
-                    y = 206
+                    // Dividir el nombre del evento en líneas
+                    linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
 
-                    // Añadir el título del evento
-                    pagina.drawText(evento.titulo as string, {
-                        x,
-                        y,
-                        size: fontSizeForEvento,
-                        font: customFontBalooBold,
-                        color: rgb(4 / 255, 45 / 255, 71 / 255)
-                    });
+                    if (linesEvento.length > 1) {
+                        y += 30
+                    }
 
-                    x = x + 123
-                    y = y - 36
+                    for (let i = 0; i < linesEvento.length; i++) {
+                        lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
+                        console.log('lineWidthEvento', lineWidthEvento)
+                        const nombrePositionX = ((pageWidth - lineWidthEvento) / 2);
+                        console.log('nombrePositionX', nombrePositionX)
+
+                        pagina.drawText(linesEvento[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightEvento, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForEvento,
+                            font: customFontBalooBold,
+                            color: rgb(4 / 255, 45 / 255, 71 / 255)
+                        });
+
+                        console.log('position y', y)
+                    }
+
+                    // y -= 60
+
+                    // const tituloEventoWidth = customFontBalooBold.widthOfTextAtSize(tituloEvento, fontSizeForEvento);
+                    // const tituloEventoPositionX = (pageWidth - tituloEventoWidth) / 2;  // Centrado horizontal
+
+                    // // Añadir el título del evento
+                    // pagina.drawText(tituloEvento as string, {
+                    //     x: tituloEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForEvento,
+                    //     font: customFontBalooBold,
+                    //     color: rgb(4 / 255, 45 / 255, 71 / 255)
+                    // });
+
+                    fontSizeForFechaEvento = 24
+
+                    y -= 36
+
+                    const fechaEventoWidth = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    const fechaEventoPositionX = (pageWidth - fechaEventoWidth) / 2;  // Centrado horizontal
 
                     // Añadir la fecha del evento
                     pagina.drawText(fechaEvento, {
-                        x,
+                        x: fechaEventoPositionX,
                         y,
                         size: fontSizeForFechaEvento,
                         font: customFontBalooMedium,
                         color: rgb(4 / 255, 45 / 255, 71 / 255)
                     });
 
-                    x = x + 120
-                    y = y - 50
+                    // x = x + 120
+                    // y = y - 50
 
-                    // Añadir la fecha del evento
-                    pagina.drawText(lugarFechaEmision, {
-                        x,
-                        y,
-                        size: fontSizeForFechaEmision,
-                        font: customFontBalooMedium,
-                        color: rgb(4 / 255, 45 / 255, 71 / 255)
-                    });
-                    break;
-                case "template_dos":
-                    fontSizeForAlumno = 48;
-                    fontSizeForEvento = 24
-                    fontSizeForFechaEvento = 24
+                    // fontSizeForFechaEmision = 13
 
-                    y = 350; // posición Y
-                    maxWidth = 550; // Ancho máximo disponible para el texto
-                    lineWidth = customFontKuenstlerBold.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
-                    if (lineWidth > maxWidth) {
-                        fontSizeForAlumno = 46
-                    }
+                    // // Añadir la fecha del evento
+                    // pagina.drawText(lugarFechaEmision, {
+                    //     x,
+                    //     y,
+                    //     size: fontSizeForFechaEmision,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(4 / 255, 45 / 255, 71 / 255)
+                    // });
 
-                    posX = 80
-                    pagina.drawText(nombreImpresion, {
-                        x: posX,
-                        y, // Ajustar la posición vertical para cada línea
-                        size: fontSizeForAlumno,
-                        font: customFontKuenstlerBold,
-                        color: rgb(0, 0, 0), // Negro
-                    });
-
-                    // Calcular el ancho de cada línea de texto
-                    lineHeight = 1.2 * fontSizeForEvento; // Distancia entre líneas
-
-                    // Dividir el nombre del alumno en líneas
-                    lines = this.splitTextIntoLines(evento.titulo as string, maxWidth, customFontBalooBold, fontSizeForEvento);
-                    y = y - 30
-
-                    if (lines.length > 1) {
-                        y = y - 40
-                    }
-
-                    for (let i = 0; i < lines.length; i++) {
-                        const lineWidth = customFontBalooBold.widthOfTextAtSize(lines[i], fontSizeForEvento)
-                        const x = ((pageWidth - lineWidth) / 2) - 80
-
-                        pagina.drawText(lines[i], {
-                            x,
-                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
-                            size: fontSizeForEvento,
-                            font: customFontBalooBold,
-                            color: rgb(19 / 255, 37 / 255, 60 / 255),
-                        });
-                    }
-
-                    if (fechasEvento.length > 1) {
-                        y = y - 60
-                    } else {
-                        y = y - 70
-                    }
-
-                    for (let i = 0; i < fechasEvento.length; i++) {
-                        const lineWidth = customFontBalooBold.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento)
-                        const x = ((pageWidth - lineWidth) / 2) - 80
-
-                        pagina.drawText(fechasEvento[i], {
-                            x,
-                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
-                            size: fontSizeForFechaEvento,
-                            font: customFontBalooMedium,
-                            color: rgb(38 / 255, 69 / 255, 100 / 255),
-                        });
-                    }
-
-                    break;
-                case "template_tres":
-                    fontSizeForAlumno = 48;
-                    fontSizeForEvento = 24
-                    fontSizeForFechaEvento = 24
-
-                    y = 310; // posición Y
-                    maxWidth = 550; // Ancho máximo disponible para el texto
-                    lineWidth = customFontKuenstlerBold.widthOfTextAtSize(nombreImpresion, fontSizeForAlumno)
-                    if (lineWidth > maxWidth) {
-                        fontSizeForAlumno = 46
-                    }
-
-                    posX = 80
-                    pagina.drawText(nombreImpresion, {
-                        x: posX,
-                        y, // Ajustar la posición vertical para cada línea
-                        size: fontSizeForAlumno,
-                        font: customFontKuenstlerBold,
-                        color: rgb(0, 0, 0), // Negro
-                    });
-
-                    // Calcular el ancho de cada línea de texto
-                    lineHeight = 1.2 * fontSizeForEvento; // Distancia entre líneas
-
-                    // Dividir el nombre del alumno en líneas
-                    lines = this.splitTextIntoLines(evento.titulo as string, maxWidth, customFontBalooBold, fontSizeForEvento);
-                    y = y - 30
-
-                    if (lines.length > 1) {
-                        y = y - 40
-                    }
-
-                    for (let i = 0; i < lines.length; i++) {
-                        const lineWidth = customFontBalooBold.widthOfTextAtSize(lines[i], fontSizeForEvento)
-                        const x = ((pageWidth - lineWidth) / 2) - 80
-
-                        pagina.drawText(lines[i], {
-                            x,
-                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
-                            size: fontSizeForEvento,
-                            font: customFontBalooBold,
-                            color: rgb(19 / 255, 37 / 255, 60 / 255),
-                        });
-                    }
-
-                    if (fechasEvento.length > 1) {
-                        y = y - 60
-                    } else {
-                        y = y - 70
-                    }
-
-                    for (let i = 0; i < fechasEvento.length; i++) {
-                        const lineWidth = customFontBalooBold.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento)
-                        const x = ((pageWidth - lineWidth) / 2) - 80
-
-                        pagina.drawText(fechasEvento[i], {
-                            x,
-                            y: y - i * lineHeight, // Ajustar la posición vertical para cada línea
-                            size: fontSizeForFechaEvento,
-                            font: customFontBalooMedium,
-                            color: rgb(38 / 255, 69 / 255, 100 / 255),
-                        });
-                    }
-
-                    break;
+                    break
+                case "cultivos_saludables":
+                case "manejo_de_cultivo_de_arroz":
+                case "manejo_moderno_de_ovinos":
+                case "metodo_integral_de_prevencion_diagnostico_y_control_de_enfermedades":
+                case "optimizacion_de_la_produccion_porcina":
+                case "tecnicas_avanzadas_para_produccion_sostenible_en_cuyes":
+                case "uso_de_excel_para_interpretar_analisis_de_suelo_y_agua":
+                    break
+                case "formulacion_y_evaluacion_de_proyectos_agropecuarios":
+                case "manejo_de_camelidos_sudamericanos":
+                    break
+                case "hidroponia_y_calculo_de_soluciones_nutritivas":
+                    break
+                case "manejo_integrado_de_la_roya_del_cafe":
+                    break
+                case "manejo_sanitario_de_cuyes_con_fines_comerciales":
+                    break
+                case "sanidad_integral_en_cuyes":
+                    break
             }
 
             // Crear nueva página para el logo, código QR y tabla
