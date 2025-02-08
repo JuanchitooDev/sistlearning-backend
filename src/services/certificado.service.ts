@@ -229,7 +229,7 @@ class CertificadoService {
 
             const evento = eventoResponse.data as IEvento
 
-            console.log('evento in createCertificado', evento)
+            // console.log('evento in createCertificado', evento)
 
             const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
                 ? `${alumno.nombre_capitalized}`
@@ -493,11 +493,11 @@ class CertificadoService {
             let lineWidthEvento = 0
             let lineHeightEvento = 0
             let lineWidthFechaEvento = 0
-            let positionXFechaEvento = 0
+            let fechaEventoPositionX = 0
 
             // Obtener el ancho de la página
             const pageWidth = pagina.getWidth();
-            console.log('pageWidth', pageWidth)
+            // console.log('pageWidth', pageWidth)
 
             switch (evento.plantilla_certificado) {
                 case "buenas_practicas_agricolas_para_una_produccion_sostenible":
@@ -546,7 +546,7 @@ class CertificadoService {
 
                     // Dividir el título del evento si es necesario
                     linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
-                    console.log('linesEvento', linesEvento)
+                    // console.log('linesEvento', linesEvento)
 
                     for (let i = 0; i < linesEvento.length; i++) {
                         lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
@@ -567,12 +567,12 @@ class CertificadoService {
                     y -= 70; // Ajustar la posición Y para el siguiente texto
 
                     lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    positionXFechaEvento = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
 
                     // Dibujar la fecha del evento centrado
                     pagina.drawText(fechaEvento, {
-                        x: positionXFechaEvento,
-                        y: y,
+                        x: fechaEventoPositionX,
+                        y,
                         size: fontSizeForFechaEvento,
                         font: customFontBalooMedium,
                         color: rgb(4 / 255, 45 / 255, 71 / 255),
@@ -627,7 +627,7 @@ class CertificadoService {
 
                     // Dividir el título del evento si es necesario
                     linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
-                    console.log('linesEvento', linesEvento)
+                    // console.log('linesEvento', linesEvento)
 
                     for (let i = 0; i < linesEvento.length; i++) {
                         lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
@@ -648,12 +648,12 @@ class CertificadoService {
                     y -= 70; // Ajustar la posición Y para el siguiente texto
 
                     lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    positionXFechaEvento = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
 
                     // Dibujar la fecha del evento centrado
                     pagina.drawText(fechaEvento, {
-                        x: positionXFechaEvento,
-                        y: y,
+                        x: fechaEventoPositionX,
+                        y,
                         size: fontSizeForFechaEvento,
                         font: customFontBalooMedium,
                         color: rgb(4 / 255, 45 / 255, 71 / 255),
@@ -661,8 +661,158 @@ class CertificadoService {
                     break
                 case "formulacion_y_evaluacion_de_proyectos_agropecuarios":
                 case "manejo_de_camelidos_sudamericanos":
+                    // Configurar el texto del nombre del alumno
+                    fontSizeForAlumno = 48;
+
+                    y = 365;  // Posición Y
+                    maxWidth = 720; // Ancho máximo disponible para el texto
+
+                    // Distancia entre líneas para el nombre del alumno
+                    lineHeightAlumno = 0.8 * fontSizeForAlumno;
+
+                    // Dividir el nombre del alumno en líneas si excede el ancho máximo
+                    linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+
+                    if (linesAlumno.length > 1) {
+                        // y += 30;
+                        fontSizeForAlumno = 44;
+                    }
+
+                    // Dibujar el nombre del alumno centrado
+                    for (let i = 0; i < linesAlumno.length; i++) {
+                        lineWidthAlumno = customFontKuenstlerBold.widthOfTextAtSize(linesAlumno[i], fontSizeForAlumno);
+                        const nombrePositionX = (pageWidth - lineWidthAlumno) / 2;  // Centrado horizontal
+
+                        pagina.drawText(linesAlumno[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightAlumno,
+                            size: fontSizeForAlumno,
+                            font: customFontKuenstlerBold,
+                            color: rgb(0, 0, 0),
+                        });
+                    }
+
+                    // Configurar el texto del título del evento
+                    fontSizeForEvento = 30;
+                    maxWidth = 600
+                    y -= 90; // Ajustar la posición Y para el siguiente texto
+
+                    // Distancia entre líneas para el nombre del evento
+                    lineHeightEvento = 0.8 * fontSizeForEvento;
+
+                    // Dividir el título del evento si es necesario
+                    linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
+                    // console.log('linesEvento', linesEvento)
+
+                    for (let i = 0; i < linesEvento.length; i++) {
+                        lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
+                        const tituloEventoPositionX = (pageWidth - lineWidthEvento) / 2;  // Centrado horizontal
+
+                        // Dibujar el título del evento centrado
+                        pagina.drawText(linesEvento[i], {
+                            x: tituloEventoPositionX,
+                            y: y - i * lineHeightEvento,
+                            size: fontSizeForEvento,
+                            font: customFontBalooBold,
+                            color: rgb(0 / 255, 32 / 255, 58 / 255),
+                        });
+                    }
+
+                    // Configurar el texto de la fecha del evento
+                    fontSizeForFechaEvento = 24;
+                    y -= 60; // Ajustar la posición Y para el siguiente texto
+
+                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // Dibujar la fecha del evento centrado
+                    pagina.drawText(fechaEvento, {
+                        x: fechaEventoPositionX,
+                        y,
+                        size: fontSizeForFechaEvento,
+                        font: customFontBalooMedium,
+                        color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    });
                     break
                 case "hidroponia_y_calculo_de_soluciones_nutritivas":
+                    // Configurar el texto del nombre del alumno
+                    fontSizeForAlumno = 48;
+
+                    y = 348;  // Posición Y
+                    maxWidth = 640; // Ancho máximo disponible para el texto
+
+                    // Distancia entre líneas para el nombre del alumno
+                    lineHeightAlumno = 0.8 * fontSizeForAlumno;
+
+                    // Dividir el nombre del alumno en líneas si excede el ancho máximo
+                    linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+
+                    if (linesAlumno.length > 1) {
+                        // y += 30;
+                        fontSizeForAlumno = 44;
+                    }
+
+                    // Dibujar el nombre del alumno centrado
+                    for (let i = 0; i < linesAlumno.length; i++) {
+                        lineWidthAlumno = customFontKuenstlerBold.widthOfTextAtSize(linesAlumno[i], fontSizeForAlumno);
+                        // const nombrePositionX = (pageWidth - lineWidthAlumno) / 2;  // Centrado horizontal
+                        // const nombrePositionX = 60
+                        const nombrePositionX = 60 + (maxWidth - lineWidthAlumno) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
+
+                        pagina.drawText(linesAlumno[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightAlumno,
+                            size: fontSizeForAlumno,
+                            font: customFontKuenstlerBold,
+                            color: rgb(0, 0, 0),
+                        });
+                    }
+
+                    // Configurar el texto del título del evento
+                    fontSizeForEvento = 30;
+                    maxWidth = 640
+                    y -= 80; // Ajustar la posición Y para el siguiente texto
+
+                    // Distancia entre líneas para el nombre del evento
+                    lineHeightEvento = 0.8 * fontSizeForEvento;
+
+                    // Dividir el título del evento si es necesario
+                    linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
+                    // console.log('linesEvento', linesEvento)
+
+                    for (let i = 0; i < linesEvento.length; i++) {
+                        lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
+                        // const tituloEventoPositionX = (pageWidth - lineWidthEvento) / 2;  // Centrado horizontal
+                        // const tituloEventoPositionX = 60
+                        const tituloEventoPositionX = 60 + (maxWidth - lineWidthEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
+
+                        // Dibujar el título del evento centrado
+                        pagina.drawText(linesEvento[i], {
+                            x: tituloEventoPositionX,
+                            y: y - i * lineHeightEvento,
+                            size: fontSizeForEvento,
+                            font: customFontBalooBold,
+                            color: rgb(0 / 255, 32 / 255, 58 / 255),
+                        });
+                    }
+
+                    // Configurar el texto de la fecha del evento
+                    fontSizeForFechaEvento = 24;
+                    y -= 60; // Ajustar la posición Y para el siguiente texto
+
+                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    // positionXFechaEvento = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    // positionXFechaEvento = 60
+                    fechaEventoPositionX = 60 + (maxWidth - lineWidthFechaEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
+
+                    // Dibujar la fecha del evento centrado
+                    pagina.drawText(fechaEvento, {
+                        x: fechaEventoPositionX,
+                        y,
+                        size: fontSizeForFechaEvento,
+                        font: customFontBalooMedium,
+                        color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    });
                     break
                 case "manejo_integrado_de_la_roya_del_cafe":
                     break
