@@ -770,7 +770,7 @@ class CertificadoService {
 
                     // Configurar el texto del título del evento
                     fontSizeForEvento = 30;
-                    maxWidth = 640
+                    maxWidth = 580
                     y -= 80; // Ajustar la posición Y para el siguiente texto
 
                     // Distancia entre líneas para el nombre del evento
@@ -798,7 +798,7 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 60; // Ajustar la posición Y para el siguiente texto
+                    y -= 70; // Ajustar la posición Y para el siguiente texto
 
                     lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
                     // positionXFechaEvento = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
@@ -815,10 +815,156 @@ class CertificadoService {
                     });
                     break
                 case "manejo_integrado_de_la_roya_del_cafe":
+                    // Configurar el texto del nombre del alumno
+                    fontSizeForAlumno = 48;
+
+                    y = 345;  // Posición Y
+                    maxWidth = 720; // Ancho máximo disponible para el texto
+
+                    // Distancia entre líneas para el nombre del alumno
+                    lineHeightAlumno = 0.8 * fontSizeForAlumno;
+
+                    // Dividir el nombre del alumno en líneas si excede el ancho máximo
+                    linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+
+                    if (linesAlumno.length > 1) {
+                        // y += 30;
+                        fontSizeForAlumno = 44;
+                    }
+
+                    // Dibujar el nombre del alumno centrado
+                    for (let i = 0; i < linesAlumno.length; i++) {
+                        lineWidthAlumno = customFontKuenstlerBold.widthOfTextAtSize(linesAlumno[i], fontSizeForAlumno);
+                        const nombrePositionX = (pageWidth - lineWidthAlumno) / 2;  // Centrado horizontal
+
+                        pagina.drawText(linesAlumno[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightAlumno,
+                            size: fontSizeForAlumno,
+                            font: customFontKuenstlerBold,
+                            color: rgb(0, 0, 0),
+                        });
+                    }
+
+                    // Configurar el texto del título del evento
+                    fontSizeForEvento = 30;
+                    maxWidth = 480
+                    y -= 90; // Ajustar la posición Y para el siguiente texto
+
+                    // Distancia entre líneas para el nombre del evento
+                    lineHeightEvento = 0.8 * fontSizeForEvento;
+
+                    // Dividir el título del evento si es necesario
+                    linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
+                    // console.log('linesEvento', linesEvento)
+
+                    for (let i = 0; i < linesEvento.length; i++) {
+                        lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
+                        const tituloEventoPositionX = (pageWidth - lineWidthEvento) / 2;  // Centrado horizontal
+
+                        // Dibujar el título del evento centrado
+                        pagina.drawText(linesEvento[i], {
+                            x: tituloEventoPositionX,
+                            y: y - i * lineHeightEvento,
+                            size: fontSizeForEvento,
+                            font: customFontBalooBold,
+                            color: rgb(0 / 255, 32 / 255, 58 / 255),
+                        });
+                    }
+
+                    // Configurar el texto de la fecha del evento
+                    fontSizeForFechaEvento = 24;
+                    y -= 60; // Ajustar la posición Y para el siguiente texto
+
+                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // Dibujar la fecha del evento centrado
+                    pagina.drawText(fechaEvento, {
+                        x: fechaEventoPositionX,
+                        y,
+                        size: fontSizeForFechaEvento,
+                        font: customFontBalooMedium,
+                        color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    });
                     break
                 case "manejo_sanitario_de_cuyes_con_fines_comerciales":
                     break
                 case "sanidad_integral_en_cuyes":
+                    // Configurar el texto del nombre del alumno
+                    fontSizeForAlumno = 48;
+
+                    y = 390;  // Posición Y
+                    maxWidth = 720; // Ancho máximo disponible para el texto
+
+                    // Distancia entre líneas para el nombre del alumno
+                    lineHeightAlumno = 0.8 * fontSizeForAlumno;
+
+                    // Dividir el nombre del alumno en líneas si excede el ancho máximo
+                    linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+
+                    if (linesAlumno.length > 1) {
+                        // y += 30;
+                        fontSizeForAlumno = 44;
+                    }
+
+                    // Dibujar el nombre del alumno centrado
+                    for (let i = 0; i < linesAlumno.length; i++) {
+                        lineWidthAlumno = customFontKuenstlerBold.widthOfTextAtSize(linesAlumno[i], fontSizeForAlumno);
+                        const nombrePositionX = (pageWidth - lineWidthAlumno) / 2;  // Centrado horizontal
+
+                        pagina.drawText(linesAlumno[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightAlumno,
+                            size: fontSizeForAlumno,
+                            font: customFontKuenstlerBold,
+                            color: rgb(0, 0, 0),
+                        });
+                    }
+
+                    // Configurar el texto del título del evento
+                    fontSizeForEvento = 30;
+                    maxWidth = 480
+                    y -= 90; // Ajustar la posición Y para el siguiente texto
+
+                    // Distancia entre líneas para el nombre del evento
+                    lineHeightEvento = 1.0 * fontSizeForEvento;
+
+                    // Dividir el título del evento si es necesario
+                    linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
+                    // console.log('linesEvento', linesEvento)
+
+                    for (let i = 0; i < linesEvento.length; i++) {
+                        lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
+                        // y = y - (i * lineHeightEvento)
+                        // y -= (i * lineHeightEvento)
+                        const tituloEventoPositionX = (pageWidth - lineWidthEvento) / 2;  // Centrado horizontal
+
+                        // Dibujar el título del evento centrado
+                        pagina.drawText(linesEvento[i], {
+                            x: tituloEventoPositionX,
+                            y: y - i * lineHeightEvento,
+                            size: fontSizeForEvento,
+                            font: customFontBalooBold,
+                            color: rgb(0 / 255, 32 / 255, 58 / 255),
+                        });
+                    }
+
+                    // Configurar el texto de la fecha del evento
+                    fontSizeForFechaEvento = 24;
+                    y -= 90 // Ajustar la posición Y para el siguiente texto
+
+                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // Dibujar la fecha del evento centrado
+                    pagina.drawText(fechaEvento, {
+                        x: fechaEventoPositionX,
+                        y,
+                        size: fontSizeForFechaEvento,
+                        font: customFontBalooMedium,
+                        color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    });
                     break
             }
 
