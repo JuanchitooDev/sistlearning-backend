@@ -63,6 +63,7 @@ class CertificadoController {
     async createCertificado(req: Request, res: Response) {
         try {
             const response = await CertificadoService.createCertificado(req.body)
+            // console.log('response createCertificado', response)
             if (response.result) {
                 const data = response.data as ICertificado
                 const outputPath = data.ruta as string
