@@ -59,7 +59,7 @@ class CertificadoService {
                     }
                 ],
                 order: [
-                    ['fecha_envio', 'ASC']
+                    ['id', 'DESC']
                 ]
             })
             return { result: true, data: certificados }
@@ -889,6 +889,122 @@ class CertificadoService {
                     });
                     break
                 case "manejo_sanitario_de_cuyes_con_fines_comerciales":
+                    // Configurar el texto del nombre del alumno
+                    fontSizeForAlumno = 60;
+
+                    y = 300;  // Posición Y
+                    maxWidth = 500; // Ancho máximo disponible para el texto
+
+                    // Distancia entre líneas para el nombre del alumno
+                    lineHeightAlumno = 0.8 * fontSizeForAlumno;
+
+                    // Dividir el nombre del alumno en líneas si excede el ancho máximo
+                    linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+
+                    if (linesAlumno.length > 1) {
+                        // y += 30;
+                        fontSizeForAlumno = 54;
+                    }
+
+                    // Dibujar el nombre del alumno centrado
+                    for (let i = 0; i < linesAlumno.length; i++) {
+                        lineWidthAlumno = customFontKuenstlerBold.widthOfTextAtSize(linesAlumno[i], fontSizeForAlumno);
+                        // const nombrePositionX = (pageWidth - lineWidthAlumno) / 2;  // Centrado horizontal
+                        // const nombrePositionX = 60
+                        const nombrePositionX = 200 + ((maxWidth - lineWidthAlumno) / 2);  // Centrado en el área de 640 píxeles, comenzando en X = 60
+
+                        pagina.drawText(linesAlumno[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightAlumno,
+                            size: fontSizeForAlumno,
+                            font: customFontKuenstlerBold,
+                            color: rgb(0, 0, 0),
+                        });
+                    }
+
+                    // Configurar el texto del título del evento
+                    fontSizeForEvento = 16;
+                    x = 310
+                    y = 206
+
+                    // Dibujar el título del evento centrado
+                    pagina.drawText(evento.titulo as string, {
+                        x,
+                        y,
+                        size: fontSizeForEvento,
+                        font: customFontBalooBold,
+                        color: rgb(4 / 255, 45 / 255, 71 / 255),
+                    });
+
+                    // maxWidth = 580
+                    // y -= 80; // Ajustar la posición Y para el siguiente texto
+
+                    // // Distancia entre líneas para el nombre del evento
+                    // lineHeightEvento = 0.8 * fontSizeForEvento;
+
+                    // // Dividir el título del evento si es necesario
+                    // linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
+                    // // console.log('linesEvento', linesEvento)
+
+                    // for (let i = 0; i < linesEvento.length; i++) {
+                    //     lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
+                    //     // const tituloEventoPositionX = (pageWidth - lineWidthEvento) / 2;  // Centrado horizontal
+                    //     // const tituloEventoPositionX = 60
+                    //     const tituloEventoPositionX = 60 + (maxWidth - lineWidthEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
+
+                    //     // Dibujar el título del evento centrado
+                    //     pagina.drawText(linesEvento[i], {
+                    //         x: tituloEventoPositionX,
+                    //         y: y - i * lineHeightEvento,
+                    //         size: fontSizeForEvento,
+                    //         font: customFontBalooBold,
+                    //         color: rgb(0 / 255, 32 / 255, 58 / 255),
+                    //     });
+                    // }
+
+                    // Configurar el texto de la fecha del evento
+                    fontSizeForFechaEvento = 12;
+                    x += 123
+                    y -= 36
+
+                    // Dibujar la fecha del evento centrado
+                    pagina.drawText(fechaEvento, {
+                        x,
+                        y,
+                        size: fontSizeForFechaEvento,
+                        font: customFontBalooMedium,
+                        color: rgb(4 / 255, 45 / 255, 71 / 255),
+                    });
+
+                    // y -= 70; // Ajustar la posición Y para el siguiente texto
+
+                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    // // positionXFechaEvento = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    // // positionXFechaEvento = 60
+                    // fechaEventoPositionX = 60 + (maxWidth - lineWidthFechaEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
+
+                    // // Dibujar la fecha del evento centrado
+                    // pagina.drawText(fechaEvento, {
+                    //     x: fechaEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForFechaEvento,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    // });
+
+                    fontSizeForFechaEmision = 13
+                    x += 120
+                    y -= 50
+
+                    // Dibujar la fecha del evento centrado
+                    pagina.drawText(lugarFechaEmision, {
+                        x,
+                        y,
+                        size: fontSizeForFechaEmision,
+                        font: customFontBalooMedium,
+                        color: rgb(4 / 255, 45 / 255, 71 / 255),
+                    });
+
                     break
                 case "sanidad_integral_en_cuyes":
                     // Configurar el texto del nombre del alumno

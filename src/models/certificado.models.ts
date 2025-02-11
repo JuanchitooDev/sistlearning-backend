@@ -65,7 +65,7 @@ Certificado.init({
         allowNull: false
     },
     templateName: {
-        type: DataTypes.STRING(15),
+        type: DataTypes.STRING(120),
         allowNull: true
     },
     fecha_registro: {
