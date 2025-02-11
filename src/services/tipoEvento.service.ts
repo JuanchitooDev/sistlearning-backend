@@ -14,7 +14,7 @@ class TipoEventoService {
                     'estado'
                 ],
                 order: [
-                    ['nombre', 'ASC']
+                    ['id', 'DESC']
                 ]
             })
             return { result: true, data: tipos }
@@ -38,7 +38,7 @@ class TipoEventoService {
                     'estado'
                 ],
                 order: [
-                    ['nombre', 'ASC']
+                    ['id', 'DESC']
                 ]
             })
             return { result: true, data: tipos }

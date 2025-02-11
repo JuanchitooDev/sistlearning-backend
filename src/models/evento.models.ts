@@ -56,11 +56,11 @@ Evento.init({
         }
     },
     titulo: {
-        type: DataTypes.STRING(70),
+        type: DataTypes.STRING(120),
         allowNull: false
     },
     titulo_url: {
-        type: DataTypes.STRING(90),
+        type: DataTypes.STRING(120),
         allowNull: false
     },
     descripcion: {
@@ -72,7 +72,7 @@ Evento.init({
         allowNull: true
     },
     plantilla_certificado: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(120),
         allowNull: true
     },
     fecha: {
