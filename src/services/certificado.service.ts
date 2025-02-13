@@ -382,7 +382,7 @@ class CertificadoService {
             let fechasEvento = []
 
             const lugar = 'Lambayeque';
-            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${evento.plantilla_certificado}.pdf`);
+            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${evento.plantilla_certificado}`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
             const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/Kuenstler Script LT Std 2 Bold.otf");
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
