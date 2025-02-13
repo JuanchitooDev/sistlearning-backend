@@ -502,11 +502,14 @@ class CertificadoService {
             const pageWidth = pagina.getWidth();
             // console.log('pageWidth', pageWidth)
 
+            console.log('evento', evento)
+            console.log('data certificado', data)
+
             switch (evento.plantilla_certificado) {
-                case "buenas_practicas_agricolas_para_una_produccion_sostenible":
-                case "como_maximizar_la_produccion_de_gallinas_saludables":
-                case "nutricion_alimentacion_y_sanidad_de_animales_menores_y_mayores":
-                case "sanidad_avicola_y_optimizacion_productiva":
+                case "buenas_practicas_agricolas_para_una_produccion_sostenible.pdf":
+                case "como_maximizar_la_produccion_de_gallinas_saludables.pdf":
+                case "nutricion_alimentacion_y_sanidad_de_animales_menores_y_mayores.pdf":
+                case "sanidad_avicola_y_optimizacion_productiva.pdf":
 
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 54;
@@ -581,13 +584,13 @@ class CertificadoService {
                         color: rgb(4 / 255, 45 / 255, 71 / 255),
                     });
                     break
-                case "cultivos_saludables":
-                case "manejo_de_cultivo_de_arroz":
-                case "manejo_moderno_de_ovinos":
-                case "metodo_integral_de_prevencion_diagnostico_y_control_de_enfermedades":
-                case "optimizacion_de_la_produccion_porcina":
-                case "tecnicas_avanzadas_para_produccion_sostenible_en_cuyes":
-                case "uso_de_excel_para_interpretar_analisis_de_suelo_y_agua":
+                case "cultivos_saludables.pdf":
+                case "manejo_de_cultivo_de_arroz.pdf":
+                case "manejo_moderno_de_ovinos.pdf":
+                case "metodo_integral_de_prevencion_diagnostico_y_control_de_enfermedades.pdf":
+                case "optimizacion_de_la_produccion_porcina.pdf":
+                case "tecnicas_avanzadas_para_produccion_sostenible_en_cuyes.pdf":
+                case "uso_de_excel_para_interpretar_analisis_de_suelo_y_agua.pdf":
 
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
@@ -662,8 +665,8 @@ class CertificadoService {
                         color: rgb(4 / 255, 45 / 255, 71 / 255),
                     });
                     break
-                case "formulacion_y_evaluacion_de_proyectos_agropecuarios":
-                case "manejo_de_camelidos_sudamericanos":
+                case "formulacion_y_evaluacion_de_proyectos_agropecuarios.pdf":
+                case "manejo_de_camelidos_sudamericanos.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
@@ -737,7 +740,7 @@ class CertificadoService {
                         color: rgb(222 / 255, 148 / 255, 40 / 255),
                     });
                     break
-                case "hidroponia_y_calculo_de_soluciones_nutritivas":
+                case "hidroponia_y_calculo_de_soluciones_nutritivas.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
@@ -817,7 +820,7 @@ class CertificadoService {
                         color: rgb(222 / 255, 148 / 255, 40 / 255),
                     });
                     break
-                case "manejo_integrado_de_la_roya_del_cafe":
+                case "manejo_integrado_de_la_roya_del_cafe.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
@@ -891,7 +894,7 @@ class CertificadoService {
                         color: rgb(222 / 255, 148 / 255, 40 / 255),
                     });
                     break
-                case "manejo_sanitario_de_cuyes_con_fines_comerciales":
+                case "manejo_sanitario_de_cuyes_con_fines_comerciales.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 60;
 
@@ -1009,7 +1012,7 @@ class CertificadoService {
                     });
 
                     break
-                case "sanidad_integral_en_cuyes":
+                case "sanidad_integral_en_cuyes.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
