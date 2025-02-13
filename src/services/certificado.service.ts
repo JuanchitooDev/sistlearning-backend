@@ -502,8 +502,8 @@ class CertificadoService {
             const pageWidth = pagina.getWidth();
             // console.log('pageWidth', pageWidth)
 
-            console.log('evento', evento)
-            console.log('data certificado', data)
+            // console.log('evento', evento)
+            // console.log('data certificado', data)
 
             switch (evento.plantilla_certificado) {
                 case "buenas_practicas_agricolas_para_una_produccion_sostenible.pdf":
