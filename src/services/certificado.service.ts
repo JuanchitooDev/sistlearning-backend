@@ -449,6 +449,9 @@ class CertificadoService {
                 codigo = HString.generateCodigo()
             }
 
+            // Actualizando la plantilla del certificado
+            data.templateName = evento.plantilla_certificado
+
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
             if (!fs.existsSync(outputDir)) {
