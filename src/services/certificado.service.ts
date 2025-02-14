@@ -584,7 +584,7 @@ class CertificadoService {
 
                         pagina.drawText(fechasEvento[i], {
                             x: fechaEventoPositionX,
-                            y, // Ajustar la posición vertical para cada línea
+                            y: y - i * lineHeightEvento, // Ajustar la posición vertical para cada línea
                             size: fontSizeForFechaEvento,
                             font: customFontBalooMedium,
                             color: rgb(4 / 255, 45 / 255, 71 / 255),
@@ -684,7 +684,7 @@ class CertificadoService {
 
                         pagina.drawText(fechasEvento[i], {
                             x: fechaEventoPositionX,
-                            y, // Ajustar la posición vertical para cada línea
+                            y: y - i * lineHeightEvento, // Ajustar la posición vertical para cada línea
                             size: fontSizeForFechaEvento,
                             font: customFontBalooMedium,
                             color: rgb(4 / 255, 45 / 255, 71 / 255),
@@ -778,7 +778,7 @@ class CertificadoService {
 
                         pagina.drawText(fechasEvento[i], {
                             x: fechaEventoPositionX,
-                            y, // Ajustar la posición vertical para cada línea
+                            y: y - i * lineHeightEvento, // Ajustar la posición vertical para cada línea
                             size: fontSizeForFechaEvento,
                             font: customFontBalooMedium,
                             color: rgb(222 / 255, 148 / 255, 40 / 255),
@@ -874,7 +874,7 @@ class CertificadoService {
 
                         pagina.drawText(fechasEvento[i], {
                             x: fechaEventoPositionX,
-                            y, // Ajustar la posición vertical para cada línea
+                            y: y - i * lineHeightEvento, // Ajustar la posición vertical para cada línea
                             size: fontSizeForFechaEvento,
                             font: customFontBalooMedium,
                             color: rgb(222 / 255, 148 / 255, 40 / 255),
@@ -968,7 +968,7 @@ class CertificadoService {
 
                         pagina.drawText(fechasEvento[i], {
                             x: fechaEventoPositionX,
-                            y, // Ajustar la posición vertical para cada línea
+                            y: y - i * lineHeightEvento, // Ajustar la posición vertical para cada línea
                             size: fontSizeForFechaEvento,
                             font: customFontBalooMedium,
                             color: rgb(222 / 255, 148 / 255, 40 / 255),
@@ -1141,7 +1141,7 @@ class CertificadoService {
 
                         pagina.drawText(fechasEvento[i], {
                             x: fechaEventoPositionX,
-                            y, // Ajustar la posición vertical para cada línea
+                            y: y - i * lineHeightEvento, // Ajustar la posición vertical para cada línea
                             size: fontSizeForFechaEvento,
                             font: customFontBalooMedium,
                             color: rgb(222 / 255, 148 / 255, 40 / 255),
