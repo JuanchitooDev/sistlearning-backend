@@ -570,13 +570,13 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    // y -= 70; // Ajustar la posición Y para el siguiente texto
+                    y -= 90; // Ajustar la posición Y para el siguiente texto
 
-                    if (fechasEvento.length > 1) {
-                        y -= 60
-                    } else {
-                        y -= 70
-                    }
+                    // if (fechasEvento.length > 1) {
+                    //     y -= 60
+                    // } else {
+                    //     y -= 70
+                    // }
 
                     for (let i = 0; i < fechasEvento.length; i++) {
                         lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
@@ -670,13 +670,13 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    // y -= 70; // Ajustar la posición Y para el siguiente texto
+                    y -= 90; // Ajustar la posición Y para el siguiente texto
 
-                    if (fechasEvento.length > 1) {
-                        y -= 60
-                    } else {
-                        y -= 70
-                    }
+                    // if (fechasEvento.length > 1) {
+                    //     y -= 60
+                    // } else {
+                    //     y -= 70
+                    // }
 
                     for (let i = 0; i < fechasEvento.length; i++) {
                         lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
@@ -764,13 +764,13 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    // y -= 60; // Ajustar la posición Y para el siguiente texto
+                    y -= 60; // Ajustar la posición Y para el siguiente texto
 
-                    if (fechasEvento.length > 1) {
-                        y -= 60
-                    } else {
-                        y -= 70
-                    }
+                    // if (fechasEvento.length > 1) {
+                    //     y -= 60
+                    // } else {
+                    //     y -= 70
+                    // }
 
                     for (let i = 0; i < fechasEvento.length; i++) {
                         lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
@@ -834,7 +834,7 @@ class CertificadoService {
                     // Configurar el texto del título del evento
                     fontSizeForEvento = 30;
                     maxWidth = 580
-                    y -= 80; // Ajustar la posición Y para el siguiente texto
+                    y -= 90; // Ajustar la posición Y para el siguiente texto
 
                     // Distancia entre líneas para el nombre del evento
                     lineHeightEvento = 0.8 * fontSizeForEvento;
@@ -861,12 +861,13 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
+                    y -= 60
 
-                    if (fechasEvento.length > 1) {
-                        y -= 60
-                    } else {
-                        y -= 70
-                    }
+                    // if (fechasEvento.length > 1) {
+                    //     y -= 60
+                    // } else {
+                    //     y -= 70
+                    // }
 
                     for (let i = 0; i < fechasEvento.length; i++) {
                         lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
@@ -956,11 +957,13 @@ class CertificadoService {
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
 
-                    if (fechasEvento.length > 1) {
-                        y -= 60
-                    } else {
-                        y -= 70
-                    }
+                    y -= 60
+
+                    // if (fechasEvento.length > 1) {
+                    //     y -= 60
+                    // } else {
+                    //     y -= 70
+                    // }
 
                     for (let i = 0; i < fechasEvento.length; i++) {
                         lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
@@ -1069,7 +1072,7 @@ class CertificadoService {
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
-                    y = 390;  // Posición Y
+                    y = 400;  // Posición Y
                     maxWidth = 720; // Ancho máximo disponible para el texto
 
                     // Distancia entre líneas para el nombre del alumno
@@ -1127,13 +1130,13 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    // y -= 90 // Ajustar la posición Y para el siguiente texto
+                    y -= 80 // Ajustar la posición Y para el siguiente texto
 
-                    if (fechasEvento.length > 1) {
-                        y -= 70
-                    } else {
-                        y -= 90
-                    }
+                    // if (fechasEvento.length > 1) {
+                    //     y -= 70
+                    // } else {
+                    //     y -= 90
+                    // }
 
                     for (let i = 0; i < fechasEvento.length; i++) {
                         lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
