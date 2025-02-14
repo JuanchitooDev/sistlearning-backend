@@ -570,19 +570,38 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 70; // Ajustar la posición Y para el siguiente texto
+                    // y -= 70; // Ajustar la posición Y para el siguiente texto
 
-                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    if (fechasEvento.length > 1) {
+                        y -= 60
+                    } else {
+                        y -= 70
+                    }
 
-                    // Dibujar la fecha del evento centrado
-                    pagina.drawText(fechaEvento, {
-                        x: fechaEventoPositionX,
-                        y,
-                        size: fontSizeForFechaEvento,
-                        font: customFontBalooMedium,
-                        color: rgb(4 / 255, 45 / 255, 71 / 255),
-                    });
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
+                        fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;
+
+                        pagina.drawText(fechasEvento[i], {
+                            x: fechaEventoPositionX,
+                            y, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(4 / 255, 45 / 255, 71 / 255),
+                        });
+                    }
+
+                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento, fontSizeForFechaEvento);
+                    // fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // // Dibujar la fecha del evento centrado
+                    // pagina.drawText(fechaEvento, {
+                    //     x: fechaEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForFechaEvento,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(4 / 255, 45 / 255, 71 / 255),
+                    // });
                     break
                 case "cultivos_saludables.pdf":
                 case "manejo_de_cultivo_de_arroz.pdf":
@@ -651,19 +670,38 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 70; // Ajustar la posición Y para el siguiente texto
+                    // y -= 70; // Ajustar la posición Y para el siguiente texto
 
-                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    if (fechasEvento.length > 1) {
+                        y -= 60
+                    } else {
+                        y -= 70
+                    }
 
-                    // Dibujar la fecha del evento centrado
-                    pagina.drawText(fechaEvento, {
-                        x: fechaEventoPositionX,
-                        y,
-                        size: fontSizeForFechaEvento,
-                        font: customFontBalooMedium,
-                        color: rgb(4 / 255, 45 / 255, 71 / 255),
-                    });
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
+                        fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;
+
+                        pagina.drawText(fechasEvento[i], {
+                            x: fechaEventoPositionX,
+                            y, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(4 / 255, 45 / 255, 71 / 255),
+                        });
+                    }
+
+                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    // fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // // Dibujar la fecha del evento centrado
+                    // pagina.drawText(fechaEvento, {
+                    //     x: fechaEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForFechaEvento,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(4 / 255, 45 / 255, 71 / 255),
+                    // });
                     break
                 case "formulacion_y_evaluacion_de_proyectos_agropecuarios.pdf":
                 case "manejo_de_camelidos_sudamericanos.pdf":
@@ -726,19 +764,38 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 60; // Ajustar la posición Y para el siguiente texto
+                    // y -= 60; // Ajustar la posición Y para el siguiente texto
 
-                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    if (fechasEvento.length > 1) {
+                        y -= 60
+                    } else {
+                        y -= 70
+                    }
 
-                    // Dibujar la fecha del evento centrado
-                    pagina.drawText(fechaEvento, {
-                        x: fechaEventoPositionX,
-                        y,
-                        size: fontSizeForFechaEvento,
-                        font: customFontBalooMedium,
-                        color: rgb(222 / 255, 148 / 255, 40 / 255),
-                    });
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
+                        fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;
+
+                        pagina.drawText(fechasEvento[i], {
+                            x: fechaEventoPositionX,
+                            y, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(222 / 255, 148 / 255, 40 / 255),
+                        });
+                    }
+
+                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    // fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // // Dibujar la fecha del evento centrado
+                    // pagina.drawText(fechaEvento, {
+                    //     x: fechaEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForFechaEvento,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    // });
                     break
                 case "hidroponia_y_calculo_de_soluciones_nutritivas.pdf":
                     // Configurar el texto del nombre del alumno
@@ -804,21 +861,39 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 70; // Ajustar la posición Y para el siguiente texto
 
-                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    // positionXFechaEvento = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
-                    // positionXFechaEvento = 60
-                    fechaEventoPositionX = 60 + (maxWidth - lineWidthFechaEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
+                    if (fechasEvento.length > 1) {
+                        y -= 60
+                    } else {
+                        y -= 70
+                    }
 
-                    // Dibujar la fecha del evento centrado
-                    pagina.drawText(fechaEvento, {
-                        x: fechaEventoPositionX,
-                        y,
-                        size: fontSizeForFechaEvento,
-                        font: customFontBalooMedium,
-                        color: rgb(222 / 255, 148 / 255, 40 / 255),
-                    });
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
+                        fechaEventoPositionX = 60 + (maxWidth - lineWidthFechaEvento) / 2;
+
+                        pagina.drawText(fechasEvento[i], {
+                            x: fechaEventoPositionX,
+                            y, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(222 / 255, 148 / 255, 40 / 255),
+                        });
+                    }
+
+                    // y -= 70; // Ajustar la posición Y para el siguiente texto
+
+                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    // fechaEventoPositionX = 60 + (maxWidth - lineWidthFechaEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
+
+                    // // Dibujar la fecha del evento centrado
+                    // pagina.drawText(fechaEvento, {
+                    //     x: fechaEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForFechaEvento,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    // });
                     break
                 case "manejo_integrado_de_la_roya_del_cafe.pdf":
                     // Configurar el texto del nombre del alumno
@@ -880,19 +955,39 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 60; // Ajustar la posición Y para el siguiente texto
 
-                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    if (fechasEvento.length > 1) {
+                        y -= 60
+                    } else {
+                        y -= 70
+                    }
 
-                    // Dibujar la fecha del evento centrado
-                    pagina.drawText(fechaEvento, {
-                        x: fechaEventoPositionX,
-                        y,
-                        size: fontSizeForFechaEvento,
-                        font: customFontBalooMedium,
-                        color: rgb(222 / 255, 148 / 255, 40 / 255),
-                    });
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
+                        fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;
+
+                        pagina.drawText(fechasEvento[i], {
+                            x: fechaEventoPositionX,
+                            y, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(222 / 255, 148 / 255, 40 / 255),
+                        });
+                    }
+
+                    // y -= 60; // Ajustar la posición Y para el siguiente texto
+
+                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    // fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // // Dibujar la fecha del evento centrado
+                    // pagina.drawText(fechaEvento, {
+                    //     x: fechaEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForFechaEvento,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    // });
                     break
                 case "manejo_sanitario_de_cuyes_con_fines_comerciales.pdf":
                     // Configurar el texto del nombre del alumno
@@ -942,32 +1037,6 @@ class CertificadoService {
                         color: rgb(4 / 255, 45 / 255, 71 / 255),
                     });
 
-                    // maxWidth = 580
-                    // y -= 80; // Ajustar la posición Y para el siguiente texto
-
-                    // // Distancia entre líneas para el nombre del evento
-                    // lineHeightEvento = 0.8 * fontSizeForEvento;
-
-                    // // Dividir el título del evento si es necesario
-                    // linesEvento = this.splitTextIntoLines(tituloEvento, maxWidth, customFontBalooBold, fontSizeForEvento);
-                    // // console.log('linesEvento', linesEvento)
-
-                    // for (let i = 0; i < linesEvento.length; i++) {
-                    //     lineWidthEvento = customFontBalooBold.widthOfTextAtSize(linesEvento[i], fontSizeForEvento);
-                    //     // const tituloEventoPositionX = (pageWidth - lineWidthEvento) / 2;  // Centrado horizontal
-                    //     // const tituloEventoPositionX = 60
-                    //     const tituloEventoPositionX = 60 + (maxWidth - lineWidthEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
-
-                    //     // Dibujar el título del evento centrado
-                    //     pagina.drawText(linesEvento[i], {
-                    //         x: tituloEventoPositionX,
-                    //         y: y - i * lineHeightEvento,
-                    //         size: fontSizeForEvento,
-                    //         font: customFontBalooBold,
-                    //         color: rgb(0 / 255, 32 / 255, 58 / 255),
-                    //     });
-                    // }
-
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 12;
                     x += 123
@@ -981,22 +1050,6 @@ class CertificadoService {
                         font: customFontBalooMedium,
                         color: rgb(4 / 255, 45 / 255, 71 / 255),
                     });
-
-                    // y -= 70; // Ajustar la posición Y para el siguiente texto
-
-                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    // // positionXFechaEvento = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
-                    // // positionXFechaEvento = 60
-                    // fechaEventoPositionX = 60 + (maxWidth - lineWidthFechaEvento) / 2;  // Centrado en el área de 640 píxeles, comenzando en X = 60
-
-                    // // Dibujar la fecha del evento centrado
-                    // pagina.drawText(fechaEvento, {
-                    //     x: fechaEventoPositionX,
-                    //     y,
-                    //     size: fontSizeForFechaEvento,
-                    //     font: customFontBalooMedium,
-                    //     color: rgb(222 / 255, 148 / 255, 40 / 255),
-                    // });
 
                     fontSizeForFechaEmision = 13
                     x += 120
@@ -1074,19 +1127,38 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 90 // Ajustar la posición Y para el siguiente texto
+                    // y -= 90 // Ajustar la posición Y para el siguiente texto
 
-                    lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
-                    fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+                    if (fechasEvento.length > 1) {
+                        y -= 70
+                    } else {
+                        y -= 90
+                    }
 
-                    // Dibujar la fecha del evento centrado
-                    pagina.drawText(fechaEvento, {
-                        x: fechaEventoPositionX,
-                        y,
-                        size: fontSizeForFechaEvento,
-                        font: customFontBalooMedium,
-                        color: rgb(222 / 255, 148 / 255, 40 / 255),
-                    });
+                    for (let i = 0; i < fechasEvento.length; i++) {
+                        lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechasEvento[i], fontSizeForFechaEvento);
+                        fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;
+
+                        pagina.drawText(fechasEvento[i], {
+                            x: fechaEventoPositionX,
+                            y, // Ajustar la posición vertical para cada línea
+                            size: fontSizeForFechaEvento,
+                            font: customFontBalooMedium,
+                            color: rgb(222 / 255, 148 / 255, 40 / 255),
+                        });
+                    }
+
+                    // lineWidthFechaEvento = customFontBalooMedium.widthOfTextAtSize(fechaEvento, fontSizeForFechaEvento);
+                    // fechaEventoPositionX = (pageWidth - lineWidthFechaEvento) / 2;  // Centrado horizontal
+
+                    // // Dibujar la fecha del evento centrado
+                    // pagina.drawText(fechaEvento, {
+                    //     x: fechaEventoPositionX,
+                    //     y,
+                    //     size: fontSizeForFechaEvento,
+                    //     font: customFontBalooMedium,
+                    //     color: rgb(222 / 255, 148 / 255, 40 / 255),
+                    // });
                     break
             }
 
