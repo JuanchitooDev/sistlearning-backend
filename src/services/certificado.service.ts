@@ -1130,7 +1130,7 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 85 // Ajustar la posición Y para el siguiente texto
+                    y -= 75 // Ajustar la posición Y para el siguiente texto
 
                     // if (fechasEvento.length > 1) {
                     //     y -= 70
