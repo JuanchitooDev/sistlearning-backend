@@ -1072,7 +1072,7 @@ class CertificadoService {
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
-                    y = 400;  // Posición Y
+                    y = 390;  // Posición Y
                     maxWidth = 720; // Ancho máximo disponible para el texto
 
                     // Distancia entre líneas para el nombre del alumno
@@ -1130,7 +1130,7 @@ class CertificadoService {
 
                     // Configurar el texto de la fecha del evento
                     fontSizeForFechaEvento = 24;
-                    y -= 80 // Ajustar la posición Y para el siguiente texto
+                    y -= 85 // Ajustar la posición Y para el siguiente texto
 
                     // if (fechasEvento.length > 1) {
                     //     y -= 70
