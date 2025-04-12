@@ -5,6 +5,7 @@ export interface ICategoriaEvento {
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
+    sistema?: boolean
     estado?: boolean
 }
 

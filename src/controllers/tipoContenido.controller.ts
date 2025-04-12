@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TipoContenidoService from '../services/tipoContenido.service'
+import TipoContenidoService from '@/services/tipoContenido.service'
 
 class TipoContenidoController {
     async getTipos(req: Request, res: Response) {
@@ -11,8 +11,23 @@ class TipoContenidoController {
         }
     }
 
-    async getTipoById(req: Request, res: Response) {
-        const response = await TipoContenidoService.getTipoById(+req.params.id)
+    async getTiposPorEstado(req: Request, res: Response) {
+        const estadoParam = req.params.estado
+        const estado: boolean = estadoParam === 'true'
+        const response = await TipoContenidoService.getTiposPorEstado(estado)
+        if (response.result) {
+            res.status(200).json(response)
+        } else {
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
+        }
+    }
+
+    async getTipoPorId(req: Request, res: Response) {
+        const response = await TipoContenidoService.getTipoPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

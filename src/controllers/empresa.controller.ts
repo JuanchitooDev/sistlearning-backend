@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import EmpresaService from '../services/empresa.service'
+import EmpresaService from '@/services/empresa.service'
 
 class EmpresaController {
     async getEmpresas(req: Request, res: Response) {

@@ -10,11 +10,12 @@ export interface IEmpresa {
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
+    sistema?: boolean
     estado?: boolean
 }
 
 export interface EmpresaResponse {
-    result?: boolean
+    result: boolean
     message?: string
     data?: IEmpresa | IEmpresa[],
     error?: string

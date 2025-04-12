@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import UsuarioController from '../controllers/usuario.controller'
+import UsuarioController from '@/controllers/usuario.controller'
 
 const router = Router()
 
-router.post('/', UsuarioController.getUsuarios)
-router.post('/:id', UsuarioController.getUsuarioById)
+router.get('/', UsuarioController.getUsuarios)
+router.get('/:id', UsuarioController.getUsuarioPorId)
+router.post('/', UsuarioController.createUsuario)
 
 export default router

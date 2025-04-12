@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import TipoContenido from './tipoContenido.models'
 import Evento from './evento.models'
 

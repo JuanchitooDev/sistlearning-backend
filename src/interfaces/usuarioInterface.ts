@@ -8,10 +8,11 @@ export interface IUsuario {
     username?: string
     password?: string
     token?: string
-    fecha_sesion?: Date
+    fecha_sesion?: string
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
+    sistema?: boolean
     estado?: boolean
     trabajador?: ITrabajador
     perfil?: IPerfil

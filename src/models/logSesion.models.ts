@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import Usuario from './usuario.models'
 
 class LogSesion extends Model {
@@ -30,7 +30,7 @@ LogSesion.init({
     },
     fecha_sesion: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     },
     user_agent: {
         type: DataTypes.STRING(10),

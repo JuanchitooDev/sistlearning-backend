@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import CertificadoService from '../services/certificado.service'
-import { ICertificado } from '../interfaces/certificadoInterface'
+import CertificadoService from '@/services/certificado.service'
+import { ICertificado } from '@/interfaces/certificadoInterface'
 
 class CertificadoController {
     async getCertificados(req: Request, res: Response) {
@@ -12,8 +12,8 @@ class CertificadoController {
         }
     }
 
-    async getCertificadoById(req: Request, res: Response) {
-        const response = await CertificadoService.getCertificadoById(+req.params.id)
+    async getCertificadoPorId(req: Request, res: Response) {
+        const response = await CertificadoService.getCertificadoPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {
@@ -25,8 +25,8 @@ class CertificadoController {
         }
     }
 
-    async getCertificadoByCodigo(req: Request, res: Response) {
-        const response = await CertificadoService.getCertificadoByCodigo(req.params.codigo)
+    async getCertificadoPorCodigo(req: Request, res: Response) {
+        const response = await CertificadoService.getCertificadoPorCodigo(req.params.codigo)
         if (response.result) {
             res.status(200).json(response)
         } else {
@@ -40,7 +40,7 @@ class CertificadoController {
 
     async downloadCertificado(req: Request, res: Response) {
         const { id } = req.params
-        const response = await CertificadoService.downloadCertificado(+id)
+        const response = await CertificadoService.downloadPorId(+id)
 
         if (response.result) {
             const outputPath = response.outputPath as string
@@ -63,7 +63,6 @@ class CertificadoController {
     async createCertificado(req: Request, res: Response) {
         try {
             const response = await CertificadoService.createCertificado(req.body)
-            // console.log('response createCertificado', response)
             if (response.result) {
                 const data = response.data as ICertificado
                 const outputPath = data.ruta as string
@@ -73,7 +72,6 @@ class CertificadoController {
                         console.error(err);
                     }
                 });
-                // res.status(201).json(response);
             } else {
                 if (response.message) {
                     res.status(404).send(response.message)
@@ -82,7 +80,6 @@ class CertificadoController {
                 }
             }
         } catch (error) {
-            // return res.status(500).json({ message: 'Error inesperado en el servidor' });
             console.error('Error inesperado:', error);
             res.status(500).send(error)
         }

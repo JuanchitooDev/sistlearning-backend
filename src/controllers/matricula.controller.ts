@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import MatriculaService from '../services/matricula.service'
+import MatriculaService from '@/services/matricula.service'
 
 class MatriculaController {
     async getMatriculas(req: Request, res: Response) {

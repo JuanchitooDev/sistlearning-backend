@@ -13,7 +13,7 @@ export interface IDepartamento {
 }
 
 export interface DepartamentoResponse {
-    result?: boolean
+    result: boolean
     message?: string
     data?: IDepartamento | IDepartamento[],
     error?: string

@@ -1,7 +1,5 @@
 import { Request, Response } from 'express'
-import AlumnoService from '../services/alumno.service'
-import { IAlumno } from '../interfaces/alumnoInterface'
-import HExcel from '../helpers/HExcel'
+import AlumnoService from '@/services/alumno.service'
 
 class AlumnoController {
     async getAlumnos(req: Request, res: Response) {
@@ -13,8 +11,23 @@ class AlumnoController {
         }
     }
 
-    async getAlumnoById(req: Request, res: Response) {
-        const response = await AlumnoService.getAlumnoById(+req.params.id)
+    async getAlumnosPorEstado(req: Request, res: Response) {
+        const estadoParam = req.params.estado
+        const estado: boolean = estadoParam === 'true'
+        const response = await AlumnoService.getAlumnosPorEstado(estado)
+        if (response.result) {
+            res.status(200).json(response)
+        } else {
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
+        }
+    }
+
+    async getAlumnoPorId(req: Request, res: Response) {
+        const response = await AlumnoService.getAlumnoPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

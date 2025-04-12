@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import CategoriaEventoService from '../services/categoriaEvento.service'
+import CategoriaEventoService from '@/services/categoriaEvento.service'
 
 class CategoriaEventoController {
     async getCategorias(req: Request, res: Response) {
@@ -11,8 +11,23 @@ class CategoriaEventoController {
         }
     }
 
-    async getCategoriaById(req: Request, res: Response) {
-        const response = await CategoriaEventoService.getCategoriaById(+req.params.id)
+    async getCategoriasPorEstado(req: Request, res: Response) {
+        const estadoParam = req.params.estado
+        const estado: boolean = estadoParam === 'true'
+        const response = await CategoriaEventoService.getCategoriasPorEstado(estado)
+        if (response.result) {
+            res.status(200).json(response)
+        } else {
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
+        }
+    }
+
+    async getCategoriaPorId(req: Request, res: Response) {
+        const response = await CategoriaEventoService.getCategoriaPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

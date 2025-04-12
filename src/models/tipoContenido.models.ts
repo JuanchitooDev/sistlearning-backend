@@ -1,9 +1,10 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 
 class TipoContenido extends Model {
     public id?: number
     public nombre?: string
+    public nombre_url?: string
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -18,6 +19,10 @@ TipoContenido.init({
     },
     nombre: {
         type: DataTypes.STRING(20),
+        allowNull: false
+    },
+    nombre_url: {
+        type: DataTypes.STRING(40),
         allowNull: false
     },
     user_crea: {

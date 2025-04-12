@@ -20,7 +20,7 @@ export interface IContenido {
 }
 
 export interface ContenidoResponse {
-    result?: boolean
+    result: boolean
     message?: string
     data?: IContenido | IContenido[],
     error?: string

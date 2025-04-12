@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TipoDocumentoService from '../services/tipoDocumento.service'
+import TipoDocumentoService from '@/services/tipoDocumento.service'
 
 class TipoDocumentoController {
     async getTipos(req: Request, res: Response) {
@@ -8,6 +8,21 @@ class TipoDocumentoController {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
+        }
+    }
+
+    async getTiposPorEstado(req: Request, res: Response) {
+        const estadoParam = req.params.estado
+        const estado: boolean = estadoParam === 'true'
+        const response = await TipoDocumentoService.getTiposPorEstado(estado)
+        if (response.result) {
+            res.status(200).json(response)
+        } else {
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
         }
     }
 
@@ -25,8 +40,8 @@ class TipoDocumentoController {
         }
     }
 
-    async getTipoById(req: Request, res: Response) {
-        const response = await TipoDocumentoService.getTipoById(+req.params.id)
+    async getTipoPorId(req: Request, res: Response) {
+        const response = await TipoDocumentoService.getTipoPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

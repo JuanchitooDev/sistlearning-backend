@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import CargoService from '../services/cargo.service'
+import CargoService from '@/services/cargo.service'
 
 class CargoController {
     async getCargos(req: Request, res: Response) {
@@ -11,8 +11,23 @@ class CargoController {
         }
     }
 
-    async getCargoById(req: Request, res: Response) {
-        const response = await CargoService.getCargoById(+req.params.id)
+    async getCargosPorEstado(req: Request, res: Response) {
+        const estadoParam = req.params.estado
+        const estado: boolean = estadoParam === 'true'
+        const response = await CargoService.gerCargosPorEstado(estado)
+        if (response.result) {
+            res.status(200).json(response)
+        } else {
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
+        }
+    }
+
+    async getCargoPorId(req: Request, res: Response) {
+        const response = await CargoService.getCargoPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

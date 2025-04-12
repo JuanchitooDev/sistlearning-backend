@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import Trabajador from './trabajador.models'
 import Perfil from './perfil.models'
 
@@ -14,6 +14,7 @@ class Usuario extends Model {
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
+    public sistema?: boolean
     public estado?: boolean
 }
 
@@ -67,6 +68,11 @@ Usuario.init({
         type: DataTypes.STRING(10),
         allowNull: true
     },
+    sistema: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
     estado: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -79,7 +85,7 @@ Usuario.init({
     freezeTableName: true
 })
 
-Usuario.belongsTo(Trabajador, { foreignKey: 'id_trabajador'} )
+Usuario.belongsTo(Trabajador, { foreignKey: 'id_trabajador' })
 
 Usuario.belongsTo(Perfil, { foreignKey: 'id_perfil' })
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import ProgramacionService from '../services/programacion.service'
+import ProgramacionService from '@/services/programacion.service'
 
 class ProgramacionController {
     async getProgramaciones(req: Request, res: Response) {

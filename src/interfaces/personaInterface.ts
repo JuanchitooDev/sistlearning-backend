@@ -27,6 +27,7 @@ export interface IPersona {
     foto?: string
     sexo?: string
     origen?: EOrigen
+    sistema?: boolean
     estado?: boolean
     tipoDocumento?: ITipoDocumento
 }

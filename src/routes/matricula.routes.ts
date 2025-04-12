@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import MatriculaController from '../controllers/matricula.controller'
+import MatriculaController from '@/controllers/matricula.controller'
 
 const router = Router()
 

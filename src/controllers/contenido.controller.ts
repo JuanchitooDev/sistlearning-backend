@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import ContenidoService from '../services/contenido.service'
+import ContenidoService from '@/services/contenido.service'
 
 class ContenidoController {
     async getContenidos(req: Request, res: Response) {
@@ -11,8 +11,23 @@ class ContenidoController {
         }
     }
 
-    async getContenidoById(req: Request, res: Response) {
-        const response = await ContenidoService.getContenidoById(+req.params.id)
+    async getContenidosPorEstado(req: Request, res: Response) {
+        const estadoParam = req.params.estado
+        const estado: boolean = estadoParam === 'true'
+        const response = await ContenidoService.getContenidosPorEstado(estado)
+        if (response.result) {
+            res.status(200).json(response)
+        } else {
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
+        }
+    }
+
+    async getContenidoPorId(req: Request, res: Response) {
+        const response = await ContenidoService.getContenidoPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TrabajadorService from '../services/trabajador.service'
+import TrabajadorService from '@/services/trabajador.service'
 
 class TrabajadorController {
     async getTrabajadores(req: Request, res: Response) {
@@ -11,8 +11,8 @@ class TrabajadorController {
         }
     }
 
-    async getTrabajadorById(req: Request, res: Response) {
-        const response = await TrabajadorService.getTrabajadorById(+req.params.id)
+    async getTrabajadorPorId(req: Request, res: Response) {
+        const response = await TrabajadorService.getTrabajadorPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

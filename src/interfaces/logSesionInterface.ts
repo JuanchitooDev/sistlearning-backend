@@ -4,7 +4,7 @@ export interface ILogSesion {
     id?: number
     id_usuario?: number
     token?: string
-    fecha_sesion?: Date
+    fecha_sesion?: string
     user_agent?: string
     usuario?: IUsuario
 }

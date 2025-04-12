@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import EventoService from '../services/evento.service'
+import EventoService from '@/services/evento.service'
 
 class EventoController {
     async getEventos(req: Request, res: Response) {
@@ -11,8 +11,23 @@ class EventoController {
         }
     }
 
-    async getEventoById(req: Request, res: Response) {
-        const response = await EventoService.getEventoById(+req.params.id)
+    async getEventosPorEstado(req: Request, res: Response) {
+        const estadoParam = req.params.estado
+        const estado: boolean = estadoParam === 'true'
+        const response = await EventoService.getEventosPorEstado(estado)
+        if (response.result) {
+            res.status(200).json(response)
+        } else {
+            if (response.error) {
+                res.status(500).json(response)
+            } else {
+                res.status(404).json(response)
+            }
+        }
+    }
+
+    async getEventoPorId(req: Request, res: Response) {
+        const response = await EventoService.getEventoPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {

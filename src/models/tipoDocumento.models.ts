@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 
 class TipoDocumento extends Model {
     public id?: number

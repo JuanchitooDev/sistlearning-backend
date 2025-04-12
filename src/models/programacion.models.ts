@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import Evento from './evento.models'
 import Trabajador from './trabajador.models'
 
@@ -13,7 +13,7 @@ class Programacion extends Model {
     public fecha_final?: string
     public fecha_reprograma?: string
     public fecha_cancela?: string
-    public fecha_registro?: Date
+    public fecha_registro?: string
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -67,7 +67,7 @@ Programacion.init({
         allowNull: true
     },
     fecha_registro: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     user_crea: {

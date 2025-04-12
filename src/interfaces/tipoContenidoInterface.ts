@@ -1,6 +1,7 @@
 export interface ITipoContenido {
     id?: number
     nombre?: string
+    nombre_url?: string
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
@@ -8,7 +9,7 @@ export interface ITipoContenido {
 }
 
 export interface TipoContenidoResponse {
-    result?: boolean
+    result: boolean
     message?: string
     data?: ITipoContenido | ITipoContenido[],
     error?: string

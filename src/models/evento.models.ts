@@ -1,8 +1,8 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import TipoEvento from './tipoEvento.models'
 import CategoriaEvento from './categoriaEvento.models'
-import { EModalidad } from '../interfaces/eventoInterface'
+import { EModalidad } from '@/interfaces/eventoInterface'
 
 class Evento extends Model {
     public id?: number
@@ -60,11 +60,11 @@ Evento.init({
         allowNull: false
     },
     titulo_url: {
-        type: DataTypes.STRING(120),
+        type: DataTypes.STRING(140),
         allowNull: false
     },
     descripcion: {
-        type: DataTypes.STRING(70),
+        type: DataTypes.STRING(120),
         allowNull: true
     },
     temario: {

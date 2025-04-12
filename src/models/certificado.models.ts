@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import Alumno from './alumno.models'
 import Evento from './evento.models'
 
@@ -13,12 +13,13 @@ class Certificado extends Model {
     public ruta?: string
     public fileName?: string
     public templateName?: string
-    public fecha_registro?: Date
-    public fecha_descarga?: Date
-    public fecha_envio?: Date
+    public fecha_registro?: string
+    public fecha_descarga?: string
+    public fecha_envio?: string
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
+    public sistema?: boolean
     public estado?: boolean
 }
 
@@ -69,15 +70,15 @@ Certificado.init({
         allowNull: true
     },
     fecha_registro: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     fecha_descarga: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     fecha_envio: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     user_crea: {
@@ -92,6 +93,11 @@ Certificado.init({
         type: DataTypes.STRING(10),
         allowNull: true
     },
+    sistema: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
     estado: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -104,8 +110,8 @@ Certificado.init({
     freezeTableName: true
 })
 
-Certificado.belongsTo(Alumno, {foreignKey: 'id_alumno'})
+Certificado.belongsTo(Alumno, { foreignKey: 'id_alumno' })
 
-Certificado.belongsTo(Evento, {foreignKey: 'id_evento'})
+Certificado.belongsTo(Evento, { foreignKey: 'id_evento' })
 
 export default Certificado

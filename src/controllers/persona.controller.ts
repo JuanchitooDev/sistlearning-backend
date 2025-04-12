@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import PersonaService from '../services/persona.service'
+import PersonaService from '@/services/persona.service'
 
 class PersonaController {
     async getPersonas(req: Request, res: Response) {
@@ -11,8 +11,8 @@ class PersonaController {
         }
     }
 
-    async getPersonaById(req: Request, res: Response) {
-        const response = await PersonaService.getPersonaById(+req.params.id)
+    async getPersonaPorId(req: Request, res: Response) {
+        const response = await PersonaService.getPersonaPorId(+req.params.id)
         if (response.result) {
             res.status(200).json(response)
         } else {
@@ -24,9 +24,9 @@ class PersonaController {
         }
     }
 
-    async getPersonaByIdTipoAndNumDoc(req: Request, res: Response) {
+    async getPersonaPorIdTipoAndNumDoc(req: Request, res: Response) {
         const { idtipodoc, numdoc } = req.params
-        const response = await PersonaService.getPersonaByIdTipoDocAndNumDoc(Number(idtipodoc), numdoc)
+        const response = await PersonaService.getPersonaPorIdTipoDocAndNumDoc(Number(idtipodoc), numdoc)
         if (response.result) {
             res.status(200).json(response)
         } else {
