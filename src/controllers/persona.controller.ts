@@ -4,7 +4,10 @@ import PersonaService from '@/services/persona.service'
 class PersonaController {
     async getPersonas(req: Request, res: Response) {
         const response = await PersonaService.getPersonas()
-        if (response.result) {
+
+        const { result } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
@@ -12,69 +15,89 @@ class PersonaController {
     }
 
     async getPersonaPorId(req: Request, res: Response) {
-        const response = await PersonaService.getPersonaPorId(+req.params.id)
-        if (response.result) {
+        const { id } = req.params
+
+        const response = await PersonaService.getPersonaPorId(+id)
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response)
             } else {
-                res.status(404).json(response);
+                res.status(200).json(response);
             }
         }
     }
 
     async getPersonaPorIdTipoAndNumDoc(req: Request, res: Response) {
         const { idtipodoc, numdoc } = req.params
+
         const response = await PersonaService.getPersonaPorIdTipoDocAndNumDoc(Number(idtipodoc), numdoc)
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response)
             } else {
-                res.status(404).json(response);
+                res.status(200).json(response);
             }
         }
     }
 
     async createPersona(req: Request, res: Response) {
         const response = await PersonaService.createPersona(req.body);
-        if (response.result) {
-            res.status(201).json(response);
+
+        const { result, error } = response
+
+        if (result) {
+            res.status(200).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
-                res.status(404).json(response);
+                res.status(200).json(response);
             }
         }
     }
 
     async updatePersona(req: Request, res: Response) {
         const { id } = req.params;
+
         const response = await PersonaService.updatePersona(+id, req.body);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
-                res.status(404).json(response);
+                res.status(200).json(response);
             }
         }
     }
 
     async deletePersona(req: Request, res: Response) {
         const { id } = req.params;
+
         const response = await PersonaService.deletePersona(+id);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
-                res.status(404).json(response);
+                res.status(200).json(response);
             }
         }
     }

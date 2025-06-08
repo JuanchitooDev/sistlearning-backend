@@ -16,10 +16,11 @@ class CategoriaEventoRepository {
                     ['id', 'DESC']
                 ]
             })
-            return { result: true, data: categorias }
+
+            return { result: true, data: categorias, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -39,10 +40,11 @@ class CategoriaEventoRepository {
                     ['id', 'DESC']
                 ]
             })
-            return { result: true, data: categorias }
+
+            return { result: true, data: categorias, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -56,28 +58,32 @@ class CategoriaEventoRepository {
                     'estado'
                 ]
             })
+
             if (!categoria) {
-                return { result: false, message: 'Categoría no encontrado' }
+                return { result: false, message: 'Categoría no encontrado', data: [], status: 200 }
             }
-            return { result: true, data: categoria }
+
+            return { result: true, message: 'Categoría encontrada', data: categoria, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async create(data: ICategoriaEvento): Promise<CategoriaEventoResponse> {
         try {
             data.nombre_url = HString.convertToUrlString(data.nombre as String)
+
             const newTipo = await CategoriaEvento.create(data as any)
+
             if (newTipo.id) {
-                return { result: true, message: 'Categoría registrado con éxito', data: newTipo }
-            } else {
-                return { result: false, message: 'Error al registrar la categoría' }
+                return { result: true, message: 'Categoría registrado con éxito', data: newTipo, status: 200 }
             }
+
+            return { result: false, message: 'Error al registrar la categoría', data: [], status: 500 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -90,29 +96,32 @@ class CategoriaEventoRepository {
             const categoria = await CategoriaEvento.findByPk(id)
 
             if (!categoria) {
-                return { result: false, message: 'Categoría no encontrada' }
+                return { result: false, message: 'Categoría no encontrada', data: [], status: 200 }
             }
 
             const updatedCategoria = await categoria.update(data)
 
-            return { result: true, message: 'Categoría actualizada con éxito', data: updatedCategoria }
+            return { result: true, message: 'Categoría actualizada con éxito', data: updatedCategoria, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async delete(id: number): Promise<CategoriaEventoResponse> {
         try {
             const categoria = await CategoriaEvento.findByPk(id);
+
             if (!categoria) {
-                return { result: false, message: 'Categoría no encontrada' };
+                return { result: false, data: [], message: 'Categoría no encontrada', status: 200 };
             }
+
             await categoria.destroy();
-            return { result: true, data: { id }, message: 'Categoría eliminada correctamente' };
+
+            return { result: true, data: { id }, message: 'Categoría eliminada correctamente', status: 200 };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage };
+            return { result: false, error: errorMessage, status: 500 };
         }
     }
 }

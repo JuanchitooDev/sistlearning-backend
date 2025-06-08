@@ -12,6 +12,7 @@ export interface IPais {
 export interface PaisResponse {
     result: boolean
     message?: string
-    data?: IPais | IPais[],
+    data?: IPais | IPais[]
     error?: string
+    status?: number
 }

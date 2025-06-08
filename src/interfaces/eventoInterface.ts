@@ -1,5 +1,6 @@
 import { ITipoEvento } from "./tipoEventoInterface"
 import { ICategoriaEvento } from "./categoriaEventoInterface"
+import { IInstructor } from './instructorInterface'
 
 export enum EModalidad {
     VIRTUAL = "Virtual",
@@ -12,6 +13,7 @@ export interface IEvento {
     id_parent?: number
     id_tipoevento?: number
     id_categoriaevento?: number
+    id_instructor?: number
     titulo?: string
     titulo_url?: string
     descripcion?: string
@@ -22,17 +24,20 @@ export interface IEvento {
     modalidad?: EModalidad
     precio?: number
     duracion?: string
+    capacidad_maxima?: number
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
     estado?: boolean
     tipoEvento?: ITipoEvento
     categoriaEvento?: ICategoriaEvento
+    instructor?: IInstructor
 }
 
 export interface EventoResponse {
     result: boolean
     message?: string
-    data?: IEvento | IEvento[],
+    data?: IEvento | IEvento[]
     error?: string
+    status?: number
 }

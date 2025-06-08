@@ -145,6 +145,7 @@ export default class HPdf {
                 case "como_maximizar_la_produccion_de_gallinas_saludables.pdf":
                 case "nutricion_alimentacion_y_sanidad_de_animales_menores_y_mayores.pdf":
                 case "sanidad_avicola_y_optimizacion_productiva.pdf":
+                case "plantillas/plantilla_e.pdf":
 
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 54;
@@ -225,6 +226,7 @@ export default class HPdf {
                 case "optimizacion_de_la_produccion_porcina.pdf":
                 case "tecnicas_avanzadas_para_produccion_sostenible_en_cuyes.pdf":
                 case "uso_de_excel_para_interpretar_analisis_de_suelo_y_agua.pdf":
+                case "plantillas/plantilla_a.pdf":
 
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
@@ -300,6 +302,7 @@ export default class HPdf {
                     break
                 case "formulacion_y_evaluacion_de_proyectos_agropecuarios.pdf":
                 case "manejo_de_camelidos_sudamericanos.pdf":
+                case "plantillas/plantilla_b.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
@@ -373,6 +376,7 @@ export default class HPdf {
                     }
                     break
                 case "hidroponia_y_calculo_de_soluciones_nutritivas.pdf":
+                case "plantillas/plantilla_c.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
@@ -446,6 +450,7 @@ export default class HPdf {
                     }
                     break
                 case "manejo_integrado_de_la_roya_del_cafe.pdf":
+                case "plantillas/plantilla_d.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 
@@ -520,6 +525,7 @@ export default class HPdf {
                     }
                     break
                 case "manejo_sanitario_de_cuyes_con_fines_comerciales.pdf":
+                case "plantillas/plantilla_g.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 60;
 
@@ -593,6 +599,7 @@ export default class HPdf {
 
                     break
                 case "sanidad_integral_en_cuyes.pdf":
+                case "plantillas/plantilla_f.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 48;
 

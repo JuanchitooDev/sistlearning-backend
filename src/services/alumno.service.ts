@@ -7,11 +7,15 @@ class AlumnoService {
     }
 
     async getAlumnosPorEstado(estado: boolean) {
-        return await AlumnoRepository.getAllByEstado(estado)
+       return await AlumnoRepository.getAllByEstado(estado)
     }
 
     async getAlumnoPorId(id: number) {
         return await AlumnoRepository.getById(id)
+    }
+
+    async getAlumnoPorIdTipoDocNumDoc(idTipoDoc: number, numDoc: string) {
+        return await AlumnoRepository.getByTipoDocNumDoc(idTipoDoc, numDoc)
     }
 
     async getAlumnoPorNumDoc(numDoc: string) {
@@ -24,6 +28,10 @@ class AlumnoService {
 
     async updateAlumno(id: number, data: IAlumno) {
         return await AlumnoRepository.update(id, data)
+    }
+
+    async updateEstado(id: number, estado: boolean) {
+        return await AlumnoRepository.updateEstado(id, estado)
     }
 
     async deleteAlumno(id: number) {

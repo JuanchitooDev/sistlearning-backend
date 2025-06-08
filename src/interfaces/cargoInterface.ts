@@ -10,8 +10,9 @@ export interface ICargo {
 }
 
 export interface CargoResponse {
-    result: boolean,
+    result: boolean
     message?: string
     data?: ICargo | ICargo[]
     error?: string
+    status?: number
 }

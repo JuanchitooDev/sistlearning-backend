@@ -23,6 +23,7 @@ export interface IProgramacion {
 export interface ProgramacionResponse {
     result: boolean
     message?: string
-    data?: IProgramacion | IProgramacion[],
+    data?: IProgramacion | IProgramacion[]
     error?: string
+    status?: number
 }

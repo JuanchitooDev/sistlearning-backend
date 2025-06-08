@@ -35,6 +35,7 @@ export interface IPersona {
 export interface PersonaResponse {
     result: boolean
     message?: string
-    data?: IPersona | IPersona[],
+    data?: IPersona | IPersona[]
     error?: string
+    status?: number
 }

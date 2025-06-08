@@ -6,6 +6,10 @@ class CertificadoService {
         return await CertificadoRepository.getAll()
     }
 
+    async getCertificadosPorAlumno(idAlumno?: number) {
+        return await CertificadoRepository.getByAlumnoId(idAlumno)
+    }
+
     async getCertificadoPorCodigo(codigo: string) {
         return await CertificadoRepository.getByCodigo(codigo)
     }
@@ -24,6 +28,10 @@ class CertificadoService {
 
     async updateCertificado(id: number, data: ICertificado) {
         return await CertificadoRepository.update(id, data)
+    }
+
+    async updateEstado(id: number, estado: boolean) {
+        return await CertificadoRepository.updateEstado(id, estado)
     }
 
     async deleteCertificado(id: number) {

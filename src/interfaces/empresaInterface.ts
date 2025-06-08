@@ -17,6 +17,7 @@ export interface IEmpresa {
 export interface EmpresaResponse {
     result: boolean
     message?: string
-    data?: IEmpresa | IEmpresa[],
+    data?: IEmpresa | IEmpresa[]
     error?: string
+    status?: number
 }

@@ -18,6 +18,7 @@ export interface ITipoDocumento {
 export interface TipoDocumentoResponse {
     result: boolean
     message?: string
-    data?: ITipoDocumento | ITipoDocumento[],
+    data?: ITipoDocumento | ITipoDocumento[]
     error?: string
+    status?: number
 }

@@ -59,6 +59,7 @@ export interface IMatricula {
 export interface MatriculaResponse {
     result: boolean
     message?: string
-    data?: IMatricula | IMatricula[],
+    data?: IMatricula | IMatricula[]
     error?: string
+    status?: number
 }

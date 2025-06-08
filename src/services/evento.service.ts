@@ -14,12 +14,20 @@ class EventoService {
         return await EventoRepository.getById(id)
     }
 
+    async getEventoPorTitulo(titulo: string) {
+        return await EventoRepository.getByTitulo(titulo)
+    }
+
     async createEvento(data: IEvento) {
         return await EventoRepository.create(data)
     }
 
     async updateEvento(id: number, data: IEvento) {
         return await EventoRepository.update(id, data)
+    }
+
+    async updateEstado(id: number, estado: boolean) {
+        return await EventoRepository.updateEstado(id, estado)
     }
 
     async deleteEvento(id: number) {

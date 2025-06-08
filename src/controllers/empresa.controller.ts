@@ -4,7 +4,10 @@ import EmpresaService from '@/services/empresa.service'
 class EmpresaController {
     async getEmpresas(req: Request, res: Response) {
         const response = await EmpresaService.getEmpresas()
-        if (response.result) {
+
+        const { result } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
@@ -12,11 +15,16 @@ class EmpresaController {
     }
 
     async getEmpresaById(req: Request, res: Response) {
-        const response = await EmpresaService.getEmpresaById(+req.params.id)
-        if (response.result) {
+        const { id } = req.params
+
+        const response = await EmpresaService.getEmpresaById(+id)
+
+        const { result, message } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
-            if (response.message) {
+            if (message) {
                 res.status(404).json(response)
             } else {
                 res.status(500).json(response)
@@ -26,10 +34,13 @@ class EmpresaController {
 
     async createEmpresa(req: Request, res: Response) {
         const response = await EmpresaService.createEmpresa(req.body);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(201).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
                 res.status(404).json(response);
@@ -39,11 +50,15 @@ class EmpresaController {
 
     async updateEmpresa(req: Request, res: Response) {
         const { id } = req.params;
+
         const response = await EmpresaService.updateEmpresa(+id, req.body);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
                 res.status(404).json(response);
@@ -53,11 +68,15 @@ class EmpresaController {
 
     async deleteEmpresa(req: Request, res: Response) {
         const { id } = req.params;
+
         const response = await EmpresaService.deleteEmpresa(+id);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
                 res.status(404).json(response);

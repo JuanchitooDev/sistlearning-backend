@@ -14,6 +14,7 @@ router.get('/', authToken, CargoController.getCargos)
 router.get('/:id', authToken, CargoController.getCargoPorId)
 router.post('/', authToken, CargoController.createCargo)
 router.put('/:id', authToken, CargoController.updateCargo)
+router.put('/cambiar-estado/:id', authToken, CargoController.updateEstado)
 router.delete('/:id', authToken, CargoController.deleteCargo)
 
 export default router

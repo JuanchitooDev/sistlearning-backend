@@ -31,8 +31,9 @@ export interface IAlumno {
 }
 
 export interface AlumnoResponse {
-    result: boolean,
+    result: boolean
     message?: string
     data?: IAlumno | IAlumno[]
     error?: string
+    status?: number
 }

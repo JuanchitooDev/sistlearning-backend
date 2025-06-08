@@ -22,6 +22,10 @@ class PerfilService {
         return await PerfilRepository.update(id, data)
     }
 
+    async updateEstado(id: number, estado: boolean) {
+        return await PerfilRepository.updateEstado(id, estado)
+    }
+
     async deletePerfil(id: number) {
         return await PerfilRepository.delete(id)
     }

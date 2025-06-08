@@ -10,8 +10,9 @@ export interface ILogSesion {
 }
 
 export interface LogSesionResponse {
-    result: boolean,
+    result: boolean
     message?: string
-    data?: ILogSesion | ILogSesion[],
+    data?: ILogSesion | ILogSesion[]
     error?: string
+    status?: number
 }

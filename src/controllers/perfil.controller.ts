@@ -4,7 +4,10 @@ import PerfilService from '@/services/perfil.service'
 class PerfilController {
     async getPerfiles(req: Request, res: Response) {
         const response = await PerfilService.getPerfiles()
-        if (response.result) {
+
+        const { result } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
             res.status(500).json(response)
@@ -12,13 +15,18 @@ class PerfilController {
     }
 
     async getPerfilesPorEstado(req: Request, res: Response) {
-        const estadoParam = req.params.estado
-        const estado: boolean = estadoParam === 'true'
-        const response = await PerfilService.getPerfilesPorEstado(estado)
-        if (response.result) {
+        const { estado } = req.params
+
+        const estadoParam: boolean = estado === 'true'
+
+        const response = await PerfilService.getPerfilesPorEstado(estadoParam)
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response)
             } else {
                 res.status(404).json(response)
@@ -27,11 +35,16 @@ class PerfilController {
     }
 
     async getPerfilPorId(req: Request, res: Response) {
-        const response = await PerfilService.getPerfilPorId(+req.params.id)
-        if (response.result) {
+        const { id } = req.params
+
+        const response = await PerfilService.getPerfilPorId(+id)
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response)
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response)
             } else {
                 res.status(404).json(response);
@@ -41,10 +54,13 @@ class PerfilController {
 
     async createPerfil(req: Request, res: Response) {
         const response = await PerfilService.createPerfil(req.body);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(201).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
                 res.status(404).json(response);
@@ -54,11 +70,15 @@ class PerfilController {
 
     async updatePerfil(req: Request, res: Response) {
         const { id } = req.params;
+
         const response = await PerfilService.updatePerfil(+id, req.body);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
                 res.status(404).json(response);
@@ -66,13 +86,44 @@ class PerfilController {
         }
     }
 
+    async updateEstado(req: Request, res: Response) {
+        const { id } = req.params
+
+        const { estado } = req.body
+
+        if (typeof estado !== 'boolean') {
+            res.status(400).json({
+                result: false,
+                message: 'Tipo de dato incorrecto'
+            })
+        }
+
+        const response = await PerfilService.updateEstado(+id, estado)
+
+        const { result, error } = response
+
+        if (result) {
+            res.status(200).json(response)
+        } else {
+            if (error) {
+                res.status(500).json(response)
+            } else {
+                res.status(200).json(response)
+            }
+        }
+    }
+
     async deletePerfil(req: Request, res: Response) {
         const { id } = req.params;
+
         const response = await PerfilService.deletePerfil(+id);
-        if (response.result) {
+
+        const { result, error } = response
+
+        if (result) {
             res.status(200).json(response);
         } else {
-            if (response.error) {
+            if (error) {
                 res.status(500).json(response);
             } else {
                 res.status(404).json(response);

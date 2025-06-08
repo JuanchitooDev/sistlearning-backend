@@ -23,10 +23,11 @@ class TipoDocumentoRepository {
                     ['nombre', 'ASC']
                 ]
             })
-            return { result: true, data: tipos }
+
+            return { result: true, data: tipos, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -53,16 +54,18 @@ class TipoDocumentoRepository {
                     ['nombre', 'ASC']
                 ]
             })
-            return { result: true, data: tipos }
+
+            return { result: true, data: tipos, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async getAllByCategoria(categoria: string): Promise<TipoDocumentoResponse> {
         try {
             let tipos = null
+
             if (categoria == 'persona') {
                 tipos = await TipoDocumento.findAll({
                     where: {
@@ -113,10 +116,10 @@ class TipoDocumentoRepository {
                 })
             }
 
-            return { result: true, data: tipos }
+            return { result: true, data: tipos, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -137,60 +140,68 @@ class TipoDocumentoRepository {
                     'estado'
                 ]
             })
+
             if (!tipo) {
-                return { result: false, message: 'Tipo de documento no encontrado' }
+                return { result: false, message: 'Tipo de documento no encontrado', status: 400 }
             }
-            return { result: true, data: tipo }
+
+            return { result: true, data: tipo, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async create(data: ITipoDocumento): Promise<TipoDocumentoResponse> {
         try {
             data.nombre_url = HString.convertToUrlString(data.nombre as string)
+
             const newTipo = await TipoDocumento.create(data as any)
+
             if (newTipo.id) {
-                return { result: true, message: 'Tipo de documento registrado con éxito', data: newTipo }
-            } else {
-                return { result: false, message: 'Error al registrar el tipo de documento' }
+                return { result: true, message: 'Tipo de documento registrado con éxito', data: newTipo, status: 200 }
             }
+
+            return { result: false, message: 'Error al registrar el tipo de documento', data: [], status: 500 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async update(id: number, data: ITipoDocumento): Promise<TipoDocumentoResponse> {
         try {
             data.nombre_url = HString.convertToUrlString(data.nombre as string)
+
             const tipo = await TipoDocumento.findByPk(id)
 
             if (!tipo) {
-                return { result: false, message: 'Tipo de documento no encontrado' }
+                return { result: false, message: 'Tipo de documento no encontrado', data: [], status: 200 }
             }
 
             const updatedTipo = await tipo.update(data)
 
-            return { result: true, message: 'Tipo de documento actualizado con éxito', data: updatedTipo }
+            return { result: true, message: 'Tipo de documento actualizado con éxito', data: updatedTipo, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async delete(id: number): Promise<TipoDocumentoResponse> {
         try {
-            const tipo = await TipoDocumento.findByPk(id);
+            const tipo = await TipoDocumento.findByPk(id)
+
             if (!tipo) {
-                return { result: false, message: 'Tipo de documento no encontrado' };
+                return { result: false, message: 'Tipo de documento no encontrado', data: [], status: 200 };
             }
+
             await tipo.destroy();
-            return { result: true, data: { id }, message: 'Tipo de documento eliminado correctamente' };
+
+            return { result: true, data: { id }, message: 'Tipo de documento eliminado correctamente', status: 200 };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage };
+            return { result: false, error: errorMessage, status: 500 };
         }
     }
 }

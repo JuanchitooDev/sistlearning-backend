@@ -43,10 +43,11 @@ class PersonaRepository {
                     ['apellido_paterno', 'ASC']
                 ]
             })
-            return { result: true, data: personas }
+
+            return { result: true, data: personas, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -86,13 +87,15 @@ class PersonaRepository {
                     ['apellido_paterno', 'ASC']
                 ]
             })
+
             if (!persona) {
-                return { result: false, message: 'Persona no encontrada' }
+                return { result: false, data: [], message: 'Persona no encontrada', status: 200 }
             }
-            return { result: true, data: persona }
+
+            return { result: true, data: persona, message: 'Persona encontrada', status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -133,13 +136,15 @@ class PersonaRepository {
                     }
                 ]
             })
+
             if (!persona) {
-                return { result: false, message: 'Persona no encontrada' }
+                return { result: false, data: [], message: 'Persona no encontrada', status: 200 }
             }
-            return { result: true, data: persona }
+
+            return { result: true, data: persona, message: 'Persona encontrada', status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -151,14 +156,16 @@ class PersonaRepository {
             await t.commit()
 
             if (newPersona.id) {
-                return { result: true, message: 'Persona registrada con éxito', data: newPersona }
-            } else {
-                return { result: false, message: 'Error al registrar la persona' }
+                return { result: true, message: 'Persona registrada con éxito', data: newPersona, status: 200 }
             }
+
+            return { result: false, error: 'Error al registrar la persona', data: [], status: 500 }
         } catch (error) {
             await t.rollback()
+
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -166,8 +173,9 @@ class PersonaRepository {
         const t = await sequelize.transaction()
         try {
             const persona = await Persona.findByPk(id)
+
             if (!persona) {
-                return { result: false, message: 'Persona no encontrada' }
+                return { result: false, data: [], message: 'Persona no encontrada', status: 200 }
             }
 
             const numero_documento = persona.numero
@@ -190,6 +198,7 @@ class PersonaRepository {
 
             // Validamos si existe un alumno con el número de documento
             const alumno = await AlumnoService.getAlumnoPorNumDoc(numero_documento as string)
+
             if (alumno.result) {
                 const dataAlumno = alumno.data as IAlumno
 
@@ -205,7 +214,8 @@ class PersonaRepository {
 
                 if (!updatedAlumno.result) {
                     await t.rollback()
-                    return { result: false, message: 'Error al actualizar la información del alumno' }
+
+                    return { result: false, message: 'Error al actualizar la información del alumno', status: 500 }
                 }
             }
 
@@ -224,26 +234,30 @@ class PersonaRepository {
 
             await t.commit()
 
-            return { result: true, message: 'Persona actualizada con éxito', data: updatedPersona }
+            return { result: true, message: 'Persona actualizada con éxito', data: updatedPersona, status: 200 }
         } catch (error) {
             await t.rollback()
 
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async delete(id: number): Promise<PersonaResponse> {
         try {
             const persona = await Persona.findByPk(id);
+
             if (!persona) {
-                return { result: false, message: 'Persona no encontrada' };
+                return { result: false, data: [], message: 'Persona no encontrada', status: 200 };
             }
+
             await persona.destroy();
-            return { result: true, data: { id }, message: 'Persona eliminada correctamente' };
+
+            return { result: true, data: { id }, message: 'Persona eliminada correctamente', status: 200 };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage };
+            return { result: false, error: errorMessage, status: 500 };
         }
     }
 }

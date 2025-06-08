@@ -26,6 +26,7 @@ export interface ICertificado {
 export interface CertificadoResponse {
     result: boolean
     message?: string
-    data?: ICertificado | ICertificado[],
+    data?: ICertificado | ICertificado[]
     error?: string
+    status?: number
 }

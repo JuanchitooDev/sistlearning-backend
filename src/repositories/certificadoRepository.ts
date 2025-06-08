@@ -53,10 +53,65 @@ class CertificadoRepository {
                     ['id', 'DESC']
                 ]
             })
-            return { result: true, data: certificados }
+
+            return { result: true, data: certificados, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
+        }
+    }
+
+    async getByAlumnoId(idAlumno?: number): Promise<CertificadoResponse> {
+        try {
+            const whereClause = idAlumno ? { id_alumno: idAlumno } : {}
+
+            const certificados = await Certificado.findAll({
+                where: whereClause,
+                attributes: [
+                    'id',
+                    'id_alumno',
+                    'id_evento',
+                    'codigo',
+                    'codigoQR',
+                    'ruta',
+                    'fileName',
+                    'fecha_registro',
+                    'fecha_descarga',
+                    'templateName',
+                    'fecha_envio',
+                    'estado',
+                    'nombre_alumno_impresion'
+                ],
+                include: [
+                    {
+                        model: Alumno,
+                        attributes: [
+                            'id',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres',
+                            'nombre_capitalized'
+                        ]
+                    }, {
+                        model: Evento,
+                        attributes: [
+                            'id',
+                            'titulo',
+                            'fecha',
+                            'fecha_fin',
+                            'duracion'
+                        ]
+                    }
+                ],
+                order: [
+                    ['id', 'desc']
+                ]
+            })
+
+            return { result: true, data: certificados, status: 200 }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage, status: 500 };
         }
     }
 
@@ -101,13 +156,15 @@ class CertificadoRepository {
                     }
                 ]
             })
+
             if (!certificado) {
-                return { result: false, message: 'Certificado no encontrado' }
+                return { result: false, data: [], message: 'Certificado no encontrado', status: 200 }
             }
-            return { result: true, data: certificado }
+
+            return { result: true, data: certificado, message: 'Certificado encontrado', status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -151,20 +208,25 @@ class CertificadoRepository {
                     }
                 ]
             })
+
             if (!certificado) {
-                return { result: false, message: 'Certificado no encontrado' }
+                return { result: false, data: [], message: 'Certificado no encontrado', status: 200 }
             }
-            return { result: true, data: certificado }
+
+            return { result: true, data: certificado, message: 'Certificado encontrado', status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async downloadById(id: number) {
         try {
             const response = await this.getById(id)
-            if (response.result) {
+
+            const { result } = response
+
+            if (result) {
                 const certificado = response.data as ICertificado
                 const path = certificado.ruta as string
                 const fileName = certificado.fileName as string
@@ -175,18 +237,19 @@ class CertificadoRepository {
                         result: true,
                         message: 'Certificado encontrado',
                         outputPath: path,
-                        fileName
+                        fileName,
+                        status: 200
                     }
                     return result
-                } else {
-                    return { result: false, message: 'Certificado no encontrado', outputPath: null, fileName: null }
                 }
+
+                return { result: false, message: 'Certificado no encontrado', outputPath: null, fileName: null, status: 200 }
             } else {
-                return { result: false, error: response.error, outputPath: null, fileName: null }
+                return { result: false, error: response.error, outputPath: null, fileName: null, status: 500 }
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -196,21 +259,23 @@ class CertificadoRepository {
             const idEvento = data.id_evento as number
 
             const alumnoResponse = await AlumnoService.getAlumnoPorId(idAlumno)
+
             if (!alumnoResponse.result) {
                 if (alumnoResponse.error) {
-                    return { result: false, error: alumnoResponse.error }
-                } else {
-                    return { result: false, message: alumnoResponse.message }
+                    return { result: false, error: alumnoResponse.error, status: 500 }
                 }
+
+                return { result: false, message: alumnoResponse.message, status: 200 }
             }
 
             const eventoResponse = await EventoService.getEventoPorId(idEvento)
+
             if (!eventoResponse.result) {
                 if (eventoResponse.error) {
-                    return { result: false, error: eventoResponse.error }
-                } else {
-                    return { result: false, message: eventoResponse.message }
+                    return { result: false, error: eventoResponse.error, status: 500 }
                 }
+
+                return { result: false, message: eventoResponse.message, status: 200 }
             }
 
             const alumno = alumnoResponse.data as IAlumno
@@ -240,15 +305,16 @@ class CertificadoRepository {
             data.codigo = codigo
 
             const newCertificado = await Certificado.create(data as any)
+
             if (newCertificado.id) {
-                return { result: true, message: 'Certificado registrado correctamente', data: newCertificado }
-            } else {
-                return { result: false, message: 'Error al registrar el certificado' }
+                return { result: true, message: 'Certificado registrado correctamente', data: newCertificado, status: 200 }
             }
+
+            return { result: false, message: 'Error al registrar el certificado', data: [], status: 500 }
 
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -257,7 +323,7 @@ class CertificadoRepository {
             const certificado = await Certificado.findByPk(id)
 
             if (!certificado) {
-                return { result: false, message: 'Certificado no encontrado' }
+                return { result: false, message: 'Certificado no encontrado', status: 404 }
             }
 
             if (
@@ -267,23 +333,25 @@ class CertificadoRepository {
                 data.fecha_envio !== certificado.fecha_envio
             ) {
                 const alumnoResponse = await AlumnoService.getAlumnoPorId(data.id_alumno as number)
+
                 if (!alumnoResponse.result) {
                     if (alumnoResponse.error) {
-                        return { result: false, error: alumnoResponse.error }
-                    } else {
-                        return { result: false, message: alumnoResponse.message }
+                        return { result: false, error: alumnoResponse.error, status: 500 }
                     }
+
+                    return { result: false, message: alumnoResponse.message, status: 201 }
                 }
+
                 const alumno = alumnoResponse.data as IAlumno
 
                 const eventoResponse = await EventoService.getEventoPorId(data.id_evento as number)
 
                 if (!eventoResponse.result) {
                     if (eventoResponse.error) {
-                        return { result: false, error: eventoResponse.error }
-                    } else {
-                        return { result: false, message: eventoResponse.message }
+                        return { result: false, error: eventoResponse.error, status: 500 }
                     }
+
+                    return { result: false, message: eventoResponse.message, status: 201 }
                 }
 
                 const evento = eventoResponse.data as IEvento
@@ -323,24 +391,45 @@ class CertificadoRepository {
 
                 // Actualizamos el registro en la base de datos
                 const updatedCertificado = await certificado.update(data);
-                return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
+
+                return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado, status: 200 };
             } else {
                 // Si no hay cambios que afecten el archivo, solo actualizamos los datos del certificado
                 const updatedCertificado = await certificado.update(data);
-                return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado };
+
+                return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado, status: 200 };
             }
 
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
+        }
+    }
+
+    async updateEstado(id: number, estado: boolean): Promise<CertificadoResponse> {
+        try {
+            const certificado = await Certificado.findByPk(id)
+
+            if (!certificado) {
+                return { result: false, message: 'Certificado no encontrado', status: 404 }
+            }
+
+            certificado.estado = estado
+            await certificado.save()
+
+            return { result: true, message: 'Estado actualizado con éxito', data: certificado, status: 200 }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async delete(id: number): Promise<CertificadoResponse> {
         try {
             const certificado = await Certificado.findByPk(id);
+
             if (!certificado) {
-                return { result: false, message: 'Certificado no encontrado' };
+                return { result: false, message: 'Certificado no encontrado', data: [], status: 200 };
             }
 
             // Eliminar el archivo del sistema de archivos
@@ -350,10 +439,11 @@ class CertificadoRepository {
             }
 
             await certificado.destroy();
-            return { result: true, data: { id }, message: 'Certificado eliminado correctamente' };
+
+            return { result: true, data: { id }, message: 'Certificado eliminado correctamente', status: 200 };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage };
+            return { result: false, error: errorMessage, status: 500 };
         }
     }
 }

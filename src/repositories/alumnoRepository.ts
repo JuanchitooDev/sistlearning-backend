@@ -46,10 +46,11 @@ class AlumnoRepository {
                     ['apellido_paterno', 'ASC']
                 ]
             })
-            return { result: true, data: alumnos }
+
+            return { result: true, data: alumnos, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -96,10 +97,11 @@ class AlumnoRepository {
                     ['apellido_paterno', 'ASC']
                 ]
             })
-            return { result: true, data: alumnos }
+
+            return { result: true, data: alumnos, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -140,13 +142,64 @@ class AlumnoRepository {
                     }
                 ]
             })
+
             if (!alumno) {
-                return { result: false, message: 'Alumno no encontrado' }
+                return { result: false, data: [], message: 'Alumno no encontrado', status: 200 }
             }
-            return { result: true, data: alumno }
+
+            return { result: true, data: alumno, message: 'Alumno encontrado', status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
+        }
+    }
+
+    async getByTipoDocNumDoc(idTipoDoc: number, numDoc: string): Promise<AlumnoResponse> {
+        try {
+            const alumno = await Alumno.findOne({
+                where: {
+                    id_tipodocumento: idTipoDoc,
+                    numero_documento: numDoc
+                },
+                attributes: [
+                    'id',
+                    'id_tipodocumento',
+                    'id_pais',
+                    'id_departamento',
+                    'numero_documento',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'nombres',
+                    'telefono',
+                    'direccion',
+                    'email',
+                    'fecha_nacimiento',
+                    'nombre_capitalized',
+                    'fecha_nacimiento_str',
+                    'sexo',
+                    'sistema',
+                    'estado'
+                ],
+                include: [{
+                    model: TipoDocumento,
+                    attributes: ['id', 'nombre', 'abreviatura']
+                }, {
+                    model: Pais,
+                    attributes: ['id', 'nombre']
+                }, {
+                    model: Departamento,
+                    attributes: ['id', 'nombre']
+                }]
+            })
+
+            if (!alumno) {
+                return { result: false, data: [], message: 'Alumno no encontrado', status: 200 }
+            }
+
+            return { result: true, data: alumno, message: 'Alumno encontrado', status: 200 }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -184,13 +237,15 @@ class AlumnoRepository {
                     attributes: ['id', 'nombre']
                 }]
             })
+
             if (!alumno) {
-                return { result: false, message: 'Alumno no encontrado' }
+                return { result: false, data: [], message: 'Alumno no encontrado', status: 200 }
             }
-            return { result: true, data: alumno }
+
+            return { result: true, data: alumno, message: 'Alumno encontrado', status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -214,13 +269,13 @@ class AlumnoRepository {
             const newAlumno = await Alumno.create(data as any)
 
             if (newAlumno.id) {
-                return { result: true, message: 'Alumno registrado con éxito', data: newAlumno }
-            } else {
-                return { result: false, message: 'Error al registrar al alumno' }
+                return { result: true, message: 'Alumno registrado con éxito', data: newAlumno, status: 200 }
             }
+
+            return { result: false, message: 'Error al registrar al alumno', data: [], status: 500 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
@@ -229,7 +284,7 @@ class AlumnoRepository {
             const alumno = await Alumno.findByPk(id)
 
             if (!alumno) {
-                return { result: false, message: 'Alumno no encontrado' }
+                return { result: false, data: [], message: 'Alumno no encontrado', status: 200 }
             }
 
             const fechaNacimiento = (data.fecha_nacimiento == undefined) ? alumno.fecha_nacimiento : data.fecha_nacimiento
@@ -254,24 +309,45 @@ class AlumnoRepository {
             data.nombre_capitalized = nombreCapitalized
 
             const updatedAlumno = await alumno.update(data)
-            return { result: true, message: 'Alumno actualizado con éxito', data: updatedAlumno }
+            return { result: true, message: 'Alumno actualizado con éxito', data: updatedAlumno, status: 200 }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
+            return { result: false, error: errorMessage, status: 500 }
+        }
+    }
+
+    async updateEstado(id: number, estado: boolean): Promise<AlumnoResponse> {
+        try {
+            const alumno = await Alumno.findByPk(id)
+
+            if (!alumno) {
+                return { result: false, data: [], message: 'Alumno no encontrado', status: 200 }
+            }
+
+            alumno.estado = estado
+            await alumno.save()
+
+            return { result: true, message: 'Estado actualizado con éxito', data: alumno, status: 200 }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+            return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async delete(id: number): Promise<AlumnoResponse> {
         try {
             const alumno = await Alumno.findByPk(id);
+
             if (!alumno) {
-                return { result: false, message: 'Alumno no encontrado' };
+                return { result: false, data: [], message: 'Alumno no encontrado', status: 200 };
             }
+
             await alumno.destroy();
-            return { result: true, data: { id }, message: 'Alumno eliminado correctamente' };
+
+            return { result: true, data: { id }, message: 'Alumno eliminado correctamente', status: 200 };
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage };
+            return { result: false, error: errorMessage, status: 500 };
         }
     }
 }

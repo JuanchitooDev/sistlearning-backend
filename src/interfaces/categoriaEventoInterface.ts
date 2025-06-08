@@ -12,6 +12,7 @@ export interface ICategoriaEvento {
 export interface CategoriaEventoResponse {
     result: boolean
     message?: string
-    data?: ICategoriaEvento | ICategoriaEvento[],
+    data?: ICategoriaEvento | ICategoriaEvento[]
     error?: string
+    status?: number
 }
