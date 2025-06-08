@@ -1,67 +1,33 @@
-import Usuario from '../models/usuario.models'
-import { IUsuario, UsuarioResponse } from '../interfaces/usuarioInterface'
-import Trabajador from '../models/trabajador.models'
-import Perfil from '../models/perfil.models'
+import { IUsuario } from "@/interfaces/usuarioInterface"
+import UsuarioRepository from "@/repositories/usuarioRepository"
 
 class UsuarioService {
-    async getUsuarios(): Promise<UsuarioResponse> {
-        try {
-            const usuarios = await Usuario.findAll({
-                attributes: [
-                    'id',
-                    'username',
-                    'id_trabajador',
-                    'id_perfil'
-                ],
-                include: [
-                    {
-                        model: Trabajador,
-                        attributes: ['id', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres']
-                    },
-                    {
-                        model: Perfil,
-                        attributes: ['id', 'nombre']
-                    }
-                ],
-                order: [
-                    ['username', 'ASC']
-                ]
-            })
-            return { result: true, data: usuarios as IUsuario[] }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
-        }
+    async getUsuarios() {
+        return await UsuarioRepository.getAll()
     }
 
-    async getUsuarioById(id: number): Promise<UsuarioResponse> {
-        try {
-            const usuario = await Usuario.findByPk(id, {
-                attributes: [
-                    'id',
-                    'username',
-                    'id_trabajador',
-                    'id_perfil'
-                ],
-                include: [
-                    {
-                        model: Trabajador,
-                        attributes: ['id', 'numero_documento', 'apellido_paterno', 'apellido_materno', 'nombres']
-                    },
-                    {
-                        model: Perfil,
-                        attributes: ['id', 'nombre']
-                    }
-                ]
-            })
-            if (!usuario) {
-                return { result: false, message: 'Usuario no encontrado' }
-            }
-            return { result: true, data: usuario as IUsuario }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            return { result: false, error: errorMessage }
-        }
+    async getUsuariosPorEstado(estado: boolean) {
+        return await UsuarioRepository.getAllByEstado(estado)
+    }
+
+    async getUsuarioPorId(id: number) {
+        return await UsuarioRepository.getById(id)
+    }
+
+    async createUsuario(data: IUsuario) {
+        return await UsuarioRepository.create(data)
+    }
+
+    async updateUsuario(id: number, data: IUsuario) {
+        return await UsuarioRepository.update(id, data)
+    }
+
+    async updateEstado(id: number, estado: boolean) {
+        return await UsuarioRepository.updateEstado(id, estado)
+    }
+
+    async deleteUsuario(id: number) {
+        return await UsuarioRepository.delete(id)
     }
 }
 

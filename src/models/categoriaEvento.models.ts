@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 
 class CategoriaEvento extends Model {
     public id?: number
@@ -8,6 +8,7 @@ class CategoriaEvento extends Model {
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
+    public sistema?: boolean
     public estado?: boolean
 }
 
@@ -36,6 +37,11 @@ CategoriaEvento.init({
     user_elimina: {
         type: DataTypes.STRING(10),
         allowNull: true
+    },
+    sistema: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     },
     estado: {
         type: DataTypes.BOOLEAN,

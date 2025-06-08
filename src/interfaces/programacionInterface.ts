@@ -11,7 +11,7 @@ export interface IProgramacion {
     fecha_final?: string
     fecha_reprograma?: string
     fecha_cancela?: string
-    fecha_registro?: Date
+    fecha_registro?: string
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
@@ -21,8 +21,9 @@ export interface IProgramacion {
 }
 
 export interface ProgramacionResponse {
-    result?: boolean
+    result: boolean
     message?: string
-    data?: IProgramacion | IProgramacion[],
+    data?: IProgramacion | IProgramacion[]
     error?: string
+    status?: number
 }

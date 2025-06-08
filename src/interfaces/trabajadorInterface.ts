@@ -30,6 +30,7 @@ export interface ITrabajador {
 export interface TrabajadorResponse {
     result: boolean
     message?: string
-    data?: ITrabajador | ITrabajador[],
+    data?: ITrabajador | ITrabajador[]
     error?: string
+    status?: number
 }

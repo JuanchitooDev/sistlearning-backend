@@ -27,6 +27,7 @@ export interface IPersona {
     foto?: string
     sexo?: string
     origen?: EOrigen
+    sistema?: boolean
     estado?: boolean
     tipoDocumento?: ITipoDocumento
 }
@@ -34,6 +35,7 @@ export interface IPersona {
 export interface PersonaResponse {
     result: boolean
     message?: string
-    data?: IPersona | IPersona[],
+    data?: IPersona | IPersona[]
     error?: string
+    status?: number
 }

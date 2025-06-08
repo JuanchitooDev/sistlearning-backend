@@ -3,6 +3,7 @@ node_modules
 public/certificados
 public/qrcodes
 public/xlsx
+src/uploads
 dist
 
 # local env files

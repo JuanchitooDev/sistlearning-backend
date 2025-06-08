@@ -12,6 +12,7 @@ export interface ITipoEvento {
 export interface TipoEventoResponse {
     result: boolean
     message?: string
-    data?: ITipoEvento | ITipoEvento[],
+    data?: ITipoEvento | ITipoEvento[]
     error?: string
+    status?: number
 }

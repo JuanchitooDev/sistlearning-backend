@@ -1,14 +1,16 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import TipoEvento from './tipoEvento.models'
 import CategoriaEvento from './categoriaEvento.models'
-import { EModalidad } from '../interfaces/eventoInterface'
+import Instructor from './instructor.models'
+import { EModalidad } from '@/interfaces/eventoInterface'
 
 class Evento extends Model {
     public id?: number
     public id_parent?: number
     public id_tipoevento?: number
     public id_categoriaevento?: number
+    public id_instructor?: number
     public titulo?: string
     public titulo_url?: string
     public descripcion?: string
@@ -19,6 +21,7 @@ class Evento extends Model {
     public modalidad?: EModalidad
     public precio?: number
     public duracion?: string
+    public capacidad_maxima?: number
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -55,16 +58,24 @@ Evento.init({
             key: 'id'
         }
     },
+    id_instructor: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Instructor,
+            key: 'id'
+        }
+    },
     titulo: {
         type: DataTypes.STRING(120),
         allowNull: false
     },
     titulo_url: {
-        type: DataTypes.STRING(120),
+        type: DataTypes.STRING(140),
         allowNull: false
     },
     descripcion: {
-        type: DataTypes.STRING(70),
+        type: DataTypes.STRING(120),
         allowNull: true
     },
     temario: {
@@ -95,6 +106,10 @@ Evento.init({
         type: DataTypes.STRING(10),
         allowNull: true
     },
+    capacidad_maxima: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     user_crea: {
         type: DataTypes.STRING(10),
         allowNull: true
@@ -122,5 +137,7 @@ Evento.init({
 Evento.belongsTo(TipoEvento, { foreignKey: 'id_tipoevento' })
 
 Evento.belongsTo(CategoriaEvento, { foreignKey: 'id_categoriaevento' })
+
+Evento.belongsTo(Instructor, { foreignKey: 'id_instructor' })
 
 export default Evento

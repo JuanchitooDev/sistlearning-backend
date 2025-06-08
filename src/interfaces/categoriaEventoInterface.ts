@@ -5,12 +5,14 @@ export interface ICategoriaEvento {
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
+    sistema?: boolean
     estado?: boolean
 }
 
 export interface CategoriaEventoResponse {
     result: boolean
     message?: string
-    data?: ICategoriaEvento | ICategoriaEvento[],
+    data?: ICategoriaEvento | ICategoriaEvento[]
     error?: string
+    status?: number
 }

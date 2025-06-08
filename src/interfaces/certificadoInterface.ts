@@ -11,20 +11,22 @@ export interface ICertificado {
     ruta?: string
     fileName?: string
     templateName?: string
-    fecha_registro?: Date
-    fecha_descarga?: Date
-    fecha_envio?: Date
+    fecha_registro?: string
+    fecha_descarga?: string
+    fecha_envio?: string
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
+    sistema?: boolean
     estado?: boolean
     alumno?: IAlumno
     evento?: IEvento
 }
 
 export interface CertificadoResponse {
-    result?: boolean
+    result: boolean
     message?: string
-    data?: ICertificado | ICertificado[],
+    data?: ICertificado | ICertificado[]
     error?: string
+    status?: number
 }

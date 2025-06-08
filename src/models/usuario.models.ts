@@ -1,11 +1,18 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import Trabajador from './trabajador.models'
+import Instructor from './instructor.models'
+import Alumno from './alumno.models'
 import Perfil from './perfil.models'
+import { IPerfil } from '@/interfaces/perfilInterface'
+import { IInstructor } from '@/interfaces/instructorInterface'
+import { IAlumno } from '@/interfaces/alumnoInterface'
 
 class Usuario extends Model {
     public id?: number
     public id_trabajador?: number
+    public id_instructor?: number
+    public id_alumno?: number
     public id_perfil?: number
     public username?: string
     public password?: string
@@ -14,20 +21,41 @@ class Usuario extends Model {
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
+    public sistema?: boolean
     public estado?: boolean
+
+    public perfil?: IPerfil
+    public alumno?: IAlumno
+    public instructor?: IInstructor
 }
 
 Usuario.init({
     id: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
+        primaryKey: true
     },
     id_trabajador: {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
             model: Trabajador,
+            key: "id"
+        }
+    },
+    id_instructor: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Instructor,
+            key: "id"
+        }
+    },
+    id_alumno: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: Alumno,
             key: "id"
         }
     },
@@ -67,6 +95,11 @@ Usuario.init({
         type: DataTypes.STRING(10),
         allowNull: true
     },
+    sistema: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
     estado: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -79,7 +112,11 @@ Usuario.init({
     freezeTableName: true
 })
 
-Usuario.belongsTo(Trabajador, { foreignKey: 'id_trabajador'} )
+Usuario.belongsTo(Trabajador, { foreignKey: 'id_trabajador' })
+
+Usuario.belongsTo(Instructor, { foreignKey: 'id_instructor' })
+
+Usuario.belongsTo(Alumno, { foreignKey: 'id_alumno' })
 
 Usuario.belongsTo(Perfil, { foreignKey: 'id_perfil' })
 

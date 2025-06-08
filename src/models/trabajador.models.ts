@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/db'
+import sequelize from '@/config/db'
 import TipoDocumento from './tipoDocumento.models';
 import Cargo from './cargo.models';
 

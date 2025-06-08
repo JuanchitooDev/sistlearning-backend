@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import ReporteService from '../services/reporte.service';
-import { IAlumno } from '../interfaces/alumnoInterface'
-import HExcel from '../helpers/HExcel'
+import ReporteService from '@/services/reporte.service';
+import { IAlumno } from '@/interfaces/alumnoInterface'
+import HExcel from '@/helpers/HExcel'
 import path from 'path'
 import fs from 'fs'
 

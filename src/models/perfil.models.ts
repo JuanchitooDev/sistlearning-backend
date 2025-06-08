@@ -1,5 +1,5 @@
-import { Model, DataTypes, INTEGER } from 'sequelize';
-import sequelize from '../config/db'
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '@/config/db'
 
 class Perfil extends Model {
     public id?: number

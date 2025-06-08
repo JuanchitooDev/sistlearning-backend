@@ -10,8 +10,9 @@ export interface IPerfil {
 }
 
 export interface PerfilResponse {
-    result?: boolean
+    result: boolean
     message?: string
-    data?: IPerfil | IPerfil[],
+    data?: IPerfil | IPerfil[]
     error?: string
+    status?: number
 }
