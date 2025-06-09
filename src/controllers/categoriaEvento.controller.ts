@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import CategoriaEventoService from '@/services/categoriaEvento.service'
+import CategoriaEventoService from '../services/categoriaEvento.service'
 
 class CategoriaEventoController {
     async getCategorias(req: Request, res: Response) {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import EventoService from '@/services/evento.service'
+import EventoService from '../services/evento.service'
 
 class EventoController {
     async getEventos(req: Request, res: Response) {

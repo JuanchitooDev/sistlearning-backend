@@ -1,6 +1,6 @@
-import { IAlumno } from "@/interfaces/alumnoInterface";
-import { ICertificado } from "@/interfaces/certificadoInterface";
-import { IEvento } from "@/interfaces/eventoInterface";
+import { IAlumno } from "../interfaces/alumnoInterface";
+import { ICertificado } from "../interfaces/certificadoInterface";
+import { IEvento } from "../interfaces/eventoInterface";
 import path from "path";
 import fs from 'fs';
 import HDate from "./HDate";

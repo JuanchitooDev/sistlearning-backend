@@ -1,14 +1,14 @@
-import { CertificadoResponse, ICertificado } from "@/interfaces/certificadoInterface";
-import Alumno from "@/models/alumno.models";
-import Certificado from "@/models/certificado.models";
-import Evento from "@/models/evento.models";
+import { CertificadoResponse, ICertificado } from "../interfaces/certificadoInterface";
+import Alumno from "../models/alumno.models";
+import Certificado from "../models/certificado.models";
+import Evento from "../models/evento.models";
 import fs from 'fs';
-import AlumnoService from '@/services/alumno.service';
-import EventoService from '@/services/evento.service';
-import { IAlumno } from "@/interfaces/alumnoInterface";
-import { IEvento } from "@/interfaces/eventoInterface";
-import HString from "@/helpers/HString";
-import HPdf from "@/helpers/HPdf"
+import AlumnoService from '../services/alumno.service';
+import EventoService from '../services/evento.service';
+import { IAlumno } from "../interfaces/alumnoInterface";
+import { IEvento } from "../interfaces/eventoInterface";
+import HString from "../helpers/HString";
+import HPdf from "../helpers/HPdf"
 
 class CertificadoRepository {
     async getAll(): Promise<CertificadoResponse> {

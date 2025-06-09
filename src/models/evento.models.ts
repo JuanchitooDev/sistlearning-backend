@@ -1,9 +1,9 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '@/config/db'
+import sequelize from '../config/db'
 import TipoEvento from './tipoEvento.models'
 import CategoriaEvento from './categoriaEvento.models'
 import Instructor from './instructor.models'
-import { EModalidad } from '@/interfaces/eventoInterface'
+import { EModalidad } from '../interfaces/eventoInterface'
 
 class Evento extends Model {
     public id?: number

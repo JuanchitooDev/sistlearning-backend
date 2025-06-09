@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '@/config/db'
+import sequelize from '../config/db'
 import Usuario from './usuario.models'
 
 class LogSesion extends Model {

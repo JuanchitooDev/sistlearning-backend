@@ -1,7 +1,7 @@
-import { ITrabajador, TrabajadorResponse } from "@/interfaces/trabajadorInterface";
-import Trabajador from "@/models/trabajador.models"
-import Cargo from "@/models/cargo.models"
-import TipoDocumento from "@/models/tipoDocumento.models"
+import { ITrabajador, TrabajadorResponse } from "../interfaces/trabajadorInterface";
+import Trabajador from "../models/trabajador.models"
+import Cargo from "../models/cargo.models"
+import TipoDocumento from "../models/tipoDocumento.models"
 
 class TrabajadorRepository {
     async getAll(): Promise<TrabajadorResponse> {

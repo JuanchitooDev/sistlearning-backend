@@ -1,5 +1,5 @@
-import { IUsuario } from "@/interfaces/usuarioInterface"
-import UsuarioRepository from "@/repositories/usuarioRepository"
+import { IUsuario } from "../interfaces/usuarioInterface"
+import UsuarioRepository from "../repositories/usuarioRepository"
 
 class UsuarioService {
     async getUsuarios() {

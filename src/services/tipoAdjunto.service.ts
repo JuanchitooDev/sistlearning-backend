@@ -1,5 +1,5 @@
-import { ITipoAdjunto } from "@/interfaces/tipoAdjuntoInterface"
-import TipoAdjuntoRepository from "@/repositories/tipoAdjuntoRepository"
+import { ITipoAdjunto } from "../interfaces/tipoAdjuntoInterface"
+import TipoAdjuntoRepository from "../repositories/tipoAdjuntoRepository"
 
 class TipoAdjuntoService {
     async getTipos() {

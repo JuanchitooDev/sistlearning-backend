@@ -1,5 +1,5 @@
-import { IAdjunto } from "@/interfaces/adjuntoInterface"
-import AdjuntoRepository from "@/repositories/adjuntoRepository"
+import { IAdjunto } from "../interfaces/adjuntoInterface"
+import AdjuntoRepository from "../repositories/adjuntoRepository"
 import { File } from 'node:buffer'
 
 class AdjuntoService {
@@ -24,7 +24,6 @@ class AdjuntoService {
     }
 
     async createAdjunto(file: Express.Multer.File, id_evento: number, titulo: string) {
-        console.log('file adjuntoService', file)
         const adjunto: IAdjunto = {
             id_evento,
             titulo,
@@ -34,7 +33,6 @@ class AdjuntoService {
             mimetype: file.mimetype,
             size: file.size
         }
-        console.log('adjunto adjuntoService', adjunto)
         return await AdjuntoRepository.create(adjunto)
     }
 

@@ -1,5 +1,5 @@
-import { IAlumno } from "@/interfaces/alumnoInterface"
-import AlumnoRepository from "@/repositories/alumnoRepository"
+import { IAlumno } from "../interfaces/alumnoInterface"
+import AlumnoRepository from "../repositories/alumnoRepository"
 
 class AlumnoService {
     async getAlumnos() {
@@ -7,7 +7,7 @@ class AlumnoService {
     }
 
     async getAlumnosPorEstado(estado: boolean) {
-       return await AlumnoRepository.getAllByEstado(estado)
+        return await AlumnoRepository.getAllByEstado(estado)
     }
 
     async getAlumnoPorId(id: number) {

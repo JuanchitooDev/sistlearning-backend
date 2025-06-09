@@ -1,6 +1,6 @@
-import TipoDocumento from '@/models/tipoDocumento.models'
-import { ITipoDocumento, TipoDocumentoResponse } from "@/interfaces/tipoDocumentoInterface"
-import HString from '@/helpers/HString'
+import TipoDocumento from '../models/tipoDocumento.models'
+import { ITipoDocumento, TipoDocumentoResponse } from "../interfaces/tipoDocumentoInterface"
+import HString from '../helpers/HString'
 
 class TipoDocumentoRepository {
     async getAll(): Promise<TipoDocumentoResponse> {

@@ -1,5 +1,5 @@
-import EmailRepository from "@/repositories/emailRepository"
-import { IAlumno } from "@/interfaces/alumnoInterface"
+import EmailRepository from "../repositories/emailRepository"
+import { IAlumno } from "../interfaces/alumnoInterface"
 
 class EmailService {
     async sendAlumnoInscripcion(data: IAlumno) {

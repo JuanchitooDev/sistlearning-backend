@@ -1,15 +1,8 @@
 import { Router } from 'express'
-import PaisController from '@/controllers/pais.controller'
-import { authToken } from '@/middleware/authMiddleware'
+import PaisController from '../controllers/pais.controller'
+import { authToken } from '../middleware/authMiddleware'
 
 const router = Router()
-
-// router.get('/', PaisController.getPaises)
-// router.get('/:id', PaisController.getPaisById)
-// router.get('/categoria/:categoria', PaisController.getPaisesPorCategoria)
-// router.post('/', PaisController.createPais)
-// router.put('/:id', PaisController.updateOPais)
-// router.delete('/:id', PaisController.deletePais)
 
 router.get('/', authToken, PaisController.getPaises)
 router.get('/:id', authToken, PaisController.getPaisPorId)

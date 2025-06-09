@@ -1,9 +1,9 @@
-import HString from "@/helpers/HString";
-import { IAdjunto, AdjuntoResponse } from "@/interfaces/adjuntoInterface";
-import Adjunto from "@/models/adjunto.models"
-import Evento from "@/models/evento.models";
-import TipoAdjunto from "@/models/tipoAdjunto.models";
-import GrupoAdjunto from "@/models/grupoAdjunto.models";
+import HString from "../helpers/HString";
+import { IAdjunto, AdjuntoResponse } from "../interfaces/adjuntoInterface";
+import Adjunto from "../models/adjunto.models"
+import Evento from "../models/evento.models";
+import TipoAdjunto from "../models/tipoAdjunto.models";
+import GrupoAdjunto from "../models/grupoAdjunto.models";
 import fs from 'fs';
 
 class AdjuntoRepository {

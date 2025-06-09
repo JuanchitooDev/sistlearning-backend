@@ -1,6 +1,6 @@
-import Pais from '@/models/pais.models'
-import { IPais, PaisResponse } from "@/interfaces/paisInterface"
-import HString from '@/helpers/HString'
+import Pais from '../models/pais.models'
+import { IPais, PaisResponse } from "../interfaces/paisInterface"
+import HString from '../helpers/HString'
 
 class PaisRepository {
     async getAll(): Promise<PaisResponse> {

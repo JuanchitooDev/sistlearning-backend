@@ -1,5 +1,5 @@
-import { IGrupoAdjunto } from "@/interfaces/grupoAdjuntoInterface"
-import GrupoAdjuntoRepository from "@/repositories/grupoAdjuntoRepository"
+import { IGrupoAdjunto } from "../interfaces/grupoAdjuntoInterface"
+import GrupoAdjuntoRepository from "../repositories/grupoAdjuntoRepository"
 
 class GrupoAdjuntoService {
     async getGrupos() {

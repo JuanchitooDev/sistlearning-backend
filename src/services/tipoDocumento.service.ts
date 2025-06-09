@@ -1,5 +1,5 @@
-import { ITipoDocumento } from "@/interfaces/tipoDocumentoInterface"
-import TipoDocumentoRepository from "@/repositories/tipoDocumentoRepository"
+import { ITipoDocumento } from "../interfaces/tipoDocumentoInterface"
+import TipoDocumentoRepository from "../repositories/tipoDocumentoRepository"
 
 class TipoDocumentoService {
     async getTipos() {

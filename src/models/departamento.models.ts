@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '@/config/db'
+import sequelize from '../config/db'
 import Pais from './pais.models'
 
 class Departamento extends Model {
@@ -59,6 +59,6 @@ Departamento.init({
     freezeTableName: true
 })
 
-Departamento.belongsTo(Pais, {foreignKey: 'id_pais'})
+Departamento.belongsTo(Pais, { foreignKey: 'id_pais' })
 
 export default Departamento

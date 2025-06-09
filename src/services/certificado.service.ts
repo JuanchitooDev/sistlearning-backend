@@ -1,5 +1,5 @@
-import { ICertificado } from "@/interfaces/certificadoInterface"
-import CertificadoRepository from "@/repositories/certificadoRepository"
+import { ICertificado } from "../interfaces/certificadoInterface"
+import CertificadoRepository from "../repositories/certificadoRepository"
 
 class CertificadoService {
     async getCertificados() {

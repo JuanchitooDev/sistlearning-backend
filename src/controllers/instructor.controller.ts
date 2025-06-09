@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import InstructorService from '@/services/instructor.service'
+import InstructorService from '../services/instructor.service'
 
 class InstructorController {
     async getInstructores(req: Request, res: Response) {

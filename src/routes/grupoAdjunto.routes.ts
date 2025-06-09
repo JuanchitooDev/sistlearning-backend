@@ -1,14 +1,8 @@
 import { Router } from 'express'
-import GrupoAdjuntoController from '@/controllers/grupoAdjunto.controller'
-import { authToken } from '@/middleware/authMiddleware'
+import GrupoAdjuntoController from '../controllers/grupoAdjunto.controller'
+import { authToken } from '../middleware/authMiddleware'
 
 const router = Router()
-
-// router.get('/', GrupoAdjuntoController.getGrupos)
-// router.get('/:id', GrupoAdjuntoController.getGrupoById)
-// router.post('/', GrupoAdjuntoController.createGrupo)
-// router.put('/:id', GrupoAdjuntoController.updateGrupo)
-// router.delete('/:id', GrupoAdjuntoController.deleteGrupo)
 
 router.get('/', authToken, GrupoAdjuntoController.getGrupos)
 router.get('/:id', authToken, GrupoAdjuntoController.getGrupoPorId)

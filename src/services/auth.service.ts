@@ -1,5 +1,5 @@
-import { IAuth } from "@/interfaces/authInterface"
-import AuthRepository from "@/repositories/authRepository"
+import { IAuth } from "../interfaces/authInterface"
+import AuthRepository from "../repositories/authRepository"
 
 class AuthService {
     async login(data: IAuth) {

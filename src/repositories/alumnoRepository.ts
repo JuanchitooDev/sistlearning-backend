@@ -1,9 +1,9 @@
-import HString from "@/helpers/HString";
-import { IAlumno, AlumnoResponse } from "@/interfaces/alumnoInterface";
-import Alumno from "@/models/alumno.models"
-import Departamento from "@/models/departamento.models";
-import Pais from "@/models/pais.models";
-import TipoDocumento from "@/models/tipoDocumento.models";
+import HString from "../helpers/HString";
+import { IAlumno, AlumnoResponse } from "../interfaces/alumnoInterface";
+import Alumno from "../models/alumno.models"
+import Departamento from "../models/departamento.models";
+import Pais from "../models/pais.models";
+import TipoDocumento from "../models/tipoDocumento.models";
 
 class AlumnoRepository {
     async getAll(): Promise<AlumnoResponse> {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import PersonaService from '@/services/persona.service'
+import PersonaService from '../services/persona.service'
 
 class PersonaController {
     async getPersonas(req: Request, res: Response) {

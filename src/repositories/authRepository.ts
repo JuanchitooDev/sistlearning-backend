@@ -1,17 +1,17 @@
-import { IUsuario, UsuarioResponse } from "@/interfaces/usuarioInterface"
-import { AuthResponse, IAuth } from "@/interfaces/authInterface"
-import LogSesion from "@/models/logSesion.models";
-import Usuario from "@/models/usuario.models"
+import { UsuarioResponse } from "../interfaces/usuarioInterface"
+import { AuthResponse, IAuth } from "../interfaces/authInterface"
+import LogSesion from "../models/logSesion.models";
+import Usuario from "../models/usuario.models"
 import PerfilService from "../services/perfil.service"
 import AlumnoService from "../services/alumno.service"
 import InstructorService from "../services/instructor.service"
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { IPerfil } from "@/interfaces/perfilInterface";
-import { IAlumno } from "@/interfaces/alumnoInterface";
-import { IInstructor } from "@/interfaces/instructorInterface";
-import TrabajadorService from '@/services/trabajador.service';
-import { ITrabajador } from "@/interfaces/trabajadorInterface";
+import { IPerfil } from "../interfaces/perfilInterface";
+import { IAlumno } from "../interfaces/alumnoInterface";
+import { IInstructor } from "../interfaces/instructorInterface";
+import TrabajadorService from '../services/trabajador.service';
+import { ITrabajador } from "../interfaces/trabajadorInterface";
 
 class AuthRepository {
     async login(data: IAuth): Promise<AuthResponse> {

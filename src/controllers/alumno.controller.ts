@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import AlumnoService from '@/services/alumno.service'
+import AlumnoService from '../services/alumno.service'
 
 class AlumnoController {
     async getAlumnos(req: Request, res: Response) {

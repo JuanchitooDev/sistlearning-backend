@@ -1,5 +1,5 @@
-import { IPersona } from "@/interfaces/personaInterface"
-import PersonaRepository from "@/repositories/personaRepository"
+import { IPersona } from "../interfaces/personaInterface"
+import PersonaRepository from "../repositories/personaRepository"
 
 class PersonaService {
     async getPersonas() {

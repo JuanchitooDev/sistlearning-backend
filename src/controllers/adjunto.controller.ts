@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import AdjuntoService from '@/services/adjunto.service'
+import AdjuntoService from '../services/adjunto.service'
 
 class AdjuntoController {
     async getAdjuntos(req: Request, res: Response) {

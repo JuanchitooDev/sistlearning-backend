@@ -1,6 +1,6 @@
-import { IPerfil, PerfilResponse } from "@/interfaces/perfilInterface"
-import Perfil from "@/models/perfil.models"
-import HString from "@/helpers/HString"
+import { IPerfil, PerfilResponse } from "../interfaces/perfilInterface"
+import Perfil from "../models/perfil.models"
+import HString from "../helpers/HString"
 
 class PerfilRepository {
     async getAll(): Promise<PerfilResponse> {

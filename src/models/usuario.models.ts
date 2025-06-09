@@ -1,12 +1,12 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '@/config/db'
+import sequelize from '../config/db'
 import Trabajador from './trabajador.models'
 import Instructor from './instructor.models'
 import Alumno from './alumno.models'
 import Perfil from './perfil.models'
-import { IPerfil } from '@/interfaces/perfilInterface'
-import { IInstructor } from '@/interfaces/instructorInterface'
-import { IAlumno } from '@/interfaces/alumnoInterface'
+import { IPerfil } from '../interfaces/perfilInterface'
+import { IInstructor } from '../interfaces/instructorInterface'
+import { IAlumno } from '../interfaces/alumnoInterface'
 
 class Usuario extends Model {
     public id?: number

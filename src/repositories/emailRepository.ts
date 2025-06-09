@@ -1,9 +1,9 @@
 import fs from 'fs'
 import path from 'path'
-import transporter from "@/config/mailer"
+import transporter from "../config/mailer"
 import { Attachment } from "nodemailer/lib/mailer"
-import { IAlumno } from "@/interfaces/alumnoInterface"
-import { IAdjunto } from "@/interfaces/adjuntoInterface"
+import { IAlumno } from "../interfaces/alumnoInterface"
+import { IAdjunto } from "../interfaces/adjuntoInterface"
 
 class EmailRepository {
     async sendAlumnoInscripcionEmail(alumno: IAlumno) {

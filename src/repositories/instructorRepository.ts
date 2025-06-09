@@ -1,8 +1,8 @@
-import HString from "@/helpers/HString";
-import { IInstructor, InstructorResponse } from "@/interfaces/instructorInterface";
-import Instructor from "@/models/instructor.models"
-import Pais from "@/models/pais.models";
-import TipoDocumento from "@/models/tipoDocumento.models";
+import HString from "../helpers/HString";
+import { IInstructor, InstructorResponse } from "../interfaces/instructorInterface";
+import Instructor from "../models/instructor.models"
+import Pais from "../models/pais.models";
+import TipoDocumento from "../models/tipoDocumento.models";
 
 class InstructorRepository {
     async getAll(): Promise<InstructorResponse> {

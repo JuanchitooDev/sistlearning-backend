@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TipoDocumentoService from '@/services/tipoDocumento.service'
+import TipoDocumentoService from '../services/tipoDocumento.service'
 
 class TipoDocumentoController {
     async getTipos(req: Request, res: Response) {

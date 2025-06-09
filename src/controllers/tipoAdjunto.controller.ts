@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TipoAdjuntoService from '@/services/tipoAdjunto.service'
+import TipoAdjuntoService from '../services/tipoAdjunto.service'
 
 class TipoAdjuntoController {
     async getTipos(req: Request, res: Response) {
