@@ -12,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-   await queryInterface.bulkInsert('pais', [
+   await queryInterface.bulkInsert('Pais', [
     {
       nombre: "Perú",
       nombre_url: "peru",
@@ -79,7 +79,7 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('pais', {
+    await queryInterface.bulkDelete('Pais', {
       nombre: ['Perú', 'Colombia']
     }, {})
   }

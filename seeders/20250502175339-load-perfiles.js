@@ -12,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('perfil', [
+    await queryInterface.bulkInsert('Perfil', [
       {
         nombre: "Administrador",
         nombre_url: "administrador",
@@ -47,7 +47,7 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('perfil', {
+    await queryInterface.bulkDelete('Perfil', {
       nombre: ['Administrador', 'Estudiante', 'Instructor']
     }, {})
   }

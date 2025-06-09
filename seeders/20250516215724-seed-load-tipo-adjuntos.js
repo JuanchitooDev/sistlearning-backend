@@ -12,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('tipoadjuntos', [
+    await queryInterface.bulkInsert('TipoAdjuntos', [
       {
         nombre: "PDF",
         nombre_url: "pdf",
@@ -44,7 +44,7 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('tipoadjuntos', {
+    await queryInterface.bulkDelete('TipoAdjuntos', {
       nombre: ["PDF", "IMG", "VIDEO"]
     })
   }

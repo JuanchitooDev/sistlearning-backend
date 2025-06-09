@@ -18,7 +18,7 @@ module.exports = {
     const userName = 'admin1'
     const password = 'admin1'
     const hashedPassword = await bcrypt.hash(password, 10)
-    await queryInterface.bulkInsert('usuario', [
+    await queryInterface.bulkInsert('Usuario', [
       {
         id_perfil: 1,
         username: userName,
@@ -38,7 +38,7 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('usuario', {
+    await queryInterface.bulkDelete('Usuario', {
       username: ['admin1']
     })
   }
