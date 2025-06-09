@@ -10,7 +10,7 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await queryInterface.changeColumn('Usuario', 'token', {
-      type: Sequelize.STRING(150),
+      type: Sequelize.STRING(255),
       allowNull: true
     })
   },
