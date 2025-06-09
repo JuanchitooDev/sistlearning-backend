@@ -70,15 +70,15 @@ Certificado.init({
         allowNull: true
     },
     fecha_registro: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     fecha_descarga: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     fecha_envio: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING(12),
         allowNull: true
     },
     user_crea: {
