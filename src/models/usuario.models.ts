@@ -76,7 +76,7 @@ Usuario.init({
         allowNull: false
     },
     token: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(255),
         allowNull: true
     },
     fecha_sesion: {
