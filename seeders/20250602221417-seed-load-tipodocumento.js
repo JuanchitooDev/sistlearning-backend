@@ -12,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('tipodocumentos', [
+    await queryInterface.bulkInsert('TipoDocumentos', [
       {
         nombre: 'Documento Nacional de Identidad',
         abreviatura: 'DNI',
@@ -41,7 +41,7 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('tipodocumentos', {
+    await queryInterface.bulkDelete('TipoDocumentos', {
       abreviatura: ['DNI', 'CE']
     }, {})
   }
