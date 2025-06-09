@@ -13,9 +13,9 @@ class Certificado extends Model {
     public ruta?: string
     public fileName?: string
     public templateName?: string
-    public fecha_registro?: string
-    public fecha_descarga?: string
-    public fecha_envio?: string
+    public fecha_registro?: Date
+    public fecha_descarga?: Date
+    public fecha_envio?: Date
     public user_crea?: string
     public user_actualiza?: string
     public user_elimina?: string
@@ -70,15 +70,15 @@ Certificado.init({
         allowNull: true
     },
     fecha_registro: {
-        type: DataTypes.STRING(12),
+        type: DataTypes.DATE,
         allowNull: true
     },
     fecha_descarga: {
-        type: DataTypes.STRING(12),
+        type: DataTypes.DATE,
         allowNull: true
     },
     fecha_envio: {
-        type: DataTypes.STRING(12),
+        type: DataTypes.DATE,
         allowNull: true
     },
     user_crea: {

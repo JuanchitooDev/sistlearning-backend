@@ -11,9 +11,9 @@ export interface ICertificado {
     ruta?: string
     fileName?: string
     templateName?: string
-    fecha_registro?: string
-    fecha_descarga?: string
-    fecha_envio?: string
+    fecha_registro?: Date
+    fecha_descarga?: Date
+    fecha_envio?: Date
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
