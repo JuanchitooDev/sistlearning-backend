@@ -1,5 +1,5 @@
-import { ITrabajador } from "@/interfaces/trabajadorInterface"
-import TrabajadorRepository from "@/repositories/trabajadorRepository"
+import { ITrabajador } from "../interfaces/trabajadorInterface"
+import TrabajadorRepository from "../repositories/trabajadorRepository"
 
 class TrabajadorService {
     async getTrabajadores() {
@@ -7,7 +7,7 @@ class TrabajadorService {
     }
 
     async getTrabajadoresPorEstado(estado: boolean) {
-       return await TrabajadorRepository.getAllByEstado(estado)
+        return await TrabajadorRepository.getAllByEstado(estado)
     }
 
     async getTrabajadorPorId(id: number) {

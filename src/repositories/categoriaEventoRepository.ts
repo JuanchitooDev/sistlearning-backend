@@ -1,6 +1,6 @@
-import CategoriaEvento from "@/models/categoriaEvento.models"
-import { ICategoriaEvento, CategoriaEventoResponse } from "@/interfaces/categoriaEventoInterface"
-import HString from "@/helpers/HString"
+import CategoriaEvento from "../models/categoriaEvento.models"
+import { ICategoriaEvento, CategoriaEventoResponse } from "../interfaces/categoriaEventoInterface"
+import HString from "../helpers/HString"
 
 class CategoriaEventoRepository {
     async getAll(): Promise<CategoriaEventoResponse> {

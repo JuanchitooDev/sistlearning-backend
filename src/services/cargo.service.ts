@@ -1,5 +1,5 @@
-import { ICargo } from "@/interfaces/cargoInterface"
-import CargoRepository from "@/repositories/cargoRepository"
+import { ICargo } from "../interfaces/cargoInterface"
+import CargoRepository from "../repositories/cargoRepository"
 
 class CargoService {
     async getCargos() {

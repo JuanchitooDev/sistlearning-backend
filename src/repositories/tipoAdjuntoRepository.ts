@@ -1,5 +1,5 @@
-import TipoAdjunto from '@/models/tipoAdjunto.models'
-import { ITipoAdjunto, TipoAdjuntoResponse } from "@/interfaces/tipoAdjuntoInterface"
+import TipoAdjunto from '../models/tipoAdjunto.models'
+import { ITipoAdjunto, TipoAdjuntoResponse } from "../interfaces/tipoAdjuntoInterface"
 
 class TipoAdjuntoRepository {
     async getAll(): Promise<TipoAdjuntoResponse> {

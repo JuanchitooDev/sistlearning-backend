@@ -1,9 +1,9 @@
-import { IUsuario, UsuarioResponse } from "@/interfaces/usuarioInterface";
-import Usuario from "@/models/usuario.models"
-import Trabajador from "@/models/trabajador.models"
-import Instructor from "@/models/instructor.models";
-import Alumno from "@/models/alumno.models";
-import Perfil from "@/models/perfil.models"
+import { IUsuario, UsuarioResponse } from "../interfaces/usuarioInterface";
+import Usuario from "../models/usuario.models"
+import Trabajador from "../models/trabajador.models"
+import Instructor from "../models/instructor.models";
+import Alumno from "../models/alumno.models";
+import Perfil from "../models/perfil.models"
 import bcrypt from 'bcryptjs';
 
 class UsuarioRepository {

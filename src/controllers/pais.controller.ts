@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import PaisService from '@/services/pais.service'
+import PaisService from '../services/pais.service'
 
 class PaisController {
     async getPaises(req: Request, res: Response) {

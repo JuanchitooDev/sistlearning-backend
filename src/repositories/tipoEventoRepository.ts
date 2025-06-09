@@ -1,6 +1,6 @@
-import TipoEvento from '@/models/tipoEvento.models'
-import HString from "@/helpers/HString"
-import { ITipoEvento, TipoEventoResponse } from "@/interfaces/tipoEventoInterface"
+import TipoEvento from '../models/tipoEvento.models'
+import HString from "../helpers/HString"
+import { ITipoEvento, TipoEventoResponse } from "../interfaces/tipoEventoInterface"
 
 class TipoEventoRepository {
     async getAll(): Promise<TipoEventoResponse> {

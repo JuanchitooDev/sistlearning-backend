@@ -1,9 +1,9 @@
-import sequelize from "@/config/db";
-import { IPersona, PersonaResponse } from "@/interfaces/personaInterface";
-import { IAlumno } from "@/interfaces/alumnoInterface"
-import Persona from "@/models/persona.models"
-import TipoDocumento from "@/models/tipoDocumento.models";
-import AlumnoService from "@/services/alumno.service"
+import sequelize from "../config/db";
+import { IPersona, PersonaResponse } from "../interfaces/personaInterface";
+import { IAlumno } from "../interfaces/alumnoInterface"
+import Persona from "../models/persona.models"
+import TipoDocumento from "../models/tipoDocumento.models";
+import AlumnoService from "../services/alumno.service"
 import { toZonedTime } from "date-fns-tz";
 
 class PersonaRepository {

@@ -1,5 +1,5 @@
-import { ITipoEvento } from "@/interfaces/tipoEventoInterface"
-import TipoEventoRepository from "@/repositories/tipoEventoRepository"
+import { ITipoEvento } from "../interfaces/tipoEventoInterface"
+import TipoEventoRepository from "../repositories/tipoEventoRepository"
 
 class TipoEventoService {
     async getTipos() {

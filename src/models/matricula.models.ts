@@ -1,8 +1,8 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '@/config/db'
+import sequelize from '../config/db'
 import Alumno from './alumno.models'
 import Evento from './evento.models'
-import { Moneda, FormaPago, TipoPago, ModalidadPago, EstadoPago } from '@/interfaces/matriculaInterface'
+import { Moneda, FormaPago, TipoPago, ModalidadPago, EstadoPago } from '../interfaces/matriculaInterface'
 
 class Matricula extends Model {
     public id?: number
@@ -24,7 +24,7 @@ class Matricula extends Model {
     public saldo?: number
     public user_crea?: string
     public user_actualiza?: string
-    public user_elimina?: string 
+    public user_elimina?: string
     public estado?: boolean
 }
 
@@ -132,8 +132,8 @@ Matricula.init({
     freezeTableName: true
 })
 
-Matricula.belongsTo(Alumno, {foreignKey: 'id_alumno'})
+Matricula.belongsTo(Alumno, { foreignKey: 'id_alumno' })
 
-Matricula.belongsTo(Evento, {foreignKey: 'id_evento'})
+Matricula.belongsTo(Evento, { foreignKey: 'id_evento' })
 
 export default Matricula

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import PerfilService from '@/services/perfil.service'
+import PerfilService from '../services/perfil.service'
 
 class PerfilController {
     async getPerfiles(req: Request, res: Response) {

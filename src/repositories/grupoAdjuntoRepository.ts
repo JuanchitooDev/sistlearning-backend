@@ -1,5 +1,5 @@
-import GrupoAdjunto from '@/models/grupoAdjunto.models'
-import { IGrupoAdjunto, GrupoAdjuntoResponse } from "@/interfaces/grupoAdjuntoInterface"
+import GrupoAdjunto from '../models/grupoAdjunto.models'
+import { IGrupoAdjunto, GrupoAdjuntoResponse } from "../interfaces/grupoAdjuntoInterface"
 
 class GrupoAdjuntoRepository {
     async getAll(): Promise<GrupoAdjuntoResponse> {

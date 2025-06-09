@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import CertificadoService from '@/services/certificado.service'
-import { ICertificado } from '@/interfaces/certificadoInterface'
+import CertificadoService from '../services/certificado.service'
+import { ICertificado } from '../interfaces/certificadoInterface'
 
 class CertificadoController {
     async getCertificados(req: Request, res: Response) {

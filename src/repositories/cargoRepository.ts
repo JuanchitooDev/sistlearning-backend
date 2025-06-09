@@ -1,6 +1,6 @@
-import HString from "@/helpers/HString";
-import { ICargo, CargoResponse } from "@/interfaces/cargoInterface";
-import Cargo from "@/models/cargo.models";
+import HString from "../helpers/HString";
+import { ICargo, CargoResponse } from "../interfaces/cargoInterface";
+import Cargo from "../models/cargo.models";
 
 class CargoRepository {
     async getAll(): Promise<CargoResponse> {

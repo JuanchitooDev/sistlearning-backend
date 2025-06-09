@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import CargoService from '@/services/cargo.service'
+import CargoService from '../services/cargo.service'
 
 class CargoController {
     async getCargos(req: Request, res: Response) {

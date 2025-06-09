@@ -1,9 +1,9 @@
-import Evento from "@/models/evento.models"
-import TipoEvento from "@/models/tipoEvento.models"
-import CategoriaEvento from "@/models/categoriaEvento.models"
-import HString from "@/helpers/HString"
-import { IEvento, EventoResponse } from "@/interfaces/eventoInterface"
-import Instructor from "@/models/instructor.models"
+import Evento from "../models/evento.models"
+import TipoEvento from "../models/tipoEvento.models"
+import CategoriaEvento from "../models/categoriaEvento.models"
+import HString from "../helpers/HString"
+import { IEvento, EventoResponse } from "../interfaces/eventoInterface"
+import Instructor from "../models/instructor.models"
 
 class EventoRepository {
     async getAll(): Promise<EventoResponse> {

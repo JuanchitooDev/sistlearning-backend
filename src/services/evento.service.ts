@@ -1,5 +1,5 @@
-import { IEvento } from "@/interfaces/eventoInterface"
-import EventoRepository from "@/repositories/eventoRepository"
+import { IEvento } from "../interfaces/eventoInterface"
+import EventoRepository from "../repositories/eventoRepository"
 
 class EventoService {
     async getEventos() {

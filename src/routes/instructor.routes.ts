@@ -1,14 +1,8 @@
 import { Router } from 'express'
-import InstructorController from '@/controllers/instructor.controller'
-import { authToken } from '@/middleware/authMiddleware'
+import InstructorController from '../controllers/instructor.controller'
+import { authToken } from '../middleware/authMiddleware'
 
 const router = Router()
-
-// router.get('/', InstructorController.getInstructores)
-// router.get('/:id', InstructorController.getInstructorById)
-// router.post('/', InstructorController.createInstructor)
-// router.put('/:id', InstructorController.updateInstructor)
-// router.delete('/:id', InstructorController.deleteInstructor)
 
 router.get('/', authToken, InstructorController.getInstructores)
 router.get('/:id', authToken, InstructorController.getInstructorPorId)

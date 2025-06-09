@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize'
-import sequelize from '@/config/db'
+import sequelize from '../config/db'
 import TipoDocumento from './tipoDocumento.models'
 import Pais from './pais.models'
 import Departamento from './departamento.models'
@@ -140,10 +140,10 @@ Alumno.init({
     freezeTableName: true
 })
 
-Alumno.belongsTo(TipoDocumento, {foreignKey: 'id_tipodocumento'})
+Alumno.belongsTo(TipoDocumento, { foreignKey: 'id_tipodocumento' })
 
-Alumno.belongsTo(Pais, {foreignKey: 'id_pais'})
+Alumno.belongsTo(Pais, { foreignKey: 'id_pais' })
 
-Alumno.belongsTo(Departamento, {foreignKey: 'id_departamento'})
+Alumno.belongsTo(Departamento, { foreignKey: 'id_departamento' })
 
 export default Alumno

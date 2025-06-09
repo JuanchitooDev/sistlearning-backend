@@ -1,4 +1,4 @@
-import DocumentoRepository from "@/repositories/documentoRepository"
+import DocumentoRepository from "../repositories/documentoRepository"
 
 class DocumentoService {
     async getDocumentoInfo(idTipoDocumento: number, numeroDocumento: string) {

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import DocumentoService from '@/services/documento.service'
+import DocumentoService from '../services/documento.service'
 
 class DocumentoController {
     async getDocumentoInfo(req: Request, res: Response) {
@@ -8,7 +8,6 @@ class DocumentoController {
         const idTipoDocNumber = Number(idtipodoc)
 
         const response = await DocumentoService.getDocumentoInfo(idTipoDocNumber, numdoc)
-        // console.log('response getDocumentoInfo DocumentoController', response)
 
         const { result, status } = response
 
@@ -20,7 +19,6 @@ class DocumentoController {
             } else {
                 res.status(404).json(response)
             }
-            // res.status(500).json(response)
         }
     }
 }

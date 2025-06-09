@@ -1,5 +1,5 @@
-import { ICategoriaEvento } from "@/interfaces/categoriaEventoInterface"
-import CategoriaEventoRepository from "@/repositories/categoriaEventoRepository"
+import { ICategoriaEvento } from "../interfaces/categoriaEventoInterface"
+import CategoriaEventoRepository from "../repositories/categoriaEventoRepository"
 
 class CategoriaEventoService {
     async getCategorias() {

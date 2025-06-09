@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import GrupoAdjuntoService from '@/services/grupoAdjunto.service'
+import GrupoAdjuntoService from '../services/grupoAdjunto.service'
 
 class GrupoAdjuntoController {
     async getGrupos(req: Request, res: Response) {

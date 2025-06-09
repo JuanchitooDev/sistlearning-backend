@@ -1,5 +1,5 @@
-import { IPais } from "@/interfaces/paisInterface"
-import PaisRepository from "@/repositories/paisRepository"
+import { IPais } from "../interfaces/paisInterface"
+import PaisRepository from "../repositories/paisRepository"
 
 class PaisService {
     async getPaises() {

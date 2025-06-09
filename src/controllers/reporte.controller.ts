@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import ReporteService from '@/services/reporte.service';
-import { IAlumno } from '@/interfaces/alumnoInterface'
-import HExcel from '@/helpers/HExcel'
+import ReporteService from '../services/reporte.service';
+import { IAlumno } from '../interfaces/alumnoInterface'
+import HExcel from '../helpers/HExcel'
 import path from 'path'
 import fs from 'fs'
 
@@ -95,19 +95,7 @@ class ReporteController {
                         console.error('Error al descargar el archivo:', err)
                         res.status(500).json({ message: 'Error al descargar el archivo Excel' })
                     }
-                    // Eliminar el archivo después de enviarlo si lo deseas
-                    // fs.unlinkSync(filePath)
                 })
-
-                // Guardar el archivo en el servidor
-                // const filePath = path.join(__dirname, 'cumpleanios.xlsx')
-                // fs.writeFileSync(filePath, archivoExcel)
-
-                // // Responder con el archivo guardado
-                // res.status(200).json({
-                //     message: 'Archivo generado correctamente',
-                //     filePath
-                // })
             } else {
                 res.status(400).json({ message: 'No se encontraron datos de cumpleaños' })
             }

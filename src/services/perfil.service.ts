@@ -1,5 +1,5 @@
-import { IPerfil } from "@/interfaces/perfilInterface"
-import PerfilRepository from "@/repositories/perfilRepository"
+import { IPerfil } from "../interfaces/perfilInterface"
+import PerfilRepository from "../repositories/perfilRepository"
 
 class PerfilService {
     async getPerfiles() {

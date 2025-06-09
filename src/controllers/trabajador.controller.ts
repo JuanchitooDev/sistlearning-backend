@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TrabajadorService from '@/services/trabajador.service'
+import TrabajadorService from '../services/trabajador.service'
 
 class TrabajadorController {
     async getTrabajadores(req: Request, res: Response) {

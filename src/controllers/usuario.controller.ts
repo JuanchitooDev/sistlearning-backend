@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import UsuarioService from "@/services/usuario.service"
+import UsuarioService from "../services/usuario.service"
 
 class UsuarioController {
     async getUsuarios(req: Request, res: Response) {

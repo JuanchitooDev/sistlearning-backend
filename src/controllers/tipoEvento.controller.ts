@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import TipoEventoService from '@/services/tipoEvento.service'
+import TipoEventoService from '../services/tipoEvento.service'
 
 class TipoEventoController {
     async getTipos(req: Request, res: Response) {
@@ -56,7 +56,6 @@ class TipoEventoController {
         const { nombre } = req.params
 
         const response = await TipoEventoService.getTipoPorNombre(nombre)
-        console.log('response getTipoPorNombre', response)
 
         const { result, error } = response
 
@@ -69,11 +68,6 @@ class TipoEventoController {
                 res.status(200).json(response)
             }
         }
-        // if (response.result) {
-        //     res.status(200).json(response)
-        // } else {
-        //     res.status(500).json(response)
-        // }
     }
 
     async createTipo(req: Request, res: Response) {
