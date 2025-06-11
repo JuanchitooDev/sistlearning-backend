@@ -47,7 +47,7 @@ Persona.init({
         allowNull: false
     },
     nombres: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: false
     },
     apellido_paterno: {
@@ -59,27 +59,27 @@ Persona.init({
         allowNull: false
     },
     nombre_completo: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.STRING(70),
         allowNull: false
     },
     departamento: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: true
     },
     provincia: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: true
     },
     distrito: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: true
     },
     direccion: {
-        type: DataTypes.STRING(80),
+        type: DataTypes.STRING(90),
         allowNull: true
     },
     direccion_completa: {
-        type: DataTypes.STRING(140),
+        type: DataTypes.STRING(150),
         allowNull: true
     },
     ubigeo_reniec: {

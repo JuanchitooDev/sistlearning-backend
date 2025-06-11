@@ -19,11 +19,11 @@ Perfil.init({
         autoIncrement: true
     },
     nombre: {
-        type: DataTypes.STRING(40),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     nombre_url: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.STRING(70),
         allowNull: false
     },
     user_crea: {

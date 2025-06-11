@@ -72,11 +72,11 @@ Alumno.init({
         allowNull: false
     },
     nombres: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(40),
         allowNull: false
     },
     nombre_capitalized: {
-        type: DataTypes.STRING(70),
+        type: DataTypes.STRING(80),
         allowNull: true
     },
     telefono: {
@@ -88,7 +88,7 @@ Alumno.init({
         allowNull: true
     },
     email: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(50),
         allowNull: true
     },
     fecha_nacimiento: {
@@ -104,11 +104,11 @@ Alumno.init({
         allowNull: false
     },
     nombre_pais: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: true
     },
     nombre_departamento: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(40),
         allowNull: true
     },
     user_crea: {

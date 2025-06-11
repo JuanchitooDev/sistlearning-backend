@@ -1,13 +1,19 @@
 import { Sequelize } from 'sequelize'
 import dotenv from 'dotenv'
+import path from 'path'
+
+// Determina el entorno (development por defecto)
+const env = process.env.NODE_ENV || 'development'
+
+// Carga el archivo .env correspondiente
+const envFilePath = path.resolve(process.cwd(), `.env.${env}`)
+dotenv.config({ path: envFilePath })
 
 // Determina el ambiente
 // const env = process.env.NODE_ENV || 'development'
-
-const env = 'development'
-
+// const env = 'development'
 // Carga el archivo de configuración correspondiente
-dotenv.config({ path: `.env.${env}` })
+// dotenv.config({ path: `.env.${env}` })
 
 const sequelize = new Sequelize(
     process.env.DB_NAME!,

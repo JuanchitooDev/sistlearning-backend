@@ -19,11 +19,11 @@ Pais.init({
         primaryKey: true
     },
     nombre: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: false
     },
     nombre_url: {
-        type: DataTypes.STRING(40),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     codigo_postal: {
