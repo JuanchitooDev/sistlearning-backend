@@ -24,11 +24,11 @@ Empresa.init({
         primaryKey: true
     },
     nombre: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(60),
         allowNull: false
     },
     direccion: {
-        type: DataTypes.STRING(70),
+        type: DataTypes.STRING(80),
         allowNull: true
     },
     telefono: {
@@ -36,7 +36,7 @@ Empresa.init({
         allowNull: true
     },
     email: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(50),
         allowNull: true
     },
     redes_sociales: {
@@ -48,7 +48,7 @@ Empresa.init({
         allowNull: true
     },
     lema: {
-        type: DataTypes.STRING(40),
+        type: DataTypes.STRING(60),
         allowNull: true
     },
     user_crea: {

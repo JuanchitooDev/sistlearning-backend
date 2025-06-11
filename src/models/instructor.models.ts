@@ -63,7 +63,7 @@ Instructor.init({
         allowNull: false
     },
     nombre_capitalized: {
-        type: DataTypes.STRING(70),
+        type: DataTypes.STRING(80),
         allowNull: true
     },
     telefono: {
@@ -71,11 +71,11 @@ Instructor.init({
         allowNull: false
     },
     direccion: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(60),
         allowNull: true
     },
     email: {
-        type: DataTypes.STRING(30),
+        type: DataTypes.STRING(50),
         allowNull: true
     },
     fecha_nacimiento: {

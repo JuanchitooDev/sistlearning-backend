@@ -20,8 +20,9 @@ export default class HPdf {
             let fechaFinalStr = ""
             let fechasEvento = []
 
+            const { plantilla_certificado } = evento
             const lugar = 'Lambayeque';
-            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${evento.plantilla_certificado}`);
+            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${plantilla_certificado}`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
             const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/Kuenstler Script LT Std 2 Bold.otf");
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
@@ -29,7 +30,7 @@ export default class HPdf {
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
 
             if (!fs.existsSync(pathTemplate)) {
-                return { result: false, message: `No existe la plantilla ${evento.plantilla_certificado}` }
+                return { result: false, message: `No existe la plantilla ${plantilla_certificado}` }
             }
 
             if (!fs.existsSync(pathFontKuenstler)) {
@@ -52,25 +53,46 @@ export default class HPdf {
                 return { result: false, message: `No existe el logo` }
             }
 
-            const nombreImpresion = data.nombre_alumno_impresion as string;
-            const tituloEvento = evento.titulo as string
-            const fechaEvento = HDate.convertDateToString(evento.fecha as Date)
-            const temarioEvento = evento.temario?.split('\n') as String[]
+            const { nombre_alumno_impresion } = data
 
-            const fechaInicio = toZonedTime(evento.fecha as Date, 'America/Lima')
+            const { titulo, temario, fecha } = evento
+
+            const { nombre_capitalized } = alumno
+
+            const nombreImpresion = nombre_alumno_impresion as string;
+            const tituloEvento = titulo as string
+            const fechaEvento = HDate.convertDateToString(fecha as Date)
+            const temarioEvento = temario?.split('\n') as String[]
+
+            const fechaInicio = toZonedTime(fecha as Date, 'America/Lima')
             const fechaInicioStr = format(fechaInicio, "dd 'de' MMMM 'del' yyyy", { locale: es })
 
             // Definiendo el nombre del archivo
-            const sanitizedTitulo = HString.sanitizeFileName(evento.titulo as string)
-            const sanitizedAlumno = HString.sanitizeFileName(alumno.nombre_capitalized as string)
-            const fileName = `certificado_${sanitizedAlumno}.pdf`
+            const sanitizedTitulo = HString.sanitizeFileName(titulo as string)
+            const sanitizedAlumno = HString.sanitizeFileName(nombre_capitalized as string)
+            // const fileName = `certificado_${sanitizedAlumno}.pdf`
+            const codEvento = `${evento.id}`.toString().padStart(5, "0");
+            const codAlumno = `${alumno.id}`.toString().padStart(5, "0");
+            const fileName = `certificado_e${codEvento}_a${codAlumno}.pdf`
+            console.log('fileName', fileName)
             const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
 
-            // Definiendo la fecha de emisión
-            const fechaEnvio = toZonedTime(data.fecha_envio as string, 'America/Lima')
+            let lugarFechaEmision = ''
 
-            const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
-            const lugarFechaEmision = `${lugar}, ${fechaEmision}`
+            // Definiendo la fecha de emisión
+            // const fechaEnvio = toZonedTime(data.fecha_envio as string, 'America/Lima')
+
+            // const fechaEnvio = toZonedTime(data.fecha_envio, 'America/Lima')
+            // const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
+            // const lugarFechaEmision = `${lugar}, ${fechaEmision}`
+
+            if (data.fecha_envio) {
+                const fechaEnvio = toZonedTime(data.fecha_envio, 'America/Lima')
+                const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
+                lugarFechaEmision = `${lugar}, ${fechaEmision}`
+            } else {
+                lugarFechaEmision = `${lugar}`
+            }
 
             if (evento.fecha_fin) {
                 const fechaFinal = toZonedTime(evento.fecha_fin, 'America/Lima')
@@ -669,6 +691,39 @@ export default class HPdf {
                             size: fontSizeForFechaEvento,
                             font: customFontBalooMedium,
                             color: rgb(222 / 255, 148 / 255, 40 / 255),
+                        });
+                    }
+                    break
+                case "congreso_internacional_cuy_2025_a":
+                    // Configurar el texto del nombre del alumno
+                    fontSizeForAlumno = 54;
+
+                    y = 302;  // Posición Y
+                    maxWidth = 720; // Ancho máximo disponible para el texto
+
+                    // Distancia entre líneas para el nombre del alumno
+                    lineHeightAlumno = 0.8 * fontSizeForAlumno;
+
+                    // Dividir el nombre del alumno en líneas si excede el ancho máximo
+                    linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
+
+                    console.log('linesAlumno', linesAlumno)
+
+                    if (linesAlumno.length > 1) {
+                        fontSizeForAlumno = 50;
+                    }
+
+                    // Dibujar el nombre del alumno centrado
+                    for (let i = 0; i < linesAlumno.length; i++) {
+                        lineWidthAlumno = customFontKuenstlerBold.widthOfTextAtSize(linesAlumno[i], fontSizeForAlumno);
+                        const nombrePositionX = (pageWidth - lineWidthAlumno) / 2;  // Centrado horizontal
+
+                        pagina.drawText(linesAlumno[i], {
+                            x: nombrePositionX,
+                            y: y - i * lineHeightAlumno,
+                            size: fontSizeForAlumno,
+                            font: customFontKuenstlerBold,
+                            color: rgb(0, 0, 0),
                         });
                     }
                     break

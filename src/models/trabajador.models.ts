@@ -54,15 +54,15 @@ Trabajador.init({
         allowNull: false
     },
     apellido_paterno: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: false
     },
     apellido_materno: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: false
     },
     nombres: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: false
     },
     telefono: {
@@ -74,11 +74,11 @@ Trabajador.init({
         allowNull: false
     },
     email: {
-        type: DataTypes.STRING(40),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     linkedin: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(120),
         allowNull: true
     },
     fecha_nacimiento: {

@@ -290,6 +290,9 @@ class CertificadoRepository {
             // Generar un nuevo certificado
             const { result, message, dataResult } = await HPdf.generarCertificado(data, alumno, evento)
 
+            console.log('createCertificado')
+            console.log('result', result, 'message', message, 'dataResult', dataResult)
+
             if (!result) {
                 return { result, message }
             }
@@ -304,7 +307,11 @@ class CertificadoRepository {
             data.codigoQR = codigoQR
             data.codigo = codigo
 
+            console.log('data createCertidicado', data)
+
             const newCertificado = await Certificado.create(data as any)
+
+            console.log('newCertificado', newCertificado)
 
             if (newCertificado.id) {
                 return { result: true, message: 'Certificado registrado correctamente', data: newCertificado, status: 200 }
@@ -374,6 +381,9 @@ class CertificadoRepository {
                 // Generar un nuevo archivo PDF
                 const { result, message, dataResult } = await HPdf.generarCertificado(data, alumno, evento)
 
+                console.log('update certificado')
+                console.log('result', result, 'message', message, 'dataResult', dataResult)
+
                 if (!result) {
                     return { result, message }
                 }
@@ -389,9 +399,12 @@ class CertificadoRepository {
                 data.codigoQR = codigoQR;
                 data.codigo = codigo;
 
+                console.log('data updateCertificado', data)
+
                 // Actualizamos el registro en la base de datos
                 const updatedCertificado = await certificado.update(data);
 
+                console.log('result updateCertificado', updatedCertificado)
                 return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado, status: 200 };
             } else {
                 // Si no hay cambios que afecten el archivo, solo actualizamos los datos del certificado

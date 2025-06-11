@@ -28,11 +28,11 @@ Departamento.init({
         }
     },
     nombre: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(40),
         allowNull: false
     },
     nombre_url: {
-        type: DataTypes.STRING(40),
+        type: DataTypes.STRING(60),
         allowNull: false
     },
     user_crea: {
