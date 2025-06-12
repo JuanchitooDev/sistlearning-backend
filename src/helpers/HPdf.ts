@@ -694,7 +694,7 @@ export default class HPdf {
                         });
                     }
                     break
-                case "congreso_internacional_cuy_2025_a":
+                case "congreso_internacional_cuy_2025":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 54;
 

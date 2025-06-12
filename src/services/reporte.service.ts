@@ -3,6 +3,9 @@ import Alumno from "../models/alumno.models";
 import TipoDocumento from '../models/tipoDocumento.models';
 import Pais from '../models/pais.models';
 import Departamento from '../models/departamento.models';
+import AlumnoRepository from '../repositories/alumnoRepository'
+import { PersonaResponse } from "@/interfaces/personaInterface";
+import personaRepository from "@/repositories/personaRepository";
 
 class ReporteService {
     async getCumpleaniosAlumnos(): Promise<AlumnoResponse> {
@@ -53,6 +56,15 @@ class ReporteService {
             return { result: false, error: errorMessage }
         }
     }
+
+    async getAlumnos(): Promise<AlumnoResponse> {
+        return await AlumnoRepository.getAll()
+    }
+
+    async getPersonas(): Promise<PersonaResponse> {
+        return await personaRepository.getAll()
+    }
+
 }
 
 export default new ReporteService()
