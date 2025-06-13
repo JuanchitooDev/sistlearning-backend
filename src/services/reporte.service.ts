@@ -4,8 +4,8 @@ import TipoDocumento from '../models/tipoDocumento.models';
 import Pais from '../models/pais.models';
 import Departamento from '../models/departamento.models';
 import AlumnoRepository from '../repositories/alumnoRepository'
-import { PersonaResponse } from "@/interfaces/personaInterface";
-import personaRepository from "@/repositories/personaRepository";
+import { PersonaResponse } from "../interfaces/personaInterface";
+import personaRepository from "../repositories/personaRepository";
 
 class ReporteService {
     async getCumpleaniosAlumnos(): Promise<AlumnoResponse> {

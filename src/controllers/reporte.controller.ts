@@ -5,8 +5,8 @@ import { IAlumno } from '../interfaces/alumnoInterface'
 import HExcel from '../helpers/HExcel'
 import path from 'path'
 import fs from 'fs'
-import { ITipoDocumento } from "@/interfaces/tipoDocumentoInterface";
-import { IPersona } from "@/interfaces/personaInterface";
+import { ITipoDocumento } from "../interfaces/tipoDocumentoInterface";
+import { IPersona } from "../interfaces/personaInterface";
 
 class ReporteController {
     async listCumpleaniosExcel(req: Request, res: Response) {
