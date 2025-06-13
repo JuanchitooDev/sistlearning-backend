@@ -30,7 +30,16 @@ module.exports = {
         en_empresa: false,
         compra: false,
         venta: false
-      }
+      },
+      {
+        nombre: 'CÉDULA',
+        abreviatura: 'CED',
+        longitud: 13,
+        en_persona: true,
+        en_empresa: false,
+        compra: false,
+        venta: false
+      },
     ])
   },
 
@@ -42,7 +51,7 @@ module.exports = {
      * await queryInterface.bulkDelete('People', null, {});
      */
     await queryInterface.bulkDelete('TipoDocumentos', {
-      abreviatura: ['DNI', 'CE']
+      abreviatura: ['DNI', 'CE', 'CED']
     }, {})
   }
 };
