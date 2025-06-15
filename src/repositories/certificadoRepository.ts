@@ -220,6 +220,62 @@ class CertificadoRepository {
         }
     }
 
+    async getByAlumnoIdEventoId(idAlumno: number, idEvento: number): Promise<CertificadoResponse> {
+        try {
+            const certificado = await Certificado.findOne({
+                where: {
+                    id_alumno: idAlumno,
+                    id_evento: idEvento
+                },
+                attributes: [
+                    'id',
+                    'id_alumno',
+                    'id_evento',
+                    'codigo',
+                    'codigoQR',
+                    'ruta',
+                    'fileName',
+                    'fecha_registro',
+                    'fecha_descarga',
+                    'templateName',
+                    'fecha_envio',
+                    'estado',
+                    'nombre_alumno_impresion'
+                ],
+                include: [
+                    {
+                        model: Alumno,
+                        attributes: [
+                            'id',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres',
+                            'nombre_capitalized'
+                        ]
+                    }, {
+                        model: Evento,
+                        attributes: [
+                            'id',
+                            'titulo',
+                            'fecha',
+                            'fecha_fin',
+                            'duracion'
+                        ]
+                    }
+                ]
+            })
+
+            if (!certificado) {
+                return { result: false, data: [], message: 'Certificado no encontrado', status: 200 }
+            }
+
+            return { result: true, data: certificado, message: 'Certificado encontrado', status: 200 }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+            return { result: false, error: errorMessage, status: 500 }
+        }
+    }
+
     async downloadById(id: number) {
         try {
             const response = await this.getById(id)
@@ -290,9 +346,6 @@ class CertificadoRepository {
             // Generar un nuevo certificado
             const { result, message, dataResult } = await HPdf.generarCertificado(data, alumno, evento)
 
-            console.log('createCertificado')
-            console.log('result', result, 'message', message, 'dataResult', dataResult)
-
             if (!result) {
                 return { result, message }
             }
@@ -307,11 +360,7 @@ class CertificadoRepository {
             data.codigoQR = codigoQR
             data.codigo = codigo
 
-            console.log('data createCertidicado', data)
-
             const newCertificado = await Certificado.create(data as any)
-
-            console.log('newCertificado', newCertificado)
 
             if (newCertificado.id) {
                 return { result: true, message: 'Certificado registrado correctamente', data: newCertificado, status: 200 }
@@ -381,9 +430,6 @@ class CertificadoRepository {
                 // Generar un nuevo archivo PDF
                 const { result, message, dataResult } = await HPdf.generarCertificado(data, alumno, evento)
 
-                console.log('update certificado')
-                console.log('result', result, 'message', message, 'dataResult', dataResult)
-
                 if (!result) {
                     return { result, message }
                 }
@@ -399,12 +445,9 @@ class CertificadoRepository {
                 data.codigoQR = codigoQR;
                 data.codigo = codigo;
 
-                console.log('data updateCertificado', data)
-
                 // Actualizamos el registro en la base de datos
                 const updatedCertificado = await certificado.update(data);
 
-                console.log('result updateCertificado', updatedCertificado)
                 return { result: true, message: 'Certificado actualizado con éxito', data: updatedCertificado, status: 200 };
             } else {
                 // Si no hay cambios que afecten el archivo, solo actualizamos los datos del certificado

@@ -24,8 +24,6 @@ class ReporteController {
                 const alumnos = data as IAlumno[]
 
                 const dataAlumnos = await Promise.all(alumnos.map(async alumno => {
-                    console.log('alumno cumpleaño', alumno)
-
                     const {
                         id,
                         id_tipodocumento,
@@ -43,8 +41,6 @@ class ReporteController {
                         const { abreviatura } = dataTipoDoc
                         abreviaturaTipoDoc = abreviatura as string
                     }
-
-                    console.log('abreviaturaTipoDoc', abreviaturaTipoDoc)
 
                     return {
                         ID: id,
@@ -106,8 +102,6 @@ class ReporteController {
                 const alumnos = data as IAlumno[]
 
                 const dataAlumnos = await Promise.all(alumnos.map(async alumno => {
-                    console.log('alumno listado', alumno)
-
                     const {
                         id,
                         id_tipodocumento,
@@ -125,8 +119,6 @@ class ReporteController {
                         const { abreviatura } = dataTipoDoc
                         abreviaturaTipoDoc = abreviatura as string
                     }
-
-                    console.log('abreviaturaTipoDoc', abreviaturaTipoDoc)
 
                     return {
                         ID: id,
@@ -188,8 +180,6 @@ class ReporteController {
                 const personas = data as IPersona[]
 
                 const dataPersonas = await Promise.all(personas.map(async persona => {
-                    console.log('persona listPersonasExcel', persona)
-
                     const {
                         id,
                         id_tipodocumento,
@@ -206,8 +196,6 @@ class ReporteController {
                         const { abreviatura } = dataTipoDoc
                         abreviaturaTipoDoc = abreviatura as string
                     }
-
-                    console.log('abreviaturaTipoDoc', abreviaturaTipoDoc)
 
                     return {
                         ID: id,

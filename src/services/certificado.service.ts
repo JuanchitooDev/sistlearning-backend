@@ -18,6 +18,10 @@ class CertificadoService {
         return await CertificadoRepository.getById(id)
     }
 
+    async getCertificadoPorAlumnoPorEvento(idAlumno: number, idEvento: number) {
+        return await CertificadoRepository.getByAlumnoIdEventoId(idAlumno, idEvento)
+    }
+
     async downloadPorId(id: number) {
         return await CertificadoRepository.downloadById(id)
     }

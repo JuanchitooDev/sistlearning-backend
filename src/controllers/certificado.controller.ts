@@ -1,6 +1,10 @@
 import { Request, Response } from 'express'
 import CertificadoService from '../services/certificado.service'
+import AlumnoService from '../services/alumno.service'
 import { ICertificado } from '../interfaces/certificadoInterface'
+import { IAlumno } from '@/interfaces/alumnoInterface'
+import TemporalCertificado from '@/models/temporalCertificado.models'
+import { ITemporalCertificado } from '@/interfaces/temporalCertificadoInterface'
 
 class CertificadoController {
     async getCertificados(req: Request, res: Response) {
@@ -67,6 +71,24 @@ class CertificadoController {
         }
     }
 
+    async getCertificadoPorAlumnoPorEvento(req: Request, res: Response) {
+        const { idAlumno, idEvento } = req.params
+
+        const response = await CertificadoService.getCertificadoPorAlumnoPorEvento(+idAlumno, +idEvento)
+
+        const { result, error } = response
+
+        if (result) {
+            res.status(200).json(response)
+        } else {
+            if (error) {
+                res.status(500).json(response)
+            } else {
+                res.status(200).json(response)
+            }
+        }
+    }
+
     async downloadCertificado(req: Request, res: Response) {
         const { id } = req.params
 
@@ -105,6 +127,7 @@ class CertificadoController {
 
                 const outputPathParam = ruta as string
                 const fileNameParam = fileName as string
+
                 res.download(outputPathParam, fileNameParam, (err) => {
                     if (err) {
                         console.error(err);
@@ -195,6 +218,108 @@ class CertificadoController {
                 res.status(500).send(response)
             }
         }
+    }
+
+    async loadData(req: Request, res: Response) {
+        const payloadCertificados: {
+            id_evento: number,
+            id_tipodocumento: number,
+            numero_documento: string,
+            fecha_envio: string
+        }[] = req.body
+
+        if (!Array.isArray(payloadCertificados)) {
+            res.status(400).json(
+                {
+                    result: false,
+                    message: 'El parámetro debe ser un arreglo'
+                }
+            )
+        }
+
+        const resultados = []
+
+        for (const payload of payloadCertificados) {
+            const {
+                id_evento,
+                id_tipodocumento,
+                numero_documento,
+                fecha_envio
+            } = payload
+
+            try {
+                const responseAlumnoExiste = await AlumnoService.getAlumnoPorIdTipoDocNumDoc(id_tipodocumento, numero_documento)
+
+                if (responseAlumnoExiste.result && responseAlumnoExiste.data) {
+
+                    const alumno = responseAlumnoExiste.data as IAlumno
+
+                    const { id, nombre_capitalized } = alumno
+
+                    const responseCertificadoExiste = await CertificadoService.getCertificadoPorAlumnoPorEvento(id as number, id_evento)
+
+                    if (!responseCertificadoExiste.result) {
+                        const certificado: ICertificado = {
+                            id_alumno: id,
+                            id_evento,
+                            nombre_alumno_impresion: nombre_capitalized,
+                            fecha_envio: new Date(fecha_envio)
+                        }
+
+                        const responseCertificadoCreate = await CertificadoService.createCertificado(certificado)
+
+                        if (!responseCertificadoCreate.result) {
+                            const dataTemporal: ITemporalCertificado = {
+                                id_evento,
+                                id_tipodocumento,
+                                numero_documento,
+                                fecha_envio,
+                                tabla: "certificado"
+                            }
+
+                            await TemporalCertificado.create(dataTemporal as any)
+
+                            resultados.push(
+                                {
+                                    id_evento,
+                                    id_tipodocumento,
+                                    numero_documento,
+                                    fecha_envio,
+                                    status: "Error al crear. Insertado en temporal_certificado"
+                                }
+                            )
+                        }
+                    }
+
+                }
+            } catch (error) {
+                const dataTemporal: ITemporalCertificado = {
+                    id_evento,
+                    id_tipodocumento,
+                    numero_documento,
+                    fecha_envio,
+                    tabla: "certificado"
+                }
+
+                await TemporalCertificado.create(dataTemporal as any)
+
+                resultados.push(
+                    {
+                        id_evento,
+                        id_tipodocumento,
+                        numero_documento,
+                        fecha_envio,
+                        status: "Error al crear. Insertado en temporal_certificado"
+                    }
+                )
+            }
+        }
+        res.status(200).json(
+            {
+                result: true,
+                data: resultados
+            }
+        )
     }
 }
 

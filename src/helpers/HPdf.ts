@@ -21,6 +21,7 @@ export default class HPdf {
             let fechasEvento = []
 
             const { plantilla_certificado } = evento
+
             const lugar = 'Lambayeque';
             const pathTemplate = path.resolve(__dirname, `../../public/pdf/${plantilla_certificado}`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
@@ -55,7 +56,7 @@ export default class HPdf {
 
             const { nombre_alumno_impresion } = data
 
-            const { titulo, temario, fecha } = evento
+            const { titulo, temario, fecha, fecha_fin } = evento
 
             const { nombre_capitalized } = alumno
 
@@ -74,17 +75,9 @@ export default class HPdf {
             const codEvento = `${evento.id}`.toString().padStart(5, "0");
             const codAlumno = `${alumno.id}`.toString().padStart(5, "0");
             const fileName = `certificado_e${codEvento}_a${codAlumno}.pdf`
-            console.log('fileName', fileName)
             const outputPath = path.resolve(__dirname, `../../public/certificados/${sanitizedTitulo}/${fileName}`)
 
             let lugarFechaEmision = ''
-
-            // Definiendo la fecha de emisión
-            // const fechaEnvio = toZonedTime(data.fecha_envio as string, 'America/Lima')
-
-            // const fechaEnvio = toZonedTime(data.fecha_envio, 'America/Lima')
-            // const fechaEmision = format(fechaEnvio, "dd 'de' MMMM 'del' yyyy", { locale: es })
-            // const lugarFechaEmision = `${lugar}, ${fechaEmision}`
 
             if (data.fecha_envio) {
                 const fechaEnvio = toZonedTime(data.fecha_envio, 'America/Lima')
@@ -94,8 +87,8 @@ export default class HPdf {
                 lugarFechaEmision = `${lugar}`
             }
 
-            if (evento.fecha_fin) {
-                const fechaFinal = toZonedTime(evento.fecha_fin, 'America/Lima')
+            if (fecha_fin) {
+                const fechaFinal = toZonedTime(fecha_fin, 'America/Lima')
                 fechasEvento.push(`${fechaInicioStr} al`)
                 fechaFinalStr = format(fechaFinal, "dd 'de' MMMM 'del' yyyy", { locale: es })
                 fechasEvento.push(fechaFinalStr)
@@ -111,7 +104,7 @@ export default class HPdf {
             }
 
             // Actualizando la plantilla del certificado
-            data.templateName = evento.plantilla_certificado
+            data.templateName = plantilla_certificado
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
@@ -162,7 +155,7 @@ export default class HPdf {
             // Obtener el ancho de la página
             const pageWidth = pagina.getWidth()
 
-            switch (evento.plantilla_certificado) {
+            switch (plantilla_certificado) {
                 case "buenas_practicas_agricolas_para_una_produccion_sostenible.pdf":
                 case "como_maximizar_la_produccion_de_gallinas_saludables.pdf":
                 case "nutricion_alimentacion_y_sanidad_de_animales_menores_y_mayores.pdf":
@@ -584,7 +577,7 @@ export default class HPdf {
                     y = 206
 
                     // Dibujar el título del evento centrado
-                    pagina.drawText(evento.titulo as string, {
+                    pagina.drawText(titulo as string, {
                         x,
                         y,
                         size: fontSizeForEvento,
@@ -694,11 +687,11 @@ export default class HPdf {
                         });
                     }
                     break
-                case "congreso_internacional_cuy_2025":
+                case "plantillas/plantilla_primer_congreso_internacional_2025.pdf":
                     // Configurar el texto del nombre del alumno
-                    fontSizeForAlumno = 54;
+                    fontSizeForAlumno = 56;
 
-                    y = 302;  // Posición Y
+                    y = 280;  // Posición Y
                     maxWidth = 720; // Ancho máximo disponible para el texto
 
                     // Distancia entre líneas para el nombre del alumno
@@ -706,8 +699,6 @@ export default class HPdf {
 
                     // Dividir el nombre del alumno en líneas si excede el ancho máximo
                     linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
-
-                    console.log('linesAlumno', linesAlumno)
 
                     if (linesAlumno.length > 1) {
                         fontSizeForAlumno = 50;
@@ -737,7 +728,7 @@ export default class HPdf {
             // Crear un rectángulo para texto introductorio
             const startX = 20
             const startY = newPage.getHeight() - 170
-            const cellWidth = 370
+            const cellWidth = 390
             const cellHeight = 150
 
             newPage.drawRectangle({
@@ -779,8 +770,8 @@ export default class HPdf {
             })
 
             const startTemarioX = 20
-            const startTemarioY = 310
-            const cellWidthTemario = 370
+            const startTemarioY = 390
+            const cellWidthTemario = 450
             const cellHeightTemario = 20
 
             // Dibujar celda para el título del temario
@@ -833,7 +824,7 @@ export default class HPdf {
 
             // Crear un rectángulo para la sección del código QR
             let startQRX = 550
-            let startQRY = 310
+            let startQRY = 390
             let cellWidthQR = 240
             let cellHeightQR = 20
 
