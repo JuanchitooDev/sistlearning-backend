@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import CertificadoService from '../services/certificado.service'
 import AlumnoService from '../services/alumno.service'
 import { ICertificado } from '../interfaces/certificadoInterface'
-import { IAlumno } from '@/interfaces/alumnoInterface'
-import TemporalCertificado from '@/models/temporalCertificado.models'
-import { ITemporalCertificado } from '@/interfaces/temporalCertificadoInterface'
+import { IAlumno } from '../interfaces/alumnoInterface'
+import TemporalCertificado from '../models/temporalCertificado.models'
+import { ITemporalCertificado } from '../interfaces/temporalCertificadoInterface'
 
 class CertificadoController {
     async getCertificados(req: Request, res: Response) {

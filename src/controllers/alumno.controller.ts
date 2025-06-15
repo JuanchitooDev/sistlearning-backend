@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import AlumnoService from '../services/alumno.service'
 import PersonaService from '../services/persona.service'
-import { IAlumno } from '@/interfaces/alumnoInterface'
-import { IPersona } from '@/interfaces/personaInterface'
+import { IAlumno } from '../interfaces/alumnoInterface'
+import { IPersona } from '../interfaces/personaInterface'
 import HString from '../helpers/HString'
-import { ITemporal } from '@/interfaces/temporalInterface'
-import Temporal from '@/models/temporal.models'
+import { ITemporal } from '../interfaces/temporalInterface'
+import Temporal from '../models/temporal.models'
 
 class AlumnoController {
     async getAlumnos(req: Request, res: Response) {
