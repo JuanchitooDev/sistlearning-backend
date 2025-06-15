@@ -250,21 +250,35 @@ class AlumnoRepository {
     }
 
     async create(data: IAlumno): Promise<AlumnoResponse> {
+        const options = {
+            timeZone: 'America/Lima',
+            hour12: false
+        }
+
         try {
-            const nombreCompleto = `${data.nombres} ${data.apellido_paterno} ${data.apellido_materno}`
-            const options = {
-                timeZone: 'America/Lima',
-                hour12: false
+            const {
+                nombres,
+                apellido_paterno,
+                apellido_materno,
+                fecha_nacimiento_str,
+                nombre_capitalized,
+                fecha_nacimiento
+            } = data
+
+            if (!nombre_capitalized) {
+                const nombreCompleto = `${nombres} ${apellido_paterno} ${apellido_materno}`
+                const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
+                data.nombre_capitalized = nombreCapitalized
             }
-            const fechaNacimientoStr = data.fecha_nacimiento?.toLocaleString('es-PE', options)
-            const nombreCapitalized = HString.capitalizeNames(nombreCompleto)
 
-            data.apellido_paterno = data.apellido_paterno?.trim()
-            data.apellido_materno = data.apellido_materno?.trim()
-            data.nombres = data.nombres?.trim()
+            if (!fecha_nacimiento_str) {
+                const fechaNacimientoStr = fecha_nacimiento?.toLocaleString('es-PE', options)
+                data.fecha_nacimiento_str = fechaNacimientoStr
+            }
 
-            data.fecha_nacimiento_str = fechaNacimientoStr
-            data.nombre_capitalized = nombreCapitalized
+            data.apellido_paterno = apellido_paterno?.trim()
+            data.apellido_materno = apellido_materno?.trim()
+            data.nombres = nombres?.trim()
 
             const newAlumno = await Alumno.create(data as any)
 

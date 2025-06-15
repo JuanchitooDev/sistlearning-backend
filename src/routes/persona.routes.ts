@@ -10,5 +10,6 @@ router.get('/:id', authToken, PersonaController.getPersonaPorId)
 router.post('/', authToken, PersonaController.createPersona)
 router.put('/:id', authToken, PersonaController.updatePersona)
 router.delete('/:id', authToken, PersonaController.deletePersona)
+router.post('/load-data', PersonaController.loadData)
 
 export default router

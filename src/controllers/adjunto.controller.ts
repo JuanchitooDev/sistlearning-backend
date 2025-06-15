@@ -122,7 +122,6 @@ class AdjuntoController {
 
         const { result, error } = response
 
-        console.log('response createAdjunto', response)
         if (result) {
             res.status(200).json(response);
         } else {
