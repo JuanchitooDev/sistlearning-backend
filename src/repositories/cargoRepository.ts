@@ -100,7 +100,9 @@ class CargoRepository {
 
     async create(data: ICargo): Promise<CargoResponse> {
         try {
-            data.nombre_url = HString.convertToUrlString(data.nombre as string)
+            const { nombre } = data
+
+            data.nombre_url = HString.convertToUrlString(nombre as string)
 
             const newCargo = await Cargo.create(data as any)
 
@@ -117,8 +119,10 @@ class CargoRepository {
 
     async update(id: number, data: ICargo): Promise<CargoResponse> {
         try {
-            if (data.nombre) {
-                data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            const { nombre } = data
+
+            if (nombre) {
+                data.nombre_url = HString.convertToUrlString(nombre as String)
             }
 
             const cargo = await Cargo.findByPk(id)

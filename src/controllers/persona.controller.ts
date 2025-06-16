@@ -123,24 +123,34 @@ class PersonaController {
             const { id_tipodocumento, numero_documento } = doc
 
             try {
+                // Obteniendo la respuesta de consultar una persona por tipo de documento y número de documento
                 const responsePersonaExiste = await PersonaService.getPersonaPorIdTipoDocAndNumDoc(id_tipodocumento, numero_documento)
 
-                if (responsePersonaExiste.result && responsePersonaExiste.data) {
+                const { result, data } = responsePersonaExiste
+
+                // Validando respuesta
+                if (result && data) {
                     resultados.push(
                         {
+                            id_tipodocumento,
                             numero_documento,
+                            tabla: "persona",
                             status: "Ya existe"
                         }
                     )
                     continue
                 }
 
+                // Obteniendo la respuesta de consultar una persona por tipo de documento y número de documento
                 const responsePersonaCreate = await DocumentoService.getDocumentoInfo(id_tipodocumento, numero_documento)
 
+                // Validando respuesta
                 if (responsePersonaCreate.result) {
                     resultados.push(
                         {
+                            id_tipodocumento,
                             numero_documento,
+                            tabla: "persona",
                             status: "Creado"
                         }
                     )
@@ -148,15 +158,16 @@ class PersonaController {
                     const dataTemporal: ITemporal = {
                         id_tipodocumento,
                         numero_documento,
-                        tabla: 'persona',
-                        esInsertado: true
+                        tabla: 'persona'
                     }
 
                     await Temporal.create(dataTemporal as any)
 
                     resultados.push(
                         {
+                            id_tipodocumento,
                             numero_documento,
+                            tabla: "persona",
                             status: "Error al crear. Insertado en temporal"
                         }
                     )
@@ -166,13 +177,14 @@ class PersonaController {
                     {
                         id_tipodocumento,
                         numero_documento,
-                        tabla: 'persona',
-                        esInsertado: false
+                        tabla: 'persona'
                     }
                 )
                 resultados.push(
                     {
+                        id_tipodocumento,
                         numero_documento,
+                        tabla: "persona",
                         status: "Error inesperado. Insertado en temporal"
                     }
                 )

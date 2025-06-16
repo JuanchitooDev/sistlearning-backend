@@ -3,8 +3,8 @@ import CertificadoService from '../services/certificado.service'
 import AlumnoService from '../services/alumno.service'
 import { ICertificado } from '../interfaces/certificadoInterface'
 import { IAlumno } from '../interfaces/alumnoInterface'
-import TemporalCertificado from '../models/temporalCertificado.models'
-import { ITemporalCertificado } from '../interfaces/temporalCertificadoInterface'
+import Temporal from '../models/temporal.models'
+import { ITemporal } from '../interfaces/temporalInterface'
 
 class CertificadoController {
     async getCertificados(req: Request, res: Response) {
@@ -248,17 +248,25 @@ class CertificadoController {
             } = payload
 
             try {
+                // Obteniendo respuesta de consultar un alumno por tipo de documento y número de documento
                 const responseAlumnoExiste = await AlumnoService.getAlumnoPorIdTipoDocNumDoc(id_tipodocumento, numero_documento)
 
-                if (responseAlumnoExiste.result && responseAlumnoExiste.data) {
+                const { result, data } = responseAlumnoExiste
+
+                // Validando si existe un alumno
+                if (result && data) {
 
                     const alumno = responseAlumnoExiste.data as IAlumno
 
                     const { id, nombre_capitalized } = alumno
 
+                    // Obteniendo respuesta de consultar un certificado por alumno y evento
                     const responseCertificadoExiste = await CertificadoService.getCertificadoPorAlumnoPorEvento(id as number, id_evento)
 
+                    // Validando si existe certificado
                     if (!responseCertificadoExiste.result) {
+
+                        // Creando un certificado
                         const certificado: ICertificado = {
                             id_alumno: id,
                             id_evento,
@@ -266,10 +274,11 @@ class CertificadoController {
                             fecha_envio: new Date(fecha_envio)
                         }
 
+                        // Obteniendo la respuesta de un nuevo certificado
                         const responseCertificadoCreate = await CertificadoService.createCertificado(certificado)
 
                         if (!responseCertificadoCreate.result) {
-                            const dataTemporal: ITemporalCertificado = {
+                            const dataTemporal: ITemporal = {
                                 id_evento,
                                 id_tipodocumento,
                                 numero_documento,
@@ -277,7 +286,7 @@ class CertificadoController {
                                 tabla: "certificado"
                             }
 
-                            await TemporalCertificado.create(dataTemporal as any)
+                            await Temporal.create(dataTemporal as any)
 
                             resultados.push(
                                 {
@@ -285,15 +294,39 @@ class CertificadoController {
                                     id_tipodocumento,
                                     numero_documento,
                                     fecha_envio,
+                                    tabla: "certificado",
                                     status: "Error al crear. Insertado en temporal_certificado"
                                 }
                             )
+                        } else {
+                            resultados.push(
+                                {
+                                    id_evento,
+                                    id_tipodocumento,
+                                    numero_documento,
+                                    fecha_envio,
+                                    tabla: "certificado",
+                                    status: "Creado"
+                                }
+                            )
                         }
+                    } else {
+                        resultados.push(
+                            {
+                                id_evento,
+                                id_tipodocumento,
+                                numero_documento,
+                                fecha_envio,
+                                tabla: "certificado",
+                                status: "Ya existe"
+                            }
+                        )
+                        continue
                     }
 
                 }
             } catch (error) {
-                const dataTemporal: ITemporalCertificado = {
+                const dataTemporal: ITemporal = {
                     id_evento,
                     id_tipodocumento,
                     numero_documento,
@@ -301,7 +334,7 @@ class CertificadoController {
                     tabla: "certificado"
                 }
 
-                await TemporalCertificado.create(dataTemporal as any)
+                await Temporal.create(dataTemporal as any)
 
                 resultados.push(
                     {
@@ -309,6 +342,7 @@ class CertificadoController {
                         id_tipodocumento,
                         numero_documento,
                         fecha_envio,
+                        tabla: "certificado",
                         status: "Error al crear. Insertado en temporal_certificado"
                     }
                 )

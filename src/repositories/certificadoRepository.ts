@@ -284,8 +284,10 @@ class CertificadoRepository {
 
             if (result) {
                 const certificado = response.data as ICertificado
-                const path = certificado.ruta as string
-                const fileName = certificado.fileName as string
+
+                const { ruta, fileName } = certificado
+
+                const path = ruta as string
 
                 // Verificar si el archivo existe antes de descargarlo
                 if (fs.existsSync(path)) {
@@ -311,13 +313,17 @@ class CertificadoRepository {
 
     async create(data: ICertificado): Promise<CertificadoResponse> {
         try {
-            const idAlumno = data.id_alumno as number
-            const idEvento = data.id_evento as number
+            const { id_alumno, id_evento, nombre_alumno_impresion } = data
+
+            const idAlumno = id_alumno as number
+            const idEvento = id_evento as number
 
             const alumnoResponse = await AlumnoService.getAlumnoPorId(idAlumno)
 
+            const { error } = alumnoResponse
+
             if (!alumnoResponse.result) {
-                if (alumnoResponse.error) {
+                if (error) {
                     return { result: false, error: alumnoResponse.error, status: 500 }
                 }
 
@@ -335,11 +341,14 @@ class CertificadoRepository {
             }
 
             const alumno = alumnoResponse.data as IAlumno
+
             const evento = eventoResponse.data as IEvento
 
-            const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
-                ? `${alumno.nombre_capitalized}`
-                : HString.capitalizeNames(data.nombre_alumno_impresion)
+            const { nombre_capitalized } = alumno
+
+            const nombreAlumnoImpresion = (nombre_alumno_impresion === undefined)
+                ? `${nombre_capitalized}`
+                : HString.capitalizeNames(nombre_alumno_impresion)
 
             data.nombre_alumno_impresion = nombreAlumnoImpresion
 
@@ -382,11 +391,19 @@ class CertificadoRepository {
                 return { result: false, message: 'Certificado no encontrado', status: 404 }
             }
 
+            const {
+                id_alumno,
+                id_evento,
+                nombre_alumno_impresion,
+                fecha_envio,
+                ruta
+            } = certificado
+
             if (
-                data.id_alumno !== certificado.id_alumno ||
-                data.id_evento !== certificado.id_evento ||
-                data.nombre_alumno_impresion !== certificado.nombre_alumno_impresion ||
-                data.fecha_envio !== certificado.fecha_envio
+                data.id_alumno !== id_alumno ||
+                data.id_evento !== id_evento ||
+                data.nombre_alumno_impresion !== nombre_alumno_impresion ||
+                data.fecha_envio !== fecha_envio
             ) {
                 const alumnoResponse = await AlumnoService.getAlumnoPorId(data.id_alumno as number)
 
@@ -399,6 +416,8 @@ class CertificadoRepository {
                 }
 
                 const alumno = alumnoResponse.data as IAlumno
+
+                const { nombre_capitalized } = alumno
 
                 const eventoResponse = await EventoService.getEventoPorId(data.id_evento as number)
 
@@ -413,18 +432,18 @@ class CertificadoRepository {
                 const evento = eventoResponse.data as IEvento
 
                 // Reemplazar el archivo anterior si existe
-                if (fs.existsSync(certificado.ruta as string)) {
-                    fs.unlinkSync(certificado.ruta as string); // Eliminar el archivo anterior
+                if (fs.existsSync(ruta as string)) {
+                    fs.unlinkSync(ruta as string); // Eliminar el archivo anterior
                 }
 
                 const nombreAlumnoImpresion = (data.nombre_alumno_impresion === undefined)
-                    ? `${alumno.nombre_capitalized}`
+                    ? `${nombre_capitalized}`
                     : HString.capitalizeNames(data.nombre_alumno_impresion)
 
                 data.id = certificado.id
                 data.codigo = certificado.codigo
                 data.codigoQR = certificado.codigoQR
-                data.ruta = certificado.ruta
+                data.ruta = ruta
                 data.nombre_alumno_impresion = nombreAlumnoImpresion
 
                 // Generar un nuevo archivo PDF
@@ -488,8 +507,10 @@ class CertificadoRepository {
                 return { result: false, message: 'Certificado no encontrado', data: [], status: 200 };
             }
 
+            const { ruta } = certificado
+
             // Eliminar el archivo del sistema de archivos
-            const outputPath = certificado.ruta as string
+            const outputPath = ruta as string
             if (fs.existsSync(outputPath)) {
                 fs.unlinkSync(outputPath)
             }
