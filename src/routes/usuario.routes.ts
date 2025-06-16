@@ -11,6 +11,6 @@ router.put('/:id', authToken, UsuarioController.updateUsuario)
 router.put('/cambiar-estado/:id', authToken, UsuarioController.updateEstado)
 router.delete('/:id', authToken, UsuarioController.deleteUsuario)
 
-router.post('/load-data', UsuarioController.loadData)
+router.post('/load-data-alumnos', UsuarioController.loadDataAlumnos)
 
 export default router
