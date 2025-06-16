@@ -72,7 +72,9 @@ class CategoriaEventoRepository {
 
     async create(data: ICategoriaEvento): Promise<CategoriaEventoResponse> {
         try {
-            data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            const { nombre } = data
+
+            data.nombre_url = HString.convertToUrlString(nombre as String)
 
             const newTipo = await CategoriaEvento.create(data as any)
 
@@ -89,8 +91,10 @@ class CategoriaEventoRepository {
 
     async update(id: number, data: ICategoriaEvento): Promise<CategoriaEventoResponse> {
         try {
-            if (data.nombre) {
-                data.nombre_url = HString.convertToUrlString(data.nombre as String)
+            const { nombre } = data
+
+            if (nombre) {
+                data.nombre_url = HString.convertToUrlString(nombre as String)
             }
 
             const categoria = await CategoriaEvento.findByPk(id)

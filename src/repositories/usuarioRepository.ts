@@ -198,6 +198,91 @@ class UsuarioRepository {
         }
     }
 
+    async getByIdAndPerfil(id: number, nombrePerfil: string): Promise<UsuarioResponse> {
+        try {
+            const perfil = await Perfil.findOne({
+                where: {
+                    nombre: nombrePerfil
+                }
+            })
+
+            if (!perfil) {
+                return { result: false, data: [], message: 'Perfil no encontrado', status: 200 }
+            }
+
+            let whereClause: any = { id_perfil: perfil.id }
+
+            if (nombrePerfil === 'Estudiante') {
+                whereClause.id_alumno = id
+            } else if (nombrePerfil === 'Instructor') {
+                whereClause.id_instructor = id
+            } else if (nombrePerfil === 'Administrador') {
+                whereClause.id_trabajador = id
+            } else {
+                return { result: false, data: [], message: 'Perfil no válido', status: 200 }
+            }
+
+            const usuario = await Usuario.findOne({
+                where: whereClause,
+                attributes: [
+                    'id',
+                    'id_trabajador',
+                    'id_instructor',
+                    'id_alumno',
+                    'id_perfil',
+                    'username',
+                    'estado'
+                ],
+                include: [
+                    {
+                        model: Trabajador,
+                        attributes: [
+                            'id',
+                            'numero_documento',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres'
+                        ]
+                    },
+                    {
+                        model: Instructor,
+                        attributes: [
+                            'id',
+                            'numero_documento',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres'
+                        ]
+                    },
+                    {
+                        model: Alumno,
+                        attributes: [
+                            'id',
+                            'numero_documento',
+                            'apellido_paterno',
+                            'apellido_materno',
+                            'nombres'
+                        ]
+                    },
+                    {
+                        model: Perfil,
+                        attributes: [
+                            'id',
+                            'nombre'
+                        ]
+                    }
+                ],
+            })
+            if (!usuario) {
+                return { result: false, data: [], message: 'Usuario no encontrado', status: 200 }
+            }
+            return { result: true, data: usuario as IUsuario, message: 'Usuario encontrado', status: 200 }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            return { result: false, error: errorMessage, status: 500 }
+        }
+    }
+
     async create(data: IUsuario): Promise<UsuarioResponse> {
         try {
             const password = data.password as string

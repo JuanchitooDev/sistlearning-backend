@@ -1,5 +1,11 @@
 import { Request, Response } from "express"
 import UsuarioService from "../services/usuario.service"
+import AlumnoService from "../services/alumno.service"
+import { IUsuario } from '../interfaces/usuarioInterface'
+import { IAlumno } from "../interfaces/alumnoInterface"
+import Perfil from "../models/perfil.models"
+import { ITemporal } from "../interfaces/temporalInterface"
+import Temporal from "../models/temporal.models"
 
 class UsuarioController {
     async getUsuarios(req: Request, res: Response) {
@@ -129,6 +135,136 @@ class UsuarioController {
                 res.status(200).json(response);
             }
         }
+    }
+
+    async loadDataAlumnos(req: Request, res: Response) {
+        const documentos: { id_tipodocumento: number, numero_documento: string, perfil: string }[] = req.body
+
+        if (!Array.isArray(documentos)) {
+            res.status(400).json(
+                {
+                    result: false,
+                    message: 'El parámetro debe ser un arreglo'
+                }
+            )
+        }
+
+        const resultados = []
+
+        for (const doc of documentos) {
+            const { id_tipodocumento, numero_documento, perfil } = doc
+
+            try {
+
+                // Obteniendo la respuesta de consultar un alumno por tipo de documento y número de documento
+                const responseAlumnoExiste = await AlumnoService.getAlumnoPorIdTipoDocNumDoc(id_tipodocumento, numero_documento)
+
+                const { result, data } = responseAlumnoExiste
+
+                // Validando si existe un alumno
+                if (result && data) {
+                    const { id } = data as IAlumno
+
+                    const idAlumno = id as number
+
+                    // Obteniendo la respuesta de consultar un usuario por alumno y perfil
+                    const responseUsuarioExiste = await UsuarioService.getUsuarioPorIdAlumnoPerfil(idAlumno, perfil)
+
+                    // Validando si existe un usuario
+                    if (!responseUsuarioExiste.result) {
+                        let usuario: IUsuario = {}
+
+                        const getPerfil = await Perfil.findOne({
+                            where: {
+                                nombre: perfil
+                            }
+                        })
+
+                        if (!getPerfil) {
+                            continue
+                        }
+
+                        usuario.id_perfil = getPerfil.id
+
+                        if (perfil === 'Estudiante') {
+                            usuario.id_alumno = id
+                        } else if (perfil === 'Instructor') {
+                            usuario.id_instructor = id
+                        } else if (perfil === 'Administrador') {
+                            usuario.id_trabajador = id
+                        }
+
+                        // Obteniendo una respuesta del registro de un usuario
+                        const responseUsuarioCreate = await UsuarioService.createUsuario(usuario)
+
+                        // Validando respuesta
+                        if (responseUsuarioCreate.result) {
+                            resultados.push(
+                                {
+                                    id_tipodocumento,
+                                    numero_documento,
+                                    tabla: "usuario",
+                                    status: "Creado"
+                                }
+                            )
+                        } else {
+                            const dataTemporal: ITemporal = {
+                                id_usuario: id,
+                                id_perfil: getPerfil.id,
+                                id_tipodocumento,
+                                numero_documento,
+                                tabla: "usuario"
+                            }
+
+                            await Temporal.create(dataTemporal as any)
+
+                            resultados.push(
+                                {
+                                    id_tipodocumento,
+                                    numero_documento,
+                                    tabla: "usuario",
+                                    status: "Error al crear. Insertado en temporal"
+                                }
+                            )
+                        }
+                    } else {
+                        resultados.push(
+                            {
+                                id_tipodocumento,
+                                numero_documento,
+                                tabla: "usuario",
+                                status: "Ya existe"
+                            }
+                        )
+                        continue
+                    }
+
+                }
+            } catch (error) {
+                await Temporal.create(
+                    {
+                        id_tipodocumento,
+                        numero_documento,
+                        tabla: 'usuario'
+                    }
+                )
+
+                resultados.push(
+                    {
+                        numero_documento,
+                        tabla: "usuario",
+                        status: "Error inesperado. Insertado en temporal"
+                    }
+                )
+            }
+        }
+
+        res.status(200).json(
+            {
+                result: true,
+                data: resultados
+            }
+        )
     }
 }
 

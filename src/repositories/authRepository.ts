@@ -18,9 +18,11 @@ class AuthRepository {
         try {
             let usuarioAutenticado: IAuth = {}
 
-            const dataUsername = data.username as string
-            const dataPassword = data.password as string
-            const userAgent = data.userAgent as string
+            const { username, password, userAgent } = data
+
+            const dataUsername = username as string
+            const dataPassword = password as string
+            const dataUserAgent = userAgent as string
 
             const getUsuario = await Usuario.findOne(
                 {
@@ -35,11 +37,11 @@ class AuthRepository {
             }
 
             const {
+                id,
                 id_perfil,
                 id_trabajador,
                 id_alumno,
                 id_instructor,
-                username
             } = getUsuario
 
             usuarioAutenticado.idPerfil = id_perfil
@@ -50,36 +52,49 @@ class AuthRepository {
 
             if (id_perfil) {
                 const responsePerfil = await PerfilService.getPerfilPorId(id_perfil)
-                const perfil = responsePerfil.data as IPerfil
+
+                const { data } = responsePerfil
+
+                const perfil = data as IPerfil
+
+                const { nombre, nombre_url } = perfil
 
                 if (perfil) {
-                    usuarioAutenticado.nombrePerfil = perfil.nombre
-                    usuarioAutenticado.slugPerfil = perfil.nombre_url
+                    usuarioAutenticado.nombrePerfil = nombre
+                    usuarioAutenticado.slugPerfil = nombre_url
                 }
             }
 
             if (id_alumno && !id_instructor && !id_trabajador) {
                 const responseAlumno = await AlumnoService.getAlumnoPorId(id_alumno)
+
                 const alumno = responseAlumno.data as IAlumno
 
                 if (alumno) {
-                    const nombreCompleto = alumno.nombre_capitalized
-                    usuarioAutenticado.usuario = nombreCompleto
+                    const { nombre_capitalized } = alumno
+
+                    usuarioAutenticado.usuario = nombre_capitalized
                 }
             } else if (!id_alumno && id_instructor && !id_trabajador) {
                 const responseInstructor = await InstructorService.getInstructorPorId(id_instructor)
+
                 const instructor = responseInstructor.data as IInstructor
 
                 if (instructor) {
-                    const nombreCompleto = instructor.nombre_capitalized
-                    usuarioAutenticado.usuario = nombreCompleto
+                    const { nombre_capitalized } = instructor
+
+                    usuarioAutenticado.usuario = nombre_capitalized
                 }
             } else if (!id_alumno && !id_instructor && id_trabajador) {
                 const responseTrabajador = await TrabajadorService.getTrabajadorPorId(id_trabajador)
+
                 const trabajador = responseTrabajador.data as ITrabajador
 
                 if (trabajador) {
-                    const nombreCompleto = `${trabajador.nombres} ${trabajador.apellido_paterno} ${trabajador.apellido_materno}`
+                    const { nombres, apellido_paterno, apellido_materno } = trabajador
+
+                    const nombreCompleto = `${nombres} ${apellido_paterno} ${apellido_materno}`
+
                     usuarioAutenticado.usuario = nombreCompleto
                 }
             }
@@ -91,7 +106,7 @@ class AuthRepository {
             }
 
             const token = jwt.sign(
-                { id: getUsuario.id, username: getUsuario.username },
+                { id, username },
                 process.env.JWT_SECRET || '',
                 { expiresIn: process.env.EXPIRE_TOKEN }
             )
@@ -109,9 +124,9 @@ class AuthRepository {
                 const newSesion = await LogSesion.create(
                     {
                         token,
-                        id_usuario: getUsuario.id,
+                        id_usuario: id,
                         fecha_sesion: new Date(),
-                        user_agent: userAgent
+                        user_agent: dataUserAgent
                     }
                 )
 

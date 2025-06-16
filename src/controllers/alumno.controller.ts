@@ -175,7 +175,10 @@ class AlumnoController {
     }
 
     async loadData(req: Request, res: Response) {
-        const documentos: { id_tipodocumento: number, numero_documento: string }[] = req.body
+        const documentos: {
+            id_tipodocumento: number,
+            numero_documento: string
+        }[] = req.body
 
         if (!Array.isArray(documentos)) {
             res.status(400).json(
@@ -192,21 +195,28 @@ class AlumnoController {
             const { id_tipodocumento, numero_documento } = doc
 
             try {
+                // Obteniendo la respuesta de consultar un alumno por tipo de documento y número de documento
                 const responseAlumnoExiste = await AlumnoService.getAlumnoPorIdTipoDocNumDoc(id_tipodocumento, numero_documento)
 
-                if (responseAlumnoExiste.result && responseAlumnoExiste.data) {
+                const { result, data } = responseAlumnoExiste
+
+                // Validando si existe un alumno
+                if (result && data) {
                     resultados.push(
                         {
+                            id_tipodocumento,
                             numero_documento,
+                            tabla: "alumno",
                             status: "Ya existe"
                         }
                     )
                     continue
                 }
 
-                // Obteniendo la persona
+                // Obteniendo la respuesta de consultar una persona por tipo de documento y número de documento
                 const responsePersonaExiste = await PersonaService.getPersonaPorIdTipoDocAndNumDoc(id_tipodocumento, numero_documento)
 
+                // Validando si existe una persona
                 if (responsePersonaExiste.result && responsePersonaExiste.data) {
                     const persona: IPersona = responsePersonaExiste.data as IPersona
 
@@ -227,6 +237,7 @@ class AlumnoController {
                     const partsFechaNacimiento = fechaNacimientoStr.split("/")
                     const fechaNacimiento = `${partsFechaNacimiento[2]}-${partsFechaNacimiento[1]}-${partsFechaNacimiento[0]}`
 
+                    // Creando un alumno
                     const alumno: IAlumno = {
                         id_tipodocumento,
                         numero_documento: numero,
@@ -242,12 +253,16 @@ class AlumnoController {
                         telefono: "--"
                     }
 
+                    // Obteniendo la respuesta de un nuevo alumno
                     const responseAlumnoCreate = await AlumnoService.createAlumno(alumno)
 
+                    // Validando respuesta del registro de un nuevo alumno
                     if (responseAlumnoCreate.result) {
                         resultados.push(
                             {
+                                id_tipodocumento,
                                 numero_documento,
+                                tabla: "alumno",
                                 status: "Creado"
                             }
                         )
@@ -256,14 +271,15 @@ class AlumnoController {
                             id_tipodocumento,
                             numero_documento,
                             tabla: 'alumno',
-                            esInsertado: true
                         }
 
                         await Temporal.create(dataTemporal as any)
 
                         resultados.push(
                             {
+                                id_tipodocumento,
                                 numero_documento,
+                                tabla: "alumno",
                                 status: "Error al crear. Insertado en temporal"
                             }
                         )
@@ -274,13 +290,14 @@ class AlumnoController {
                     {
                         id_tipodocumento,
                         numero_documento,
-                        tabla: 'alumno',
-                        esInsertado: false
+                        tabla: 'alumno'
                     }
                 )
+
                 resultados.push(
                     {
                         numero_documento,
+                        tabla: "alumno",
                         status: "Error inesperado. Insertado en temporal"
                     }
                 )

@@ -244,12 +244,17 @@ class AdjuntoRepository {
     async downloadById(id: number) {
         try {
             const response = await this.getById(id)
-            const { result, data, message } = response
+
+            const { result, data, message, error } = response
 
             if (result) {
                 const adjunto = data as IAdjunto
-                const path = adjunto.filepath as string
-                const fileName = adjunto.filename as string
+
+                const { filepath, filename } = adjunto
+
+                const path = filepath as string
+
+                const fileName = filename as string
 
                 // Verificar si el archivo existe antes de descargarlo
                 if (fs.existsSync(path)) {
@@ -265,7 +270,7 @@ class AdjuntoRepository {
 
                 return { result: false, message: 'Adjunto no encontrado', outputPath: null, fileName: null, status: 200 }
             } else {
-                return { result: false, error: response.error, outputPath: null, fileName: null, status: 500 }
+                return { result: false, error, outputPath: null, fileName: null, status: 500 }
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
@@ -275,10 +280,15 @@ class AdjuntoRepository {
 
     async create(data: IAdjunto): Promise<AdjuntoResponse> {
         try {
-            data.titulo_url = HString.convertToUrlString(data.titulo as String)
+            const { titulo } = data
+
+            data.titulo_url = HString.convertToUrlString(titulo as String)
+
             const newAdjunto = await Adjunto.create(data as any)
 
-            if (newAdjunto.id) {
+            const { id } = newAdjunto
+
+            if (id) {
                 return { result: true, message: 'Adjunto registrado con éxito', data: newAdjunto, status: 200 }
             }
 
@@ -291,8 +301,10 @@ class AdjuntoRepository {
 
     async update(id: number, data: IAdjunto): Promise<AdjuntoResponse> {
         try {
-            if (data.titulo) {
-                data.titulo_url = HString.convertToUrlString(data.titulo as String)
+            const { titulo } = data
+
+            if (titulo) {
+                data.titulo_url = HString.convertToUrlString(titulo as String)
             }
 
             const adjunto = await Adjunto.findByPk(id)
@@ -319,6 +331,7 @@ class AdjuntoRepository {
             }
 
             adjunto.estado = estado
+
             await adjunto.save()
 
             return { result: true, message: 'Estado actualizado con éxito', data: adjunto, status: 200 }

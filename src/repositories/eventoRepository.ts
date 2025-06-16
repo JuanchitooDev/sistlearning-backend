@@ -210,8 +210,10 @@ class EventoRepository {
         try {
             const plantillaCertificado = `plantillas/${data.plantilla_certificado}.pdf`
 
+            const { titulo } = data
+
             data.plantilla_certificado = plantillaCertificado
-            data.titulo_url = HString.convertToUrlString(data.titulo as String)
+            data.titulo_url = HString.convertToUrlString(titulo as String)
 
             const newEvento = await Evento.create(data as any)
 
@@ -229,11 +231,13 @@ class EventoRepository {
 
     async update(id: number, data: IEvento): Promise<EventoResponse> {
         try {
-            if (data.titulo) {
-                const plantillaCertificado = `plantillas/${data.plantilla_certificado}.pdf`
+            const { titulo, plantilla_certificado } = data
+
+            if (titulo) {
+                const plantillaCertificado = `plantillas/${plantilla_certificado}.pdf`
 
                 data.plantilla_certificado = plantillaCertificado
-                data.titulo_url = HString.convertToUrlString(data.titulo as String)
+                data.titulo_url = HString.convertToUrlString(titulo as String)
             }
 
             const evento = await Evento.findByPk(id)

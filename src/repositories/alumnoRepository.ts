@@ -282,7 +282,9 @@ class AlumnoRepository {
 
             const newAlumno = await Alumno.create(data as any)
 
-            if (newAlumno.id) {
+            const { id } = newAlumno
+
+            if (id) {
                 return { result: true, message: 'Alumno registrado con éxito', data: newAlumno, status: 200 }
             }
 

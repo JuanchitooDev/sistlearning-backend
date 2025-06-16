@@ -14,6 +14,10 @@ class UsuarioService {
         return await UsuarioRepository.getById(id)
     }
 
+    async getUsuarioPorIdAlumnoPerfil(id: number, perfil: string) {
+        return await UsuarioRepository.getByIdAndPerfil(id, perfil)
+    }
+
     async createUsuario(data: IUsuario) {
         return await UsuarioRepository.create(data)
     }
