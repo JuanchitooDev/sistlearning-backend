@@ -137,7 +137,7 @@ class UsuarioController {
         }
     }
 
-    async loadData(req: Request, res: Response) {
+    async loadDataAlumnos(req: Request, res: Response) {
         const documentos: { id_tipodocumento: number, numero_documento: string, perfil: string }[] = req.body
 
         if (!Array.isArray(documentos)) {
@@ -152,6 +152,7 @@ class UsuarioController {
         const resultados = []
 
         for (const doc of documentos) {
+
             const { id_tipodocumento, numero_documento, perfil } = doc
 
             try {
@@ -163,7 +164,10 @@ class UsuarioController {
 
                 // Validando si existe un alumno
                 if (result && data) {
-                    const { id } = data as IAlumno
+
+                    const dataAlumno = data as IAlumno
+
+                    const { id } = dataAlumno
 
                     const idAlumno = id as number
 
@@ -172,6 +176,7 @@ class UsuarioController {
 
                     // Validando si existe un usuario
                     if (!responseUsuarioExiste.result) {
+
                         let usuario: IUsuario = {}
 
                         const getPerfil = await Perfil.findOne({
@@ -184,15 +189,19 @@ class UsuarioController {
                             continue
                         }
 
-                        usuario.id_perfil = getPerfil.id
+                        usuario.id_perfil = getPerfil.id as number
 
                         if (perfil === 'Estudiante') {
-                            usuario.id_alumno = id
+                            usuario.id_alumno = idAlumno
                         } else if (perfil === 'Instructor') {
-                            usuario.id_instructor = id
+                            usuario.id_instructor = idAlumno
                         } else if (perfil === 'Administrador') {
-                            usuario.id_trabajador = id
+                            usuario.id_trabajador = idAlumno
                         }
+
+                        usuario.username = dataAlumno.numero_documento
+
+                        usuario.password = `123456`
 
                         // Obteniendo una respuesta del registro de un usuario
                         const responseUsuarioCreate = await UsuarioService.createUsuario(usuario)
