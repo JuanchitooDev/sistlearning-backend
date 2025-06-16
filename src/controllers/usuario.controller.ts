@@ -137,7 +137,7 @@ class UsuarioController {
         }
     }
 
-    async loadDataAlumnos(req: Request, res: Response) {
+    async loadData(req: Request, res: Response) {
         const documentos: { id_tipodocumento: number, numero_documento: string, perfil: string }[] = req.body
 
         if (!Array.isArray(documentos)) {
