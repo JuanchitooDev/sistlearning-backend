@@ -15,6 +15,7 @@ module.exports = {
     await queryInterface.bulkInsert('TipoDocumentos', [
       {
         nombre: 'Documento Nacional de Identidad',
+        nombre_url: 'documento-nacional-de-identidad',
         abreviatura: 'DNI',
         longitud: 8,
         en_persona: true,
@@ -24,6 +25,7 @@ module.exports = {
       },
       {
         nombre: 'Carnét de extranjería',
+        nombre_url: 'carnet-de-extranjeria',
         abreviatura: 'CE',
         longitud: 13,
         en_persona: true,
@@ -33,6 +35,7 @@ module.exports = {
       },
       {
         nombre: 'CÉDULA',
+        nombre_url: 'cedula',
         abreviatura: 'CED',
         longitud: 13,
         en_persona: true,
