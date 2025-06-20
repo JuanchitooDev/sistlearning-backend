@@ -692,7 +692,7 @@ export default class HPdf {
                     fontSizeForAlumno = 56;
 
                     y = 280;  // Posición Y
-                    maxWidth = 720; // Ancho máximo disponible para el texto
+                    maxWidth = 540; // Ancho máximo disponible para el texto
 
                     // Distancia entre líneas para el nombre del alumno
                     lineHeightAlumno = 0.8 * fontSizeForAlumno;
@@ -701,7 +701,8 @@ export default class HPdf {
                     linesAlumno = this.splitTextIntoLines(nombreImpresion, maxWidth, customFontKuenstlerBold, fontSizeForAlumno);
 
                     if (linesAlumno.length > 1) {
-                        fontSizeForAlumno = 50;
+                        fontSizeForAlumno = 52;
+                        y += 20;
                     }
 
                     // Dibujar el nombre del alumno centrado
