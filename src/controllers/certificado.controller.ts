@@ -225,7 +225,8 @@ class CertificadoController {
             id_evento: number,
             id_tipodocumento: number,
             numero_documento: string,
-            fecha_envio: string
+            fecha_envio: string,
+            nombre_impresion: string
         }[] = req.body
 
         if (!Array.isArray(payloadCertificados)) {
@@ -244,7 +245,8 @@ class CertificadoController {
                 id_evento,
                 id_tipodocumento,
                 numero_documento,
-                fecha_envio
+                fecha_envio,
+                nombre_impresion
             } = payload
 
             try {
@@ -270,7 +272,7 @@ class CertificadoController {
                         const certificado: ICertificado = {
                             id_alumno: id,
                             id_evento,
-                            nombre_alumno_impresion: nombre_capitalized,
+                            nombre_alumno_impresion: (nombre_impresion ? nombre_impresion : nombre_capitalized),
                             fecha_envio: new Date(fecha_envio)
                         }
 
