@@ -12,6 +12,8 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+    const now = new Date()
+
     await queryInterface.bulkInsert('TipoDocumentos', [
       {
         nombre: 'Documento Nacional de Identidad',
@@ -21,7 +23,9 @@ module.exports = {
         en_persona: true,
         en_empresa: false,
         compra: false,
-        venta: false
+        venta: false,
+        createdAt: now,
+        updatedAt: now
       },
       {
         nombre: 'Carnét de extranjería',
@@ -31,7 +35,9 @@ module.exports = {
         en_persona: true,
         en_empresa: false,
         compra: false,
-        venta: false
+        venta: false,
+        createdAt: now,
+        updatedAt: now
       },
       {
         nombre: 'CÉDULA',
@@ -41,7 +47,9 @@ module.exports = {
         en_persona: true,
         en_empresa: false,
         compra: false,
-        venta: false
+        venta: false,
+        createdAt: now,
+        updatedAt: now
       },
     ])
   },
