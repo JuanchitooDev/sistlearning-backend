@@ -15,6 +15,7 @@ module.exports = {
     await queryInterface.bulkInsert('TipoDocumentos', [
       {
         nombre: 'REGISTRO ÚNICO DE CONTRIBUYENTE',
+        nombre_url: 'registro-unico-de-contribuyente',
         abreviatura: 'RUC',
         longitud: 11,
         en_persona: false,
@@ -24,6 +25,7 @@ module.exports = {
       },
       {
         nombre: "OTROS",
+        nombre_url: 'otros',
         abreviatura: "OTROS",
         longitud: 15,
         en_persona: true,
