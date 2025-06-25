@@ -150,10 +150,13 @@ class PersonaRepository {
 
     async create(data: IPersona): Promise<PersonaResponse> {
         const t = await sequelize.transaction()
+
         try {
             const newPersona = await Persona.create(data as any)
 
             await t.commit()
+
+            console.log('newPersona', newPersona)
 
             if (newPersona.id) {
                 return { result: true, message: 'Persona registrada con éxito', data: newPersona, status: 200 }
@@ -164,13 +167,14 @@ class PersonaRepository {
             await t.rollback()
 
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-
+            console.log('errorMessage createPersona', errorMessage)
             return { result: false, error: errorMessage, status: 500 }
         }
     }
 
     async update(id: number, data: IPersona): Promise<PersonaResponse> {
         const t = await sequelize.transaction()
+        
         try {
             const persona = await Persona.findByPk(id)
 
