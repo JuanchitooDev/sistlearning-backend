@@ -22,8 +22,22 @@ export default class HPdf {
 
             const { plantilla_certificado } = evento
 
+            console.log('plantilla certificado original', plantilla_certificado)
+
+            if (!plantilla_certificado) {
+                return { result: false, message: `El evento no tiene una plantilla asignada` }
+            }
+
+            const withFirma = (data.firmado === undefined) ? true : (!data.firmado ? false : true)
+
+            // Actualizando la plantilla del certificado
+            const templateCertificado = this.validateFirma(plantilla_certificado, withFirma)
+
+            data.templateName = templateCertificado
+
             const lugar = 'Lambayeque';
-            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${plantilla_certificado}`);
+            // const pathTemplate = path.resolve(__dirname, `../../public/pdf/${plantilla_certificado}`);
+            const pathTemplate = path.resolve(__dirname, `../../public/pdf/${templateCertificado}`);
             const pathFontKuenstler = path.resolve(__dirname, '../../public/fonts/KUNSTLER.TTF')
             const pathFontKuenstlerBold = path.resolve(__dirname, "../../public/fonts/Kuenstler Script LT Std 2 Bold.otf");
             const pathFontBalooBold = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Bold.ttf')
@@ -54,7 +68,7 @@ export default class HPdf {
                 return { result: false, message: `No existe el logo` }
             }
 
-            const { nombre_alumno_impresion } = data
+            const { nombre_alumno_impresion, firmado } = data
 
             const { titulo, temario, fecha, fecha_fin } = evento
 
@@ -103,8 +117,16 @@ export default class HPdf {
                 codigo = HString.generateCodigo()
             }
 
-            // Actualizando la plantilla del certificado
-            data.templateName = plantilla_certificado
+            // if (!plantilla_certificado) {
+            //     return { result: false, message: `El evento no tiene una plantilla asignada` }
+            // }
+
+            // const withFirma = (firmado === undefined) ? true : (!firmado ? false : true)
+
+            // // Actualizando la plantilla del certificado
+            // data.templateName = this.validateFirma(plantilla_certificado, withFirma)
+
+            // console.log('data certificado', data)
 
             // Verificando que el directorio de salida exista, sino se crea
             const outputDir = path.dirname(outputPath)
@@ -688,6 +710,7 @@ export default class HPdf {
                     }
                     break
                 case "plantillas/plantilla_primer_congreso_internacional_2025.pdf":
+                case "plantillas/plantilla_primer_congreso_internacional_2025_sin_firma.pdf":
                     // Configurar el texto del nombre del alumno
                     fontSizeForAlumno = 56;
 
@@ -1022,5 +1045,20 @@ export default class HPdf {
         }
 
         return lines;
+    }
+
+    static validateFirma(template: string, tieneFirma: boolean): string {
+        if (tieneFirma) return template
+
+        const parts = template.split("/")
+        const nombreArchivo = parts.pop(); // Extrae el nombre del archivo
+
+        if (!nombreArchivo) {
+            throw new Error("Nombre de archivo no encontrado en la ruta de la plantilla")
+        }
+
+        const nuevoNombre = nombreArchivo.replace(/\.pdf$/, '_sin_firma.pdf')
+
+        return [...parts, nuevoNombre].join('/')
     }
 }

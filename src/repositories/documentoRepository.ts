@@ -18,6 +18,10 @@ class DocumentoRepository {
             const dataTipoDocumento = getTipoDocumento.data as ITipoDocumento
             const { abreviatura } = dataTipoDocumento
 
+            console.log('dataPersona', dataPersona)
+
+            console.log('dataTipoDocumento', dataTipoDocumento)
+
             const { result, data, status } = dataPersona
 
             if (!result) {
@@ -38,6 +42,8 @@ class DocumentoRepository {
                         Authorization: `Bearer ${token}`
                     }
                 })
+
+                console.log('response api', response)
 
                 // Comprobando si la respuesta es exitosa
                 if (response.data.success) {
@@ -88,6 +94,8 @@ class DocumentoRepository {
 
                     const createPersona = await PersonaService.createPersona(persona)
 
+                    console.log('createPersona', createPersona)
+
                     // return createPersona
                     if (createPersona.result) {
                         return { result: createPersona.result, data: createPersona.data, message: createPersona.message, status: createPersona.status }
@@ -102,6 +110,7 @@ class DocumentoRepository {
             }
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+            console.log('errorMessage getInfo API', errorMessage)
 
             if (errorMessage === 'Request failed with status code 404') {
                 const message = `No se encontró información con el número de documento: ${numeroDocumento}`

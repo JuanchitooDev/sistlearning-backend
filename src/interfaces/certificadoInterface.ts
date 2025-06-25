@@ -17,6 +17,7 @@ export interface ICertificado {
     user_crea?: string
     user_actualiza?: string
     user_elimina?: string
+    firmado?: boolean
     sistema?: boolean
     estado?: boolean
     alumno?: IAlumno
