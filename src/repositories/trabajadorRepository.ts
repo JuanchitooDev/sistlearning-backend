@@ -33,7 +33,7 @@ class TrabajadorRepository {
                     },
                     {
                         model: TipoDocumento,
-                        attributes: ['id', 'nombre']
+                        attributes: ['id', 'nombre', 'abreviatura']
                     }
                 ],
                 order: [
@@ -80,7 +80,7 @@ class TrabajadorRepository {
                     },
                     {
                         model: TipoDocumento,
-                        attributes: ['id', 'nombre']
+                        attributes: ['id', 'nombre', 'abreviatura']
                     }
                 ],
                 order: [
@@ -124,7 +124,7 @@ class TrabajadorRepository {
                     },
                     {
                         model: TipoDocumento,
-                        attributes: ['id', 'nombre']
+                        attributes: ['id', 'nombre', 'abreviatura']
                     }
                 ]
             })
@@ -172,7 +172,7 @@ class TrabajadorRepository {
                     },
                     {
                         model: TipoDocumento,
-                        attributes: ['id', 'nombre']
+                        attributes: ['id', 'nombre', 'abreviatura']
                     }
                 ]
             })
@@ -218,7 +218,7 @@ class TrabajadorRepository {
                     },
                     {
                         model: TipoDocumento,
-                        attributes: ['id', 'nombre']
+                        attributes: ['id', 'nombre', 'abreviatura']
                     }
                 ]
             })

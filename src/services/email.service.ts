@@ -1,9 +1,9 @@
 import EmailRepository from "../repositories/emailRepository"
-import { IAlumno } from "../interfaces/alumnoInterface"
+import { IEmail } from "../interfaces/emailInterface"
 
 class EmailService {
-    async sendAlumnoInscripcion(data: IAlumno) {
-        return await EmailRepository.sendAlumnoInscripcionEmail(data)
+    async sendEmail({ to, subject, text, copyTo }: IEmail) {
+        return await EmailRepository.sendEmail({ to, subject, text, copyTo })
     }
 }
 

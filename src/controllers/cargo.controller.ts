@@ -52,6 +52,24 @@ class CargoController {
         }
     }
 
+    async getCargoPorNombre(req: Request, res: Response) {
+        const { nombre } = req.params
+
+        const response = await CargoService.getCargosPorNombre(nombre)
+
+        const { result, error } = response
+
+        if (result) {
+            res.status(200).json(response)
+        } else {
+            if (error) {
+                res.status(500).json(response)
+            } else {
+                res.status(200).json(response);
+            }
+        }
+    }
+
     async createCargo(req: Request, res: Response) {
         const response = await CargoService.createCargo(req.body);
 
