@@ -1,47 +1,27 @@
-import fs from 'fs'
-import path from 'path'
-import transporter from "../config/mailer"
-import { Attachment } from "nodemailer/lib/mailer"
-import { IAlumno } from "../interfaces/alumnoInterface"
-import { IAdjunto } from "../interfaces/adjuntoInterface"
+import transporter from '../config/mailer'
+import { IEmail } from "../interfaces/emailInterface"
 
 class EmailRepository {
-    async sendAlumnoInscripcionEmail(alumno: IAlumno) {
-        const html = this.readTemplate('alumnoInscripcion.html')
-            .replace('{{ nombre }}', alumno.nombres || '')
-            .replace('{{ apellido }}', alumno.apellido_paterno || '')
+    async sendEmail({ to, subject, text, copyTo }: IEmail): Promise<any> {
+        // const recipient = `juan.racchumi.dev@gmail.com`
+        const recipients = copyTo ? [to, copyTo].join(',') : to
+        console.log('recipients', recipients)
 
-        await transporter.sendMail({
-            from: process.env.MAIL_USER,
-            to: alumno.email,
-            subject: '¡Bienvenido a tu curso!',
-            html
-        })
-    }
+        const mailOptions = {
+            from: process.env.EMAIL_USER_GMAIL,
+            to: recipients,
+            subject,
+            text
+        }
 
-    async setAlumnoContenidoEmail(alumno: IAlumno, contenidos: IAdjunto[]) {
-        const adjuntos: Attachment[] = []
-        const enlaces: string[] = []
-
-        contenidos.forEach(contenido => {
-            if (contenido.es_descargable && contenido.url?.endsWith('.pdf')) {
-                const filePath = path.resolve(__dirname, `../../public/contenidos/${contenido.url}`)
-                const titleContenido = contenido.titulo as string
-                const fileName = `${titleContenido}${'.pdf'}`
-                if (fs.existsSync(filePath)) {
-                    adjuntos.push({
-                        filename: fileName,
-                        path: filePath
-                    })
-                }
-            } else if (!contenido.es_descargable && contenido.url) {
-                enlaces.push(`<li><a href="${contenido.url}" target="_blank">${contenido.titulo}</a></li>`)
-            }
-        })
-    }
-
-    private readTemplate(file: string): string {
-        return fs.readFileSync(path.resolve(__dirname, `../templates/${file}`), 'utf8')
+        try {
+            const info = await transporter.sendMail(mailOptions)
+            console.log('info mailer', info)
+            return info
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+            console.log('errorMessage', errorMessage)
+        }
     }
 }
 
