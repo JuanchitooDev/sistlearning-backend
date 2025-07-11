@@ -44,6 +44,8 @@ export default class HPdf {
             const pathFontBalooMedium = path.resolve(__dirname, '../../public/fonts/BalooChettan2-Medium.ttf')
             const pathLogo = path.resolve(__dirname, '../../public/img/logo_transparente_small.png')
 
+            console.log('pathTemplate', pathTemplate)
+
             if (!fs.existsSync(pathTemplate)) {
                 return { result: false, message: `No existe la plantilla ${plantilla_certificado}` }
             }

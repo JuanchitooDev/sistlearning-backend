@@ -18,9 +18,9 @@ class DocumentoRepository {
             const dataTipoDocumento = getTipoDocumento.data as ITipoDocumento
             const { abreviatura } = dataTipoDocumento
 
-            console.log('dataPersona', dataPersona)
+            // console.log('dataPersona', dataPersona)
 
-            console.log('dataTipoDocumento', dataTipoDocumento)
+            // console.log('dataTipoDocumento', dataTipoDocumento)
 
             const { result, data, status } = dataPersona
 
@@ -43,7 +43,7 @@ class DocumentoRepository {
                     }
                 })
 
-                console.log('response api', response)
+                // console.log('response api', response)
 
                 // Comprobando si la respuesta es exitosa
                 if (response.data.success) {
@@ -94,7 +94,7 @@ class DocumentoRepository {
 
                     const createPersona = await PersonaService.createPersona(persona)
 
-                    console.log('createPersona', createPersona)
+                    // console.log('createPersona', createPersona)
 
                     // return createPersona
                     if (createPersona.result) {

@@ -282,7 +282,7 @@ class AlumnoRepository {
 
             const newAlumno = await Alumno.create(data as any)
 
-            console.log('newAlumno', newAlumno)
+            // console.log('newAlumno', newAlumno)
 
             const { id } = newAlumno
 
@@ -294,7 +294,7 @@ class AlumnoRepository {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
             console.log('errorMessage', errorMessage)
-            
+
             return { result: false, error: errorMessage, status: 500 }
         }
     }
