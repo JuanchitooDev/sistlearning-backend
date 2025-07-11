@@ -156,7 +156,7 @@ class PersonaRepository {
 
             await t.commit()
 
-            console.log('newPersona', newPersona)
+            // console.log('newPersona', newPersona)
 
             if (newPersona.id) {
                 return { result: true, message: 'Persona registrada con éxito', data: newPersona, status: 200 }
@@ -174,7 +174,7 @@ class PersonaRepository {
 
     async update(id: number, data: IPersona): Promise<PersonaResponse> {
         const t = await sequelize.transaction()
-        
+
         try {
             const persona = await Persona.findByPk(id)
 
